@@ -43,10 +43,7 @@ namespace TSMapEditor.UI.Windows
             btnApply = FindChild<EditorButton>(nameof(btnApply));
 
             ddColor.AddItem("None");
-            Array.ForEach(Trigger.SupportedColors, sc =>
-            {
-                ddColor.AddItem(sc.Name, sc.Value);
-            });            
+            Array.ForEach(Trigger.SupportedColors, sc => ddColor.AddItem(sc.Name, sc.Value));            
 
             btnApply.LeftClick += BtnApply_LeftClick;
         }
@@ -92,7 +89,7 @@ namespace TSMapEditor.UI.Windows
 
             var baseTrigger = CreateBaseTrigger(name, elapsedTime, color, type, difficulty);
             var childTriggers = CreateChildTriggers(name, count, delay, color);
-            AssociateTriggers(baseTrigger, childTriggers);
+			AssociateTriggers(baseTrigger, childTriggers);
 
             return baseTrigger;
         }
@@ -218,7 +215,7 @@ namespace TSMapEditor.UI.Windows
             return triggers;
         }
 
-        private void AssociateTriggers(Trigger baseTrigger, List<Trigger> childTriggers)
+        private static void AssociateTriggers(Trigger baseTrigger, List<Trigger> childTriggers)
         {            
             foreach (var childTrigger in childTriggers)
             {

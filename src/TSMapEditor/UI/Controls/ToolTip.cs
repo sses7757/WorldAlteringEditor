@@ -36,11 +36,11 @@ namespace TSMapEditor.UI.Controls
             masterControl.EnabledChanged += MasterControl_EnabledChanged;
             InputEnabled = false;
             DrawOrder = int.MaxValue;
-            GetParentControl(masterControl.Parent).AddChild(this);
+			GetParentControl(masterControl.Parent).AddChild(this);
             Visible = false;
         }
 
-        private XNAControl GetParentControl(XNAControl parent)
+        private static XNAControl GetParentControl(XNAControl parent)
         {
             if (parent is INItializableWindow)
                 return parent as INItializableWindow;
@@ -169,6 +169,6 @@ namespace TSMapEditor.UI.Controls
                 UISettings.ActiveSettings.AltColor * Alpha, 1.0f);
         }
 
-        private Point SumPoints(Point p1, Point p2) => p1 + p2;
+        private static Point SumPoints(Point p1, Point p2) => p1 + p2;
     }
 }

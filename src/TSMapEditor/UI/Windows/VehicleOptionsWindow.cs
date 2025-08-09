@@ -18,7 +18,7 @@ namespace TSMapEditor.UI.Windows
 
         private readonly Map map = map;
         private readonly EditorState editorState = editorState;
-        private readonly SetFollowerCursorAction setFollowerCursorAction = new SetFollowerCursorAction(cursorActionTarget);
+        private readonly SetFollowerCursorAction setFollowerCursorAction = new(cursorActionTarget);
         private readonly ICursorActionTarget cursorActionTarget = cursorActionTarget;
 
         private XNATrackbar trbStrength;

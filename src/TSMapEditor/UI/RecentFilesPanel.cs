@@ -23,7 +23,7 @@ namespace TSMapEditor.UI
         {
             Name = nameof(RecentFilesPanel);
 
-            var entries = UserSettings.Instance.RecentFiles.GetEntries();
+            var entries = UserSettings.RecentFiles.GetEntries();
 
             int y = Constants.UIEmptyTopSpace;
 

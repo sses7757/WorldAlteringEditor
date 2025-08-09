@@ -75,7 +75,7 @@ namespace TSMapEditor.Mutations.Classes
             return result;
         }
 
-        protected byte[] ASCIIStringToBytes(string str)
+        protected static byte[] ASCIIStringToBytes(string str)
         {
             byte[] buffer = new byte[sizeof(int) + str.Length];
             Array.Copy(BitConverter.GetBytes(str.Length), buffer, sizeof(int));

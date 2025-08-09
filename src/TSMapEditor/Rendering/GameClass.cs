@@ -51,7 +51,6 @@ namespace TSMapEditor.Rendering
             AutoLATType.InitArray();
 
             Constants.Init();
-            new UserSettings();
             AutosaveTimer.Purge();
 
             graphics = new GraphicsDeviceManager(this)
@@ -77,18 +76,18 @@ namespace TSMapEditor.Rendering
 
             string fullName = typeof(GameClass).Assembly.FullName;
 
-            LogLineGenerate("World-Altering Editor (" + fullName + ")", sb, exceptLogPath);
-            LogLineGenerate("Release version: " + Constants.ReleaseVersion, sb, exceptLogPath);
-            LogLineGenerate("Unhandled exception! @ " + DateTime.Now.ToLongTimeString(), sb, exceptLogPath);
-            LogLineGenerate("Message: " + ex.Message, sb, exceptLogPath);
-            LogLineGenerate("Stack trace: " + ex.StackTrace, sb, exceptLogPath);
+			LogLineGenerate("World-Altering Editor (" + fullName + ")", sb, exceptLogPath);
+			LogLineGenerate("Release version: " + Constants.ReleaseVersion, sb, exceptLogPath);
+			LogLineGenerate("Unhandled exception! @ " + DateTime.Now.ToLongTimeString(), sb, exceptLogPath);
+			LogLineGenerate("Message: " + ex.Message, sb, exceptLogPath);
+			LogLineGenerate("Stack trace: " + ex.StackTrace, sb, exceptLogPath);
 
             if (ex.InnerException != null)
             {
-                LogLineGenerate("***************************", sb, exceptLogPath);
-                LogLineGenerate("InnerException information:", sb, exceptLogPath);
-                LogLineGenerate("Message: " + ex.InnerException.Message, sb, exceptLogPath);
-                LogLineGenerate("Stack trace: " + ex.InnerException.StackTrace, sb, exceptLogPath);
+				LogLineGenerate("***************************", sb, exceptLogPath);
+				LogLineGenerate("InnerException information:", sb, exceptLogPath);
+				LogLineGenerate("Message: " + ex.InnerException.Message, sb, exceptLogPath);
+				LogLineGenerate("Stack trace: " + ex.InnerException.StackTrace, sb, exceptLogPath);
             }
 
             Logger.Log("Exiting.");
@@ -101,7 +100,7 @@ namespace TSMapEditor.Rendering
             Environment.Exit(255);
         }
 
-        private void LogLineGenerate(string text, StringBuilder sb, string exceptLogPath)
+        private static void LogLineGenerate(string text, StringBuilder sb, string exceptLogPath)
         {
             sb.Append(text + Environment.NewLine);
             Logger.ForceLog(text, exceptLogPath);
@@ -168,7 +167,7 @@ namespace TSMapEditor.Rendering
 
         private void SetTargetFPS()
         {
-            TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0 / UserSettings.Instance.TargetFPS);
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0 / UserSettings.TargetFPS);
         }
 
         protected override void Update(GameTime gameTime)

@@ -13,12 +13,12 @@ namespace TSMapEditor.Models.ArtConfig
         /// <summary>
         /// Ares Foundation.N entries, list of cell grid coordinates starting at 0,0 (top left).
         /// </summary>
-        public Point2D[] FoundationCells { get; set; } = Array.Empty<Point2D>();
+        public Point2D[] FoundationCells { get; set; } = [];
 
         /// <summary>
         /// Generated list of edges defining foundation outline.
         /// </summary>
-        public Point2D[][] Edges { get; set; } = [Array.Empty<Point2D>()];
+        public Point2D[][] Edges { get; set; } = [[]];
 
         public int Width { get; set; }
         public int Height { get; set; }
@@ -165,8 +165,8 @@ namespace TSMapEditor.Models.ArtConfig
         public string BibShape { get; set; }
         public List<BuildingAnimArtConfig> BuildingAnimConfigs { get; set; } = [];
         public List<PowerUpAnimArtConfig> PowerUpAnimConfigs { get; set; } = [];
-        public AnimType[] Anims { get; set; } = Array.Empty<AnimType>();
-        public AnimType[] PowerUpAnims { get; set; } = Array.Empty<AnimType>();
+        public AnimType[] Anims { get; set; } = [];
+        public AnimType[] PowerUpAnims { get; set; } = [];
         public AnimType TurretAnim { get; set; }
 
         /// <summary>
@@ -197,16 +197,16 @@ namespace TSMapEditor.Models.ArtConfig
 
             var anims = new List<BuildingAnimArtConfig>();
 
-            foreach (var animClass in BuildingAnimClasses)
+            foreach (var (Name, Suffixes) in BuildingAnimClasses)
             {
-                foreach (var suffix in animClass.Suffixes)
+                foreach (var suffix in Suffixes)
                 {
-                    string animTypeName = iniSection.GetStringValue(animClass.Name + suffix, null);
+                    string animTypeName = iniSection.GetStringValue(Name + suffix, null);
                     if (string.IsNullOrEmpty(animTypeName))
                         break;
 
                     var animConfig = new BuildingAnimArtConfig();
-                    animConfig.ReadFromIniSection(iniSection, animClass.Name + suffix);
+                    animConfig.ReadFromIniSection(iniSection, Name + suffix);
                     anims.Add(animConfig);
                 }
             }

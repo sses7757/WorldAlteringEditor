@@ -601,7 +601,7 @@ namespace TSMapEditor.Models
             });
 
             // Shift all cells
-            allCellsInList.ForEach(mapCell => { mapCell.ShiftPosition(eastShift, southShift); });
+            allCellsInList.ForEach(mapCell => mapCell.ShiftPosition(eastShift, southShift));
 
             // Then the "fun" part. Shift every object, waypoint, celltag etc. similarly!
             ShiftObjectsInList(Aircraft, eastShift, southShift);
@@ -619,10 +619,7 @@ namespace TSMapEditor.Models
             }
 
             // Shift tunnel tubes
-            Tubes.ForEach(tube =>
-            {
-                tube.ShiftPosition(eastShift, southShift);
-            });
+            Tubes.ForEach(tube => tube.ShiftPosition(eastShift, southShift));
 
 
             // Now let's apply our changes and remove stuff that would end up outside of the map
@@ -668,7 +665,7 @@ namespace TSMapEditor.Models
             list.ForEach(element => ShiftObject(element, eastShift, southShift));
         }
 
-        private void ShiftObject(IPositioned movableObject, int eastShift, int southShift)
+        private static void ShiftObject(IPositioned movableObject, int eastShift, int southShift)
         {
             int x = movableObject.Position.X + eastShift;
             int y = movableObject.Position.Y + southShift;
@@ -1466,7 +1463,7 @@ namespace TSMapEditor.Models
             int tileIndex = (usePreview && tile.PreviewTileImage != null) ? tile.PreviewTileImage.TileID : tile.TileIndex;
             int tileSetId = TheaterInstance.GetTileSetId(tileIndex);
             var tileSet = TheaterInstance.Theater.TileSets[tileSetId];
-            if (shouldMatch && (tileSetId != desiredTileSetId1 && tileSetId != desiredTileSetId2 && (miscChecker == null || !miscChecker(tileSet))))
+            if (shouldMatch && tileSetId != desiredTileSetId1 && tileSetId != desiredTileSetId2 && (miscChecker == null || !miscChecker(tileSet)))
                 return false;
 
             if (!shouldMatch && (tileSetId == desiredTileSetId1 || tileSetId == desiredTileSetId2 || (miscChecker != null && miscChecker(tileSet))))
@@ -1643,7 +1640,7 @@ namespace TSMapEditor.Models
             }
         }
 
-        public House HouseFromHouseType(HouseType houseType)
+        public static House HouseFromHouseType(HouseType houseType)
         {
             var house = new House(houseType.ININame, houseType)
             {

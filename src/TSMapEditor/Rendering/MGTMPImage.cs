@@ -61,7 +61,7 @@ namespace TSMapEditor.Rendering
             }
         }
 
-        private Texture2D TextureFromTmpImage_Paletted(GraphicsDevice graphicsDevice, TmpImage image)
+        private static Texture2D TextureFromTmpImage_Paletted(GraphicsDevice graphicsDevice, TmpImage image)
         {
             Texture2D texture = new(graphicsDevice, Constants.CellSizeX, Constants.CellSizeY, false, SurfaceFormat.Alpha8);
             byte[] colorData = new byte[Constants.CellSizeX * Constants.CellSizeY];
@@ -92,7 +92,7 @@ namespace TSMapEditor.Rendering
             return texture;
         }
 
-        private Texture2D TextureFromExtraTmpData_Paletted(GraphicsDevice graphicsDevice, TmpImage image)
+        private static Texture2D TextureFromExtraTmpData_Paletted(GraphicsDevice graphicsDevice, TmpImage image)
         {
             int width = (int)image.ExtraWidth;
             int height = (int)image.ExtraHeight;
@@ -153,7 +153,7 @@ namespace TSMapEditor.Rendering
             return texture;
         }
 
-        private Texture2D TextureFromExtraTmpData_RGBA(GraphicsDevice graphicsDevice, TmpImage image, Palette palette)
+        private static Texture2D TextureFromExtraTmpData_RGBA(GraphicsDevice graphicsDevice, TmpImage image, Palette palette)
         {
             int width = (int)image.ExtraWidth;
             int height = (int)image.ExtraHeight;

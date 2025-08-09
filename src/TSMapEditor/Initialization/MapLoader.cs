@@ -158,11 +158,13 @@ namespace TSMapEditor.Initialization
             StringBuilder sb = new();
             section.Keys.ForEach(kvp => sb.Append(kvp.Value));
 
-            var allStr = sb.ToString().TrimEnd('=');
-            if (allStr.Length % 4 != 0)
+			string allStr = sb.ToString().TrimEnd('=');
+            int addedLength = 0;
+			if (allStr.Length % 4 != 0)
             {
                 Logger.Log("Warning: IsoMapPack5 Base64 length " + allStr.Length + " is not a multiple of 4, adding trailing zero bytes");
-                allStr += new string('A', 4 - (allStr.Length % 4));
+                addedLength = 4 - (allStr.Length % 4);
+				allStr += new string('A', addedLength);
             }
             byte[] compressedData = Convert.FromBase64String(allStr);
             if (compressedData.Length < 4)
@@ -174,7 +176,7 @@ namespace TSMapEditor.Initialization
 
             int position = 0;
 
-            while (position < compressedData.Length)
+            while (position < compressedData.Length - addedLength)
             {
                 ushort inputSize = BitConverter.ToUInt16(compressedData, position);
                 ushort outputSize = BitConverter.ToUInt16(compressedData, position + 2);
@@ -674,7 +676,7 @@ namespace TSMapEditor.Initialization
 
             var stringBuilder = new StringBuilder();
             overlayPackSection.Keys.ForEach(kvp => stringBuilder.Append(kvp.Value));
-            var allStr = stringBuilder.ToString().TrimEnd('=');
+            string allStr = stringBuilder.ToString().TrimEnd('=');
             if (allStr.Length % 4 != 0)
             {
                 Logger.Log("Warning: OverlayPack Base64 length " + allStr.Length + " is not a multiple of 4, adding trailing zero bytes");

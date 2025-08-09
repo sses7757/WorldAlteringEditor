@@ -176,7 +176,7 @@ namespace TSMapEditor.UI
             Name = nameof(MapUI);
             base.Initialize();
 
-            scrollRate = UserSettings.Instance.ScrollRate;
+            scrollRate = UserSettings.ScrollRate;
 
             EditorState.CursorActionChanged += EditorState_CursorActionChanged;
 
@@ -224,7 +224,7 @@ namespace TSMapEditor.UI
             else
             {
 #if WINDOWS
-                string initialPath = string.IsNullOrWhiteSpace(UserSettings.Instance.LastScenarioPath.GetValue()) ? UserSettings.Instance.GameDirectory : UserSettings.Instance.LastScenarioPath.GetValue();
+                string initialPath = string.IsNullOrWhiteSpace(UserSettings.LastScenarioPath.GetValue()) ? UserSettings.GameDirectory : UserSettings.LastScenarioPath.GetValue();
 
                 using System.Windows.Forms.SaveFileDialog saveFileDialog = new();
                 saveFileDialog.InitialDirectory = Path.GetDirectoryName(initialPath);
@@ -285,11 +285,10 @@ namespace TSMapEditor.UI
                 return;
 
             var tilePosition = GetRelativeTilePositionFromCursorPosition(tileUnderCursor);
-            var selectedObject = tileUnderCursor.GetObject(tilePosition) as TechnoBase;
-            if (selectedObject == null)
-                return;
+			if (tileUnderCursor.GetObject(tilePosition) is not TechnoBase selectedObject)
+				return;
 
-            const int step = 32;
+			const int step = 32;
 
             if (selectedObject.Facing + step > byte.MaxValue)
                 selectedObject.Facing = (byte)(selectedObject.Facing + step - byte.MaxValue);
@@ -607,7 +606,7 @@ namespace TSMapEditor.UI
 
             if (IsActive)
             {
-                if (!(WindowManager.SelectedControl is XNATextBox))
+                if (WindowManager.SelectedControl is not XNATextBox)
                     Camera.KeyboardUpdate(Keyboard, scrollRate);
 
                 if (isRightClickScrolling)
@@ -616,7 +615,7 @@ namespace TSMapEditor.UI
                     {
                         var newCursorPosition = GetCursorPoint();
                         var result = newCursorPosition - rightClickScrollInitPos;
-                        float rightClickScrollRate = (float)((scrollRate / RightClickScrollRateDivisor) / Camera.ZoomLevel);
+                        float rightClickScrollRate = (float)(scrollRate / RightClickScrollRateDivisor / Camera.ZoomLevel);
 
                         Camera.FloatTopLeftPoint = new Vector2(Camera.FloatTopLeftPoint.X + result.X * rightClickScrollRate,
                             Camera.FloatTopLeftPoint.Y + result.Y * rightClickScrollRate);

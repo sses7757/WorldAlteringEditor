@@ -265,7 +265,7 @@ namespace TSMapEditor.CCEngine
             return null;
         }
 
-        private bool IsSpecialMixName(string name)
+        private static bool IsSpecialMixName(string name)
         {
             name = name.ToUpper();
             return name switch

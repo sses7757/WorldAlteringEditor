@@ -19,7 +19,7 @@ namespace TSMapEditor.Rendering
             if (AssetLoader.AssetExists(MapWideOverlayTextureName))
                 texture = AssetLoader.LoadTextureUncached(MapWideOverlayTextureName);
 
-            Opacity = UserSettings.Instance.MapWideOverlayOpacity / 255.0f;
+            Opacity = UserSettings.MapWideOverlayOpacity / 255.0f;
         }
 
         private Texture2D texture;
@@ -40,7 +40,7 @@ namespace TSMapEditor.Rendering
         public void LoadMapWideOverlay(GraphicsDevice graphicsDevice)
         {
 #if WINDOWS
-            string initialPath = string.IsNullOrWhiteSpace(UserSettings.Instance.LastScenarioPath.GetValue()) ? UserSettings.Instance.GameDirectory : UserSettings.Instance.LastScenarioPath.GetValue();
+            string initialPath = string.IsNullOrWhiteSpace(UserSettings.LastScenarioPath.GetValue()) ? UserSettings.GameDirectory : UserSettings.LastScenarioPath.GetValue();
 
             using OpenFileDialog openFileDialog = new();
             openFileDialog.InitialDirectory = Path.GetDirectoryName(initialPath);

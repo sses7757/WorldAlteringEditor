@@ -10,15 +10,15 @@ namespace TSMapEditor.UI
 
         public void DoForBrushSize(Action<Point2D> action)
         {
-            DoForArea(0, 0, Height, Width, action);
+			DoForArea(0, 0, Height, Width, action);
         }
 
         public void DoForBrushSizeAndSurroundings(Action<Point2D> action)
         {
-            DoForArea(-1, -1, Height + 1, Width + 1, action);
+			DoForArea(-1, -1, Height + 1, Width + 1, action);
         }
 
-        private void DoForArea(int initY, int initX, int height, int width, Action<Point2D> action)
+        private static void DoForArea(int initY, int initX, int height, int width, Action<Point2D> action)
         {
             for (int y = initY; y < height; y++)
             {

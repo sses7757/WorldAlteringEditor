@@ -82,7 +82,7 @@ namespace TSMapEditor.UI
 
         public override bool Equals(object obj)
         {
-            if (!(obj is KeyboardCommandInput objAsInput))
+            if (obj is not KeyboardCommandInput objAsInput)
                 return false;
 
             return objAsInput.Key == Key && objAsInput.Modifiers == Modifiers;

@@ -240,10 +240,7 @@ namespace TSMapEditor.Rendering
 
         public void Dispose()
         {
-            Array.ForEach(TMPImages, tmp =>
-            {
-                tmp?.Dispose();
-            });
+            Array.ForEach(TMPImages, tmp => tmp?.Dispose());
         }
     }
 }

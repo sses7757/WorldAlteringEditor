@@ -354,7 +354,7 @@ namespace TSMapEditor.UI.Windows
             tbName.Text = editedAITrigger.Name;
             ddSide.SelectedIndex = editedAITrigger.Side < ddSide.Items.Count ? editedAITrigger.Side : 0;
             ddHouseType.SelectedIndex = ddHouseType.Items.FindIndex(ddi => ddi.Text == editedAITrigger.OwnerName);
-            ddConditionType.SelectedIndex = ((int)aiTriggerType.ConditionType + 1);
+            ddConditionType.SelectedIndex = (int)aiTriggerType.ConditionType + 1;
             ddComparator.SelectedIndex = (int)aiTriggerType.Comparator.ComparatorOperator;
             tbQuantity.Value = aiTriggerType.Comparator.Quantity;
             selComparisonObjectType.Text = aiTriggerType.ConditionObject != null ? $"{aiTriggerType.ConditionObject.GetEditorDisplayName()} ({aiTriggerType.ConditionObject.ININame})" : string.Empty;
@@ -479,10 +479,7 @@ namespace TSMapEditor.UI.Windows
             ddSide.Items.Clear();
             ddHouseType.Items.Clear();
 
-            map.AITriggerTypes.ForEach(aitt =>
-            {
-                lbAITriggers.AddItem(new XNAListBoxItem() { Text = aitt.Name, Tag = aitt, TextColor = GetAITriggerUIColor(aitt) });
-            });
+            map.AITriggerTypes.ForEach(aitt => lbAITriggers.AddItem(new XNAListBoxItem() { Text = aitt.Name, Tag = aitt, TextColor = GetAITriggerUIColor(aitt) }));
 
             ddSide.AddItem("0 all sides");
             for (int i = 0; i < map.Rules.Sides.Count; i++)

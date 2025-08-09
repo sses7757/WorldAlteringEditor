@@ -50,26 +50,26 @@ namespace TSMapEditor.Models
         /// </summary>
         public void InitFromINI(IniFile iniFile, IInitializer initializer, bool isMapIni = false)
         {
-            InitFromTypeSection(iniFile, "VehicleTypes", UnitTypes);
-            InitFromTypeSection(iniFile, "InfantryTypes", InfantryTypes);
-            InitFromTypeSection(iniFile, "BuildingTypes", BuildingTypes);
-            InitFromTypeSection(iniFile, "AircraftTypes", AircraftTypes);
-            InitFromTypeSection(iniFile, "TerrainTypes", TerrainTypes);
-            InitFromTypeSection(iniFile, "OverlayTypes", OverlayTypes);
-            InitFromTypeSection(iniFile, "SmudgeTypes", SmudgeTypes);
-            InitFromTypeSection(iniFile, "Animations", AnimTypes);
-            InitFromTypeSection(iniFile, "Weapons", Weapons);      // TS CnCNet ts-patches + Vinifera
-            InitFromTypeSection(iniFile, "WeaponTypes", Weapons);  // YR Ares
-            InitFromTypeSection(iniFile, "SuperWeaponTypes", SuperWeaponTypes);
-            InitFromTypeSection(iniFile, "ParticleSystems", ParticleSystemTypes);
-            InitFromTypeSection(iniFile, "Tiberiums", TiberiumTypes);
+			InitFromTypeSection(iniFile, "VehicleTypes", UnitTypes);
+			InitFromTypeSection(iniFile, "InfantryTypes", InfantryTypes);
+			InitFromTypeSection(iniFile, "BuildingTypes", BuildingTypes);
+			InitFromTypeSection(iniFile, "AircraftTypes", AircraftTypes);
+			InitFromTypeSection(iniFile, "TerrainTypes", TerrainTypes);
+			InitFromTypeSection(iniFile, "OverlayTypes", OverlayTypes);
+			InitFromTypeSection(iniFile, "SmudgeTypes", SmudgeTypes);
+			InitFromTypeSection(iniFile, "Animations", AnimTypes);
+			InitFromTypeSection(iniFile, "Weapons", Weapons);      // TS CnCNet ts-patches + Vinifera
+			InitFromTypeSection(iniFile, "WeaponTypes", Weapons);  // YR Ares
+			InitFromTypeSection(iniFile, "SuperWeaponTypes", SuperWeaponTypes);
+			InitFromTypeSection(iniFile, "ParticleSystems", ParticleSystemTypes);
+			InitFromTypeSection(iniFile, "Tiberiums", TiberiumTypes);
 
             if (!isMapIni)
             {
                 if (Constants.IsRA2YR)
-                    InitFromTypeSection(iniFile, "Countries", RulesHouseTypes);
+					InitFromTypeSection(iniFile, "Countries", RulesHouseTypes);
                 else
-                    InitFromTypeSection(iniFile, "Houses", RulesHouseTypes);
+					InitFromTypeSection(iniFile, "Houses", RulesHouseTypes);
             }
 
             // Go through all the lists and get object properties
@@ -353,7 +353,7 @@ namespace TSMapEditor.Models
                 house.XNAColor = color.XNAColor;
         }
 
-        private void InitFromTypeSection<T>(IniFile iniFile, string sectionName, List<T> targetList)
+        private static void InitFromTypeSection<T>(IniFile iniFile, string sectionName, List<T> targetList)
         {
             var sectionKeys = iniFile.GetSectionKeys(sectionName);
 

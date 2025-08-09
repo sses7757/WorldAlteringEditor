@@ -24,7 +24,7 @@ namespace TSMapEditor.CCEngine
         public class Section(int numMatrices)
         {
             public string Name;
-            public List<float[]> Matrices = new List<float[]>(numMatrices);
+            public List<float[]> Matrices = new(numMatrices);
         }
 
         public HvaFile(Stream baseStream, string filename, int baseOffset, int fileSize, bool isBuffered = true)

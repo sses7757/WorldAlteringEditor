@@ -239,8 +239,8 @@ namespace TSMapEditor.UI
 
             if (usages.Count > 0)
             {
-                string lastUsage = usages[usages.Count - 1];
-                usages[usages.Count - 1] = lastUsage[..^2];
+                string lastUsage = usages[^1];
+                usages[^1] = lastUsage[..^2];
 
                 textRenderer.AddTextLine(new XNATextPart("Usages of waypoint " + waypoint.Identifier + ":", Constants.UIDefaultFont, Color.Gray));
 

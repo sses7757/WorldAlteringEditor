@@ -159,7 +159,7 @@ namespace TSMapEditor
                 n += (c - '@') * j; // '@' = 'A' - 1
             }
 
-            return (n - 1);
+            return n - 1;
         }
 
         public static string WaypointNumberToAlphabeticalString(int waypointNumber)

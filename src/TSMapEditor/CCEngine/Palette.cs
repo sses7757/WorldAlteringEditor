@@ -49,7 +49,7 @@ namespace TSMapEditor.CCEngine
             return this;
         }
 
-        private Texture2D CreateTexture(GraphicsDevice graphicsDevice, Palette palette)
+        private static Texture2D CreateTexture(GraphicsDevice graphicsDevice, Palette palette)
         {
             Texture2D texture = new(graphicsDevice, LENGTH, 1, false, SurfaceFormat.Color);
 

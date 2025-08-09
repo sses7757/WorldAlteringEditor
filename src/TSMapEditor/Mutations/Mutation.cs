@@ -160,10 +160,8 @@ namespace TSMapEditor.Mutations
             if (autoLatGround != null && map.TheaterInstance.Theater.TileSets.Exists(tSet => autoLatGround.ConnectToTileSetIndices.Contains(tSet.Index)))
             {
                 miscChecker = (ts) =>
-                {
-                    // On its own line so it's possible to debug this
-                    return autoLatGround != null && autoLatGround.ConnectToTileSetIndices.Contains(ts.Index);
-                };
+					// On its own line so it's possible to debug this
+					autoLatGround != null && autoLatGround.ConnectToTileSetIndices.Contains(ts.Index);
             }
 
             if (autoLatGround != null)

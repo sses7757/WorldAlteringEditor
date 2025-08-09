@@ -30,8 +30,8 @@ namespace TSMapEditor.UI.Windows
 
         private readonly Map map = map;
         private readonly ICursorActionTarget cursorActionTarget = cursorActionTarget;
-        private readonly PlaceCellTagCursorAction placeCellTagCursorAction = new PlaceCellTagCursorAction(cursorActionTarget);
-        private readonly ChangeAttachedTagCursorAction changeAttachedTagCursorAction = new ChangeAttachedTagCursorAction(cursorActionTarget);
+        private readonly PlaceCellTagCursorAction placeCellTagCursorAction = new(cursorActionTarget);
+        private readonly ChangeAttachedTagCursorAction changeAttachedTagCursorAction = new(cursorActionTarget);
         private readonly EditorState editorState = editorState;
         private readonly TriggerParamType[] supportedGoToSourceTriggerParamTypes = 
         [
@@ -145,10 +145,7 @@ namespace TSMapEditor.UI.Windows
             // Init color dropdown options
             ddTriggerColor = FindChild<XNADropDown>(nameof(ddTriggerColor));
             ddTriggerColor.AddItem("None");
-            Array.ForEach(Trigger.SupportedColors, sc =>
-            {
-                ddTriggerColor.AddItem(sc.Name, sc.Value);
-            });
+            Array.ForEach(Trigger.SupportedColors, sc => ddTriggerColor.AddItem(sc.Name, sc.Value));
 
             lbEvents = FindChild<EditorListBox>(nameof(lbEvents));
             selEventType = FindChild<EditorPopUpSelector>(nameof(selEventType));
@@ -485,16 +482,16 @@ namespace TSMapEditor.UI.Windows
                         switch (techno.WhatAmI())
                         {
                             case RTTIType.Aircraft:
-                                AppendToStringBuilder((Aircraft)techno, stringBuilder);
+								AppendToStringBuilder((Aircraft)techno, stringBuilder);
                                 break;
                             case RTTIType.Building:
-                                AppendToStringBuilder((Structure)techno, stringBuilder);
+								AppendToStringBuilder((Structure)techno, stringBuilder);
                                 break;
                             case RTTIType.Infantry:
-                                AppendToStringBuilder((Infantry)techno, stringBuilder);
+								AppendToStringBuilder((Infantry)techno, stringBuilder);
                                 break;
                             case RTTIType.Unit:
-                                AppendToStringBuilder((Unit)techno, stringBuilder);
+								AppendToStringBuilder((Unit)techno, stringBuilder);
                                 break;
                             default:
                                 throw new NotImplementedException("Unknown RTTI type encountered when listing linked objects for a trigger.");
@@ -568,7 +565,7 @@ namespace TSMapEditor.UI.Windows
             return;
         }
 
-        private void AppendToStringBuilder<T>(Techno<T> techno, StringBuilder stringBuilder) where T : TechnoType
+        private static void AppendToStringBuilder<T>(Techno<T> techno, StringBuilder stringBuilder) where T : TechnoType
         {
             string rtti = techno.WhatAmI().ToString();
             string name = techno.ObjectType.Name;
@@ -577,7 +574,7 @@ namespace TSMapEditor.UI.Windows
             stringBuilder.Append($"    - {rtti}: {name} at {position}{Environment.NewLine}");
         }
 
-        private void AddObjectToListIfLinkedToTag(TechnoBase techno, List<TechnoBase> technoList, Tag tag)
+        private static void AddObjectToListIfLinkedToTag(TechnoBase techno, List<TechnoBase> technoList, Tag tag)
         {
             if (techno.AttachedTag == tag)
                 technoList.Add(techno);
@@ -2386,7 +2383,7 @@ namespace TSMapEditor.UI.Windows
             }
         }
 
-        private string GetObjectValueText<T>(RTTIType rtti, List<T> objectTypeList, string paramValue) where T : TechnoType
+        private static string GetObjectValueText<T>(RTTIType rtti, List<T> objectTypeList, string paramValue) where T : TechnoType
         {
             bool intParseSuccess = int.TryParse(paramValue, NumberStyles.None, CultureInfo.InvariantCulture, out int intValue);
 

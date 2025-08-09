@@ -27,14 +27,12 @@
     <ApplicationIcon>editoricon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Config\Scripts\Apply Animated Water.cs" />
+    <Compile Remove="Config\Scripts\Add Map Reveal Trigger.cs" />
+    <Compile Remove="Config\Scripts\Count Credits On Map.cs" />
     <Compile Remove="Config\Scripts\Disable All Debug Triggers.cs" />
     <Compile Remove="Config\Scripts\Make Civilian Vehicles Sleep.cs" />
     <Compile Remove="Config\Scripts\Remove All Terrain Objects.cs" />
-    <Compile Remove="Config\Scripts\Replace Autumn Grass With Tall Grass.cs" />
-    <Compile Remove="Config\Scripts\Replace Autumn Jungle Grass With Summer Grass.cs" />
-    <Compile Remove="Config\Scripts\Replace Autumn Trees With Summer Trees.cs" />
-    <Compile Remove="Config\Scripts\Replace Frost With Clear.cs" />
+    <Compile Remove="Config\Scripts\Smoothen Water.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Config\Default\Actions.ini">
@@ -490,36 +488,23 @@
     <Folder Include="Content\ToolIcons\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Config\Scripts\Apply Animated Water.cs">
+    <None Include="Config\Scripts\Add Map Reveal Trigger.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Config\Scripts\Count Credits On Map.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Config\Scripts\Disable All Debug Triggers.cs" />
+    <None Include="Config\Scripts\Disable All Debug Triggers.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Config\Scripts\Make Civilian Vehicles Sleep.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Config\Scripts\Remove All Terrain Objects.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Config\Scripts\Replace Autumn Trees With Summer Trees.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Config\Scripts\Replace Autumn Grass With Tall Grass.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Config\Scripts\Replace Autumn Jungle Grass With Summer Grass.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Config\Scripts\Replace Frost With Clear.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Config\Scripts\Add Map Reveal Trigger.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

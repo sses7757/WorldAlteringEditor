@@ -36,7 +36,7 @@ namespace TSMapEditor.UI
 
         public override void Initialize()
         {
-            bool hasRecentFiles = UserSettings.Instance.RecentFiles.GetEntries().Count > 0;
+            bool hasRecentFiles = UserSettings.RecentFiles.GetEntries().Count > 0;
 
             Name = nameof(MainMenu);
             Width = 570;
@@ -55,7 +55,7 @@ namespace TSMapEditor.UI
             tbGameDirectory.X = Constants.UIEmptySideSpace;
             tbGameDirectory.Y = lblGameDirectory.Bottom + Constants.UIVerticalSpacing;
             tbGameDirectory.Width = Width - Constants.UIEmptySideSpace * 3 - BrowseButtonWidth;
-            tbGameDirectory.Text = UserSettings.Instance.GameDirectory;
+            tbGameDirectory.Text = UserSettings.GameDirectory;
             if (string.IsNullOrWhiteSpace(tbGameDirectory.Text))
             {
                 ReadGameInstallDirectoryFromRegistry();
@@ -95,7 +95,7 @@ namespace TSMapEditor.UI
             tbMapPath.X = Constants.UIEmptySideSpace;
             tbMapPath.Y = lblMapPath.Bottom + Constants.UIVerticalSpacing;
             tbMapPath.Width = Width - Constants.UIEmptySideSpace * 3 - BrowseButtonWidth;
-            tbMapPath.Text = UserSettings.Instance.LastScenarioPath;
+            tbMapPath.Text = UserSettings.LastScenarioPath;
             AddChild(tbMapPath);
 
             btnBrowseMapPath = new EditorButton(WindowManager);
@@ -132,7 +132,7 @@ namespace TSMapEditor.UI
             lblCopyright.TextColor = UISettings.ActiveSettings.SubtleTextColor;
             AddChild(lblCopyright);
             lblCopyright.CenterOnControlVertically(btnCreateNewMap);
-            lblCopyright.X = btnCreateNewMap.Right + ((btnLoad.X - btnCreateNewMap.Right) - lblCopyright.Width) / 2;
+            lblCopyright.X = btnCreateNewMap.Right + (btnLoad.X - btnCreateNewMap.Right - lblCopyright.Width) / 2;
 
             int directoryListingY = tbMapPath.Bottom + Constants.UIVerticalSpacing * 2;
 
@@ -372,18 +372,18 @@ namespace TSMapEditor.UI
         {
             settingsPanel.ApplySettings();
 
-            UserSettings.Instance.GameDirectory.UserDefinedValue = tbGameDirectory.Text;
-            UserSettings.Instance.LastScenarioPath.UserDefinedValue = tbMapPath.Text;
-            UserSettings.Instance.RecentFiles.PutEntry(tbMapPath.Text);
+            UserSettings.GameDirectory.UserDefinedValue = tbGameDirectory.Text;
+            UserSettings.LastScenarioPath.UserDefinedValue = tbMapPath.Text;
+            UserSettings.RecentFiles.PutEntry(tbMapPath.Text);
 
-            bool fullscreenWindowed = UserSettings.Instance.FullscreenWindowed.GetValue();
-            bool borderless = UserSettings.Instance.Borderless.GetValue();
+            bool fullscreenWindowed = UserSettings.FullscreenWindowed.GetValue();
+            bool borderless = UserSettings.Borderless.GetValue();
             if (fullscreenWindowed && !borderless)
                 throw new InvalidOperationException("Borderless= cannot be set to false if FullscreenWindowed= is enabled.");
 
             WindowManager.CenterControlOnScreen(this);
 
-            _ = UserSettings.Instance.SaveSettingsAsync();
+            _ = UserSettings.SaveSettingsAsync();
         }
 
         private void BtnBrowseGameDirectory_LeftClick(object sender, EventArgs e)
@@ -425,7 +425,7 @@ namespace TSMapEditor.UI
             if (!CheckGameDirectory())
                 return;
 
-            UserSettings.Instance.GameDirectory.UserDefinedValue = gameDirectory;
+            UserSettings.GameDirectory.UserDefinedValue = gameDirectory;
 
             string mapPath = Path.Combine(gameDirectory, tbMapPath.Text);
             if (Path.IsPathRooted(tbMapPath.Text))

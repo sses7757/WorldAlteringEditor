@@ -190,7 +190,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
         {
             var cellCenterPoint = (drawPoint + new Point2D(Constants.CellSizeX / 2, Constants.CellSizeY / 2)).ToXNAVector();
 
-            float rad = (facing / 255.0f) * (float)Math.PI * 2.0f;
+            float rad = facing / 255.0f * (float)Math.PI * 2.0f;
 
             // The in-game compass is slightly rotated compared to the usual math compass
             // and the compass used by MonoGame.
@@ -330,7 +330,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 height = heightLookupCell.Level;
             }
 
-            return ((cellY + (height * Constants.CellHeight)) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
+            return (cellY + (height * Constants.CellHeight)) / (float)Map.HeightInPixelsWithCellHeight * Constants.DownwardsDepthRenderSpace +
                 (height * Constants.DepthRenderStep);
         }
 
@@ -503,25 +503,25 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 int southermostCellBottomPixelCoord = GetSouthernmostCellBottomPixelCoord(gameObject);
                 if (drawingBounds.Bottom < southermostCellBottomPixelCoord)
                 {
-                    depthAddition += ((southermostCellBottomPixelCoord - drawingBounds.Bottom) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace;
+                    depthAddition += (southermostCellBottomPixelCoord - drawingBounds.Bottom) / (float)Map.HeightInPixelsWithCellHeight * Constants.DownwardsDepthRenderSpace;
                 }
             }
 
             if (depthAddition > 1.0f)
                 depthAddition = 1.0f;
 
-            color = new Color((color.R / 255.0f) * lightingColor.X / 2f,
-                (color.B / 255.0f) * lightingColor.Y / 2f,
-                (color.B / 255.0f) * lightingColor.Z / 2f, textureWidthCenterPoint);
+            color = new Color(color.R / 255.0f * lightingColor.X / 2f,
+                color.B / 255.0f * lightingColor.Y / 2f,
+                color.B / 255.0f * lightingColor.Z / 2f, textureWidthCenterPoint);
 
             RenderDependencies.ObjectSpriteRecord.AddGraphicsEntry(new ObjectSpriteEntry(paletteTexture, texture, drawingBounds, color, false, false, depthAddition));
 
             if (drawRemap && remapFrame != null)
             {
                 remapColor = new Color(
-                    (remapColor.R / 255.0f),
-                    (remapColor.G / 255.0f),
-                    (remapColor.B / 255.0f),
+                    remapColor.R / 255.0f,
+                    remapColor.G / 255.0f,
+                    remapColor.B / 255.0f,
                     textureWidthCenterPoint);
 
                 RenderDependencies.ObjectSpriteRecord.AddGraphicsEntry(new ObjectSpriteEntry(paletteTexture, remapFrame.Texture, drawingBounds, remapColor, true, false, depthAddition));

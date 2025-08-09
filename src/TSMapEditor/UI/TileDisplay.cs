@@ -138,7 +138,7 @@ namespace TSMapEditor.UI
                 // If no tile from the current tileset is selected, then select the last tile
 
                 if (tilesInView.Count > 0)
-                    SelectedTile = tilesInView[tilesInView.Count - 1].TileImageToPlace;
+                    SelectedTile = tilesInView[^1].TileImageToPlace;
 
                 return;
             }
@@ -205,7 +205,7 @@ namespace TSMapEditor.UI
 
                     x = Constants.UIEmptySideSpace;
                     y += currentLineHeight + TILE_PADDING;
-                    CenterLine(tilesOnCurrentLine, currentLineHeight);
+					CenterLine(tilesOnCurrentLine, currentLineHeight);
                     currentLineHeight = 0;
                     tilesOnCurrentLine.Clear();
                 }
@@ -222,13 +222,13 @@ namespace TSMapEditor.UI
                 tilesOnCurrentLine.Add(tileDisplayTile);
             }
 
-            CenterLine(tilesOnCurrentLine, currentLineHeight);
+			CenterLine(tilesOnCurrentLine, currentLineHeight);
         }
 
         /// <summary>
         /// Centers all tiles vertically relative to each other.
         /// </summary>
-        private void CenterLine(List<TileDisplayTile> line, int lineHeight)
+        private static void CenterLine(List<TileDisplayTile> line, int lineHeight)
         {
             foreach (var tile in line)
             {

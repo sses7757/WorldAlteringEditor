@@ -241,7 +241,7 @@ namespace TSMapEditor.UI
 
                     x = Constants.UIEmptySideSpace;
                     y += currentLineHeight + OVERLAY_FRAME_PADDING;
-                    CenterLine(tilesOnCurrentLine, currentLineHeight);
+					CenterLine(tilesOnCurrentLine, currentLineHeight);
                     currentLineHeight = 0;
                     tilesOnCurrentLine.Clear();
                 }
@@ -256,13 +256,13 @@ namespace TSMapEditor.UI
                 tilesOnCurrentLine.Add(tileDisplayTile);
             }
 
-            CenterLine(tilesOnCurrentLine, currentLineHeight);
+			CenterLine(tilesOnCurrentLine, currentLineHeight);
         }
 
         /// <summary>
         /// Centers all tiles vertically relative to each other.
         /// </summary>
-        private void CenterLine(List<OverlayFrameSelectorFrame> line, int lineHeight)
+        private static void CenterLine(List<OverlayFrameSelectorFrame> line, int lineHeight)
         {
             foreach (var tile in line)
             {

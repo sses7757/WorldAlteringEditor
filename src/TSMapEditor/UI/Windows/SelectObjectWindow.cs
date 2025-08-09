@@ -57,7 +57,7 @@ namespace TSMapEditor.UI.Windows
             FindChild<EditorButton>("btnSelect").LeftClick += (s, e) => ConfirmSelection();
 
             tbSearch.TextChanged += TbSearch_TextChanged;
-            tbSearch.EnterPressed += (s, e) => { ConfirmSelection(); };
+            tbSearch.EnterPressed += (s, e) => ConfirmSelection();
 
             // Make pressing X not save changes
             if (btnClose != null)

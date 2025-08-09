@@ -157,7 +157,7 @@ namespace TSMapEditor.Mutations.Classes.HeightMutations
         ];
 
         // Pre-ramp-placement height fix checks
-        private static readonly TransitionRampInfo[] heightFixers = Array.Empty<TransitionRampInfo>();
+        private static readonly TransitionRampInfo[] heightFixers = [];
 
         protected override TransitionRampInfo[] GetTransitionRampInfos() => transitionRampInfos;
 

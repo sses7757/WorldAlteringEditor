@@ -26,14 +26,14 @@ namespace TSMapEditor.UI.TopBar
         private readonly ICursorActionTarget cursorActionTarget = cursorActionTarget;
         private readonly PlaceTerrainCursorAction terrainPlacementAction = terrainPlacementAction;
         private readonly PlaceWaypointCursorAction placeWaypointCursorAction = placeWaypointCursorAction;
-        private readonly DeletionModeCursorAction deletionModeCursorAction = new DeletionModeCursorAction(cursorActionTarget);
-        private readonly FSRaiseGroundCursorAction fsRaiseGroundCursorAction = new FSRaiseGroundCursorAction(cursorActionTarget);
-        private readonly FSLowerGroundCursorAction fsLowerGroundCursorAction = new FSLowerGroundCursorAction(cursorActionTarget);
-        private readonly RaiseGroundCursorAction raiseGroundCursorAction = new RaiseGroundCursorAction(cursorActionTarget);
-        private readonly LowerGroundCursorAction lowerGroundCursorAction = new LowerGroundCursorAction(cursorActionTarget);
-        private readonly RaiseCellsCursorAction raiseCellsCursorAction = new RaiseCellsCursorAction(cursorActionTarget);
-        private readonly LowerCellsCursorAction lowerCellsCursorAction = new LowerCellsCursorAction(cursorActionTarget);
-        private readonly FlattenGroundCursorAction flattenGroundCursorAction = new FlattenGroundCursorAction(cursorActionTarget);
+        private readonly DeletionModeCursorAction deletionModeCursorAction = new(cursorActionTarget);
+        private readonly FSRaiseGroundCursorAction fsRaiseGroundCursorAction = new(cursorActionTarget);
+        private readonly FSLowerGroundCursorAction fsLowerGroundCursorAction = new(cursorActionTarget);
+        private readonly RaiseGroundCursorAction raiseGroundCursorAction = new(cursorActionTarget);
+        private readonly LowerGroundCursorAction lowerGroundCursorAction = new(cursorActionTarget);
+        private readonly RaiseCellsCursorAction raiseCellsCursorAction = new(cursorActionTarget);
+        private readonly LowerCellsCursorAction lowerCellsCursorAction = new(cursorActionTarget);
+        private readonly FlattenGroundCursorAction flattenGroundCursorAction = new(cursorActionTarget);
 
         private XNADropDown ddBrushSize;
         private XNACheckBox chkAutoLAT;

@@ -44,7 +44,7 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 tbSmudgeTypes.Name = nameof(tbSmudgeTypes) + i;
                 tbSmudgeTypes.X = lblSmudgeTypes.X;
                 tbSmudgeTypes.Y = lblSmudgeTypes.Bottom + Constants.UIVerticalSpacing;
-                tbSmudgeTypes.Width = (Width - 252) - tbSmudgeTypes.X - Constants.UIEmptySideSpace;
+                tbSmudgeTypes.Width = Width - 252 - tbSmudgeTypes.X - Constants.UIEmptySideSpace;
                 AddChild(tbSmudgeTypes);
                 smudgeTypeTextBoxes[i] = tbSmudgeTypes;
 

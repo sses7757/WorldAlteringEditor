@@ -327,7 +327,7 @@ namespace TSMapEditor.UI.TopBar
 
         private void OpenWithTextEditor()
         {
-            string textEditorPath = UserSettings.Instance.TextEditorPath;
+            string textEditorPath = UserSettings.TextEditorPath;
 
             if (string.IsNullOrWhiteSpace(textEditorPath) || !File.Exists(textEditorPath))
             {
@@ -353,7 +353,7 @@ namespace TSMapEditor.UI.TopBar
             }
         }
 
-        private string GetDefaultTextEditorPath()
+        private static string GetDefaultTextEditorPath()
         {
             string programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
             string programFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
@@ -429,7 +429,7 @@ namespace TSMapEditor.UI.TopBar
         private void Open()
         {
 #if WINDOWS
-            string initialPath = string.IsNullOrWhiteSpace(UserSettings.Instance.LastScenarioPath.GetValue()) ? UserSettings.Instance.GameDirectory : Path.GetDirectoryName(UserSettings.Instance.LastScenarioPath.GetValue());
+            string initialPath = string.IsNullOrWhiteSpace(UserSettings.LastScenarioPath.GetValue()) ? UserSettings.GameDirectory : Path.GetDirectoryName(UserSettings.LastScenarioPath.GetValue());
 
             using OpenFileDialog openFileDialog = new();
             openFileDialog.InitialDirectory = initialPath;
@@ -448,7 +448,7 @@ namespace TSMapEditor.UI.TopBar
         private void SaveAs()
         {
 #if WINDOWS
-            string initialPath = string.IsNullOrWhiteSpace(UserSettings.Instance.LastScenarioPath.GetValue()) ? UserSettings.Instance.GameDirectory : UserSettings.Instance.LastScenarioPath.GetValue();
+            string initialPath = string.IsNullOrWhiteSpace(UserSettings.LastScenarioPath.GetValue()) ? UserSettings.GameDirectory : UserSettings.LastScenarioPath.GetValue();
 
             using SaveFileDialog saveFileDialog = new();
             saveFileDialog.InitialDirectory = Path.GetDirectoryName(initialPath);
@@ -461,11 +461,11 @@ namespace TSMapEditor.UI.TopBar
                 map.LoadedINI.FileName = saveFileDialog.FileName;
                 TrySaveMap();
 
-                if (UserSettings.Instance.LastScenarioPath.GetValue() != saveFileDialog.FileName)
+                if (UserSettings.LastScenarioPath.GetValue() != saveFileDialog.FileName)
                 {
-                    UserSettings.Instance.RecentFiles.PutEntry(saveFileDialog.FileName);
-                    UserSettings.Instance.LastScenarioPath.UserDefinedValue = saveFileDialog.FileName;
-                    _ = UserSettings.Instance.SaveSettingsAsync();
+                    UserSettings.RecentFiles.PutEntry(saveFileDialog.FileName);
+                    UserSettings.LastScenarioPath.UserDefinedValue = saveFileDialog.FileName;
+                    _ = UserSettings.SaveSettingsAsync();
                 }
             }
 #else

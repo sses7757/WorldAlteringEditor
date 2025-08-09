@@ -19,13 +19,13 @@ namespace TSMapEditor.Models
             if (hsvParts.Length < 3)
                 return;
 
-            float hue = (Conversions.IntFromString(hsvParts[0], 0) * 360.0f) / 255.0f;
+            float hue = Conversions.IntFromString(hsvParts[0], 0) * 360.0f / 255.0f;
             float saturation = Conversions.IntFromString(hsvParts[1], 0) / 255.0f;
             float value = Conversions.IntFromString(hsvParts[2], 0) / 255.0f;
 
             // HSV to RGB conversion formula taken from https://www.rapidtables.com/convert/color/hsv-to-rgb.html
             float c = value * saturation;
-            float x = c * (1 - Math.Abs(((hue / 60) % 2) - 1));
+            float x = c * (1 - Math.Abs((hue / 60 % 2) - 1));
             float m = value - c;
 
             float r_ = 0f;

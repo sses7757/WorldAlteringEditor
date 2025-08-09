@@ -32,7 +32,7 @@ namespace TSMapEditor.Mutations
             if (!CanUndo())
                 return;
 
-            int lastMutationEventId = UndoList[UndoList.Count - 1].EventID;
+            int lastMutationEventId = UndoList[^1].EventID;
 
             if (lastMutationEventId < 0)
             {
@@ -40,7 +40,7 @@ namespace TSMapEditor.Mutations
                 return;
             }
 
-            while (CanUndo() && UndoList[UndoList.Count - 1].EventID == lastMutationEventId)
+            while (CanUndo() && UndoList[^1].EventID == lastMutationEventId)
             {
                 UndoOne();
             }

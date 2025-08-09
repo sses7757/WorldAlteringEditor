@@ -48,12 +48,10 @@ namespace TSMapEditor.UI
 
         public override bool Equals(object obj)
         {
-            var resolution = obj as ScreenResolution;
+			if (obj is not ScreenResolution resolution)
+				return false;
 
-            if (resolution == null)
-                return false;
-
-            return CompareTo(resolution) == 0;
+			return CompareTo(resolution) == 0;
         }
 
         public override int GetHashCode()
@@ -228,50 +226,46 @@ namespace TSMapEditor.UI
 
         private void LoadSettings()
         {
-            var userSettings = UserSettings.Instance;
+            ddRenderScale.SelectedIndex = ddRenderScale.Items.FindIndex(i => (double)i.Tag == UserSettings.RenderScale.GetValue());
+            ddTargetFPS.SelectedIndex = ddTargetFPS.Items.FindIndex(item => (int)item.Tag == UserSettings.TargetFPS.GetValue());
 
-            ddRenderScale.SelectedIndex = ddRenderScale.Items.FindIndex(i => (double)i.Tag == userSettings.RenderScale.GetValue());
-            ddTargetFPS.SelectedIndex = ddTargetFPS.Items.FindIndex(item => (int)item.Tag == userSettings.TargetFPS.GetValue());
-
-            int selectedTheme = ddTheme.Items.FindIndex(i => i.Text == userSettings.Theme);
+            int selectedTheme = ddTheme.Items.FindIndex(i => i.Text == UserSettings.Theme);
             if (selectedTheme == -1)
                 selectedTheme = ddTheme.Items.FindIndex(i => i.Text == "Default");
             ddTheme.SelectedIndex = selectedTheme;
-            ddScrollRate.SelectedIndex = ddScrollRate.Items.FindIndex(item => (int)item.Tag == userSettings.ScrollRate.GetValue());
+            ddScrollRate.SelectedIndex = ddScrollRate.Items.FindIndex(item => (int)item.Tag == UserSettings.ScrollRate.GetValue());
 
-            chkBorderless.Checked = userSettings.Borderless;
-            chkUseBoldFont.Checked = userSettings.UseBoldFont;
-            chkGraphicsLevel.Checked = userSettings.GraphicsLevel > 0;
-            chkSmartScriptActionCloning.Checked = userSettings.SmartScriptActionCloning;
+            chkBorderless.Checked = UserSettings.Borderless;
+            chkUseBoldFont.Checked = UserSettings.UseBoldFont;
+            chkGraphicsLevel.Checked = UserSettings.GraphicsLevel > 0;
+            chkSmartScriptActionCloning.Checked = UserSettings.SmartScriptActionCloning;
 
-            tbTextEditorPath.Text = userSettings.TextEditorPath;
+            tbTextEditorPath.Text = UserSettings.TextEditorPath;
         }
 
         public void ApplySettings()
         {
-            var userSettings = UserSettings.Instance;
+            UserSettings.UseBoldFont.UserDefinedValue = chkUseBoldFont.Checked;
+            UserSettings.GraphicsLevel.UserDefinedValue = chkGraphicsLevel.Checked ? 1 : 0;
+            UserSettings.SmartScriptActionCloning.UserDefinedValue = chkSmartScriptActionCloning.Checked;
 
-            userSettings.UseBoldFont.UserDefinedValue = chkUseBoldFont.Checked;
-            userSettings.GraphicsLevel.UserDefinedValue = chkGraphicsLevel.Checked ? 1 : 0;
-            userSettings.SmartScriptActionCloning.UserDefinedValue = chkSmartScriptActionCloning.Checked;
-
-            userSettings.Theme.UserDefinedValue = ddTheme.SelectedItem.Text;
+            UserSettings.Theme.UserDefinedValue = ddTheme.SelectedItem.Text;
             if (ddScrollRate.SelectedItem != null)
-                userSettings.ScrollRate.UserDefinedValue = (int)ddScrollRate.SelectedItem.Tag;
+                UserSettings.ScrollRate.UserDefinedValue = (int)ddScrollRate.SelectedItem.Tag;
 
-            userSettings.Borderless.UserDefinedValue = chkBorderless.Checked;
-            userSettings.FullscreenWindowed.UserDefinedValue = chkBorderless.Checked;
+            UserSettings.Borderless.UserDefinedValue = chkBorderless.Checked;
+            UserSettings.FullscreenWindowed.UserDefinedValue = chkBorderless.Checked;
 
             if (ddRenderScale.SelectedItem != null)
-                userSettings.RenderScale.UserDefinedValue = (double)ddRenderScale.SelectedItem.Tag;
+                UserSettings.RenderScale.UserDefinedValue = (double)ddRenderScale.SelectedItem.Tag;
 
             if (ddTargetFPS.SelectedItem != null)
             {
-                userSettings.TargetFPS.UserDefinedValue = (int)ddTargetFPS.SelectedItem.Tag;
-                WindowManager.Game.TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0 / UserSettings.Instance.TargetFPS);
+                UserSettings.TargetFPS.UserDefinedValue = (int)ddTargetFPS.SelectedItem.Tag;
+                WindowManager.Game.TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0 / UserSettings.TargetFPS);
             }
 
-            userSettings.TextEditorPath.UserDefinedValue = tbTextEditorPath.Text;
+            UserSettings.TextEditorPath.UserDefinedValue = tbTextEditorPath.Text;
         }
     }
 }

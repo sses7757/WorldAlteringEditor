@@ -24,10 +24,7 @@ namespace TSMapEditor.UI.CursorActions
             {
                 bool isMorphable = true;
 
-                Map.DoForRectangle(cellCoords.X - 1, cellCoords.Y - 1, cellCoords.X + 1, cellCoords.Y + 1, t =>
-                {
-                    isMorphable = isMorphable && Map.TheaterInstance.Theater.TileSets[Map.TheaterInstance.GetTileSetId(t.TileIndex)].Morphable;
-                });
+                Map.DoForRectangle(cellCoords.X - 1, cellCoords.Y - 1, cellCoords.X + 1, cellCoords.Y + 1, t => isMorphable = isMorphable && Map.TheaterInstance.Theater.TileSets[Map.TheaterInstance.GetTileSetId(t.TileIndex)].Morphable);
 
                 if (!isMorphable)
                     return;

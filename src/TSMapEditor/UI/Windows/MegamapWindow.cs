@@ -266,10 +266,10 @@ namespace TSMapEditor.UI.Windows
 
             if (CameraRectangle.Width > 0 && CameraRectangle.Height > 0)
             {
-                double xPos = (CameraRectangle.X / (double)MegamapTexture.Width) * textureDrawRectangle.Width;
-                double yPos = (CameraRectangle.Y / (double)MegamapTexture.Height) * textureDrawRectangle.Height;
-                double width = (CameraRectangle.Width / (double)MegamapTexture.Width) * textureDrawRectangle.Width;
-                double height = (CameraRectangle.Height / (double)MegamapTexture.Height) * textureDrawRectangle.Height;
+                double xPos = CameraRectangle.X / (double)MegamapTexture.Width * textureDrawRectangle.Width;
+                double yPos = CameraRectangle.Y / (double)MegamapTexture.Height * textureDrawRectangle.Height;
+                double width = CameraRectangle.Width / (double)MegamapTexture.Width * textureDrawRectangle.Width;
+                double height = CameraRectangle.Height / (double)MegamapTexture.Height * textureDrawRectangle.Height;
 
                 DrawRectangle(new Rectangle(textureDrawRectangle.X + (int)xPos, textureDrawRectangle.Y + (int)yPos, (int)width, (int)height), Color.White, 1);
             }

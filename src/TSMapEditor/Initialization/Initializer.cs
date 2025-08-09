@@ -83,7 +83,7 @@ namespace TSMapEditor.Initialization
                 action(map, obj, iniFile, objectSection);
         }
 
-        public void InitArt(IniFile iniFile)
+        public static void InitArt(IniFile iniFile)
         {
 
         }
@@ -153,7 +153,7 @@ namespace TSMapEditor.Initialization
             buildingType.LightBlueTint = FloatTypoFix(buildingType, section, "LightBlueTint", buildingType.LightBlueTint);
         }
 
-        private double FloatTypoFix(BuildingType buildingType, IniSection section, string keyName, double current)
+        private static double FloatTypoFix(BuildingType buildingType, IniSection section, string keyName, double current)
         {
             string value = section.GetStringValue(keyName, string.Empty);
             if (string.IsNullOrWhiteSpace(value))

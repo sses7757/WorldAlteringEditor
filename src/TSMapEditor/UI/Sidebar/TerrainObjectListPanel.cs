@@ -211,7 +211,7 @@ namespace TSMapEditor.UI.Sidebar
             categories.ForEach(ObjectTreeView.AddCategory);
         }
 
-        private TreeViewCategory FindOrMakeCategory(string categoryName, List<TreeViewCategory> categoryList)
+        private static TreeViewCategory FindOrMakeCategory(string categoryName, List<TreeViewCategory> categoryList)
         {
             var category = categoryList.Find(c => c.Text == categoryName);
             if (category != null)

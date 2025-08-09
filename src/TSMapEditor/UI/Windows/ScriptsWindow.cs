@@ -34,7 +34,7 @@ namespace TSMapEditor.UI.Windows
         private readonly Map map = map;
         private readonly EditorState editorState = editorState ?? throw new ArgumentNullException(nameof(editorState));
         private readonly INotificationManager notificationManager = notificationManager ?? throw new ArgumentNullException(nameof(notificationManager));
-        private readonly SelectCellCursorAction selectCellCursorAction = new SelectCellCursorAction(cursorActionTarget);
+        private readonly SelectCellCursorAction selectCellCursorAction = new(cursorActionTarget);
 
         private EditorListBox lbScriptTypes;
         private EditorSuggestionTextBox tbFilter;
@@ -92,10 +92,7 @@ namespace TSMapEditor.UI.Windows
             ddScriptColor = FindChild<XNADropDown>(nameof(ddScriptColor));            
 
             ddScriptColor.AddItem("None");
-            Array.ForEach(Script.SupportedColors, supportedColor =>
-            {
-                ddScriptColor.AddItem(supportedColor.Name, supportedColor.Value);
-            });
+            Array.ForEach(Script.SupportedColors, supportedColor => ddScriptColor.AddItem(supportedColor.Name, supportedColor.Value));
 
             tbFilter.TextChanged += TbFilter_TextChanged;
 
@@ -245,7 +242,7 @@ namespace TSMapEditor.UI.Windows
             var clonedEntry = editedScript.Actions[lbActions.SelectedIndex].Clone();
 
             // Smart script action cloning
-            if (UserSettings.Instance.SmartScriptActionCloning || Keyboard.IsShiftHeldDown() || Keyboard.IsAltHeldDown())
+            if (UserSettings.SmartScriptActionCloning || Keyboard.IsShiftHeldDown() || Keyboard.IsAltHeldDown())
             {
                 var scriptActionType = map.EditorConfig.ScriptActions[clonedEntry.Action];
 

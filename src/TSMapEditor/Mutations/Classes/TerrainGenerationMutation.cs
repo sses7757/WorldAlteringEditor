@@ -342,7 +342,7 @@ namespace TSMapEditor.Mutations.Classes
         private readonly TerrainGeneratorConfiguration terrainGeneratorConfiguration = configuration;
 
         private readonly HashSet<Point2D> occupiedCells = [];
-        private Random random = new Random();
+        private Random random = new();
 
         private List<OriginalTerrainData> undoData;
         private List<TerrainObject> placedTerrainObjects;

@@ -82,26 +82,26 @@ namespace TSMapEditor.Models
             double cellB = globalBlue;
 
             // Apply Ground
-            cellAmbient *= (1.0 - globalGround);
+            cellAmbient *= 1.0 - globalGround;
 
             // Apply Level
             cellAmbient += globalLevel * Level;
 
             // Check all the light sources and how they affect this light
-            foreach (var source in LightSources)
+            foreach (var (Source, DistanceInLeptons) in LightSources)
             {
                 // Sources with intensity of 0.0 don't get any light applied
-                if (source.Source.ObjectType.LightIntensity == 0.0)
+                if (Source.ObjectType.LightIntensity == 0.0)
                     continue;
 
-                var buildingType = source.Source.ObjectType;
+                var buildingType = Source.ObjectType;
 
-                double distanceRatio = 1.0 - (source.DistanceInLeptons / source.Source.ObjectType.LightVisibility);
+                double distanceRatio = 1.0 - (DistanceInLeptons / Source.ObjectType.LightVisibility);
 
                 // Intensity modifies the cell ambient value.
                 // For example, if Ambient=0.5 and LightIntensity=1.0, in a cell that is fully
                 // lit by the light post, the overall ambient level becomes 0.5 + 1.0 = 1.5
-                cellAmbient += source.Source.ObjectType.LightIntensity * distanceRatio;
+                cellAmbient += Source.ObjectType.LightIntensity * distanceRatio;
 
                 double redStrength;
                 double greenStrength;
@@ -113,9 +113,9 @@ namespace TSMapEditor.Models
                     // (as long as LightIntensity != 0).
                     // Strength of tint depends on strength of global tint. For example, adding local red of 1.0
                     // to global red of 1.5 leads to a much smaller change than if the local red was added to global red of 0.5.
-                    redStrength = (buildingType.LightRedTint / redDivisor) * distanceRatio;
-                    greenStrength = (buildingType.LightGreenTint / greenDivisor) * distanceRatio;
-                    blueStrength = (buildingType.LightBlueTint / blueDivisor) * distanceRatio;
+                    redStrength = buildingType.LightRedTint / redDivisor * distanceRatio;
+                    greenStrength = buildingType.LightGreenTint / greenDivisor * distanceRatio;
+                    blueStrength = buildingType.LightBlueTint / blueDivisor * distanceRatio;
                 }
                 else
                 {
@@ -125,7 +125,7 @@ namespace TSMapEditor.Models
                     double highest = Math.Max(Math.Max(buildingType.LightRedTint, buildingType.LightGreenTint), buildingType.LightBlueTint);
                     double highestDivisor = Math.Max(Math.Max(redDivisor, greenDivisor), blueDivisor);
 
-                    redStrength = (highest / highestDivisor) * distanceRatio;
+                    redStrength = highest / highestDivisor * distanceRatio;
                     greenStrength = redStrength;
                     blueStrength = redStrength;
                 }
@@ -440,6 +440,6 @@ namespace TSMapEditor.Models
 
         public Point2D CoordsToPoint() => new(X, Y);
 
-        public Point2D GetTileCenter() => new(Constants.CellSizeX / 2, Constants.CellSizeY / 2);
+        public static Point2D GetTileCenter() => new(Constants.CellSizeX / 2, Constants.CellSizeY / 2);
     }
 }

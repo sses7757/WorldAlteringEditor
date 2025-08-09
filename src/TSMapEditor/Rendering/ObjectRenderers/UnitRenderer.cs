@@ -57,7 +57,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 // Why are we adding exactly this much?
                 // Because it happened to work - this is at least currently no smart mathematical formula.
                 int height = Constants.CellSizeY * 7;
-                return ((height / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace) + (4 * Constants.DepthRenderStep) + Constants.DepthEpsilon * ObjectDepthAdjustments.Vehicle;
+                return (height / (float)Map.HeightInPixelsWithCellHeight * Constants.DownwardsDepthRenderSpace) + (4 * Constants.DepthRenderStep) + Constants.DepthEpsilon * ObjectDepthAdjustments.Vehicle;
             }
 
             return Constants.DepthEpsilon * ObjectDepthAdjustments.Vehicle;

@@ -71,7 +71,7 @@ namespace TSMapEditor.UI
 
         public void ReadFromSettings()
         {
-            IniFile iniFile = UserSettings.Instance.UserSettingsIni;
+            IniFile iniFile = UserSettings.UserSettingsIni;
 
             foreach (var command in Commands)
             {
@@ -85,7 +85,7 @@ namespace TSMapEditor.UI
 
         public void WriteToSettings()
         {
-            IniFile iniFile = UserSettings.Instance.UserSettingsIni;
+            IniFile iniFile = UserSettings.UserSettingsIni;
 
             foreach (var command in Commands)
             {

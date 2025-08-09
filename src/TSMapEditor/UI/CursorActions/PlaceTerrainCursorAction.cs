@@ -220,7 +220,7 @@ namespace TSMapEditor.UI.CursorActions
             Mutation mutation = null;
 
             if (KeyboardCommands.Instance.FillTerrain.AreKeysOrModifiersDown(CursorActionTarget.WindowManager.Keyboard)
-                && (Tile.Width == 1 && Tile.Height == 1))
+                && Tile.Width == 1 && Tile.Height == 1)
             {
                 var targetCell = CursorActionTarget.Map.GetTile(adjustedCellCoords);
 

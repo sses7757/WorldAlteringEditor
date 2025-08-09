@@ -61,7 +61,7 @@
             // Facings start to the north instead of north-east, we need to offset the facing index accordingly
             // by one "full facing" (one-eight of 256). How many frames this means depends on how many facings the unit has.
 
-            facingIndex += (UnitType.ArtConfig.Facings / 8);
+            facingIndex += UnitType.ArtConfig.Facings / 8;
 
             // If the facing index turned out-of-bounds, spin it around
             if (facingIndex >= UnitType.ArtConfig.Facings)

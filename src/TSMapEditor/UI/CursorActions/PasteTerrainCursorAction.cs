@@ -48,7 +48,7 @@ namespace TSMapEditor.UI.CursorActions
         private bool wasDrawnAbove;
 
 
-        private Point2D[][] edges { get; set; } = [Array.Empty<Point2D>()];
+        private Point2D[][] edges { get; set; } = [[]];
 
         public override void OnKeyPressed(KeyPressEventArgs e, Point2D cellCoords)
         {
@@ -103,10 +103,7 @@ namespace TSMapEditor.UI.CursorActions
         {
             var foundationHashSet = new HashSet<Point2D>();
 
-            copiedMapData.CopiedMapEntries.ForEach(entry =>
-            {
-                foundationHashSet.Add(entry.Offset);
-            });
+            copiedMapData.CopiedMapEntries.ForEach(entry => foundationHashSet.Add(entry.Offset));
 
             edges = Helpers.CreateEdges(copiedMapData.Width + 2, copiedMapData.Height + 2, foundationHashSet.ToList());
         }

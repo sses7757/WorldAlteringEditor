@@ -15,7 +15,7 @@ namespace TSMapEditor.Misc
         private const string AutoSavesDirectory = "AutoSaves";
         private const string MapFileExtension = ".map";
 
-        public TimeSpan AutoSaveTime { get; set; } = TimeSpan.FromSeconds(UserSettings.Instance.AutoSaveInterval);
+        public TimeSpan AutoSaveTime { get; set; } = TimeSpan.FromSeconds(UserSettings.AutoSaveInterval);
 
         private void DoSave()
         {
@@ -30,7 +30,7 @@ namespace TSMapEditor.Misc
 
             if (AutoSaveTime.TotalMilliseconds <= 0)
             {
-                AutoSaveTime = TimeSpan.FromSeconds(UserSettings.Instance.AutoSaveInterval);
+                AutoSaveTime = TimeSpan.FromSeconds(UserSettings.AutoSaveInterval);
 
                 try
                 {

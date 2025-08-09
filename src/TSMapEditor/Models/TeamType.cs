@@ -93,13 +93,13 @@ namespace TSMapEditor.Models
             }
 
             stringBuilder.Append(Environment.NewLine + Environment.NewLine);
-            AppendFlag(stringBuilder, nameof(Max), Max);
+			AppendFlag(stringBuilder, nameof(Max), Max);
             EnabledTeamTypeFlags.ForEach(s => AppendFlag(stringBuilder, s, true));
 
             return stringBuilder.ToString();
         }
 
-        private void AppendFlag<T>(StringBuilder stringBuilder, string name, T flagValue, T defValue = default) where T : struct
+        private static void AppendFlag<T>(StringBuilder stringBuilder, string name, T flagValue, T defValue = default) where T : struct
         {
             if (!flagValue.Equals(defValue))
             {
@@ -151,10 +151,7 @@ namespace TSMapEditor.Models
             if (Tag != null)
                 iniSection.SetStringValue("Tag", Tag.ID);
 
-            teamTypeFlags.ForEach(flag =>
-            {
-                iniSection.SetBooleanValue(flag.Name, IsFlagEnabled(flag.Name), BooleanStringStyle.YESNO_LOWERCASE);
-            });            
+            teamTypeFlags.ForEach(flag => iniSection.SetBooleanValue(flag.Name, IsFlagEnabled(flag.Name), BooleanStringStyle.YESNO_LOWERCASE));            
         }
 
         public void WriteEditorProperties(IniFile iniFile)

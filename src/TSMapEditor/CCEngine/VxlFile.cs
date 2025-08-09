@@ -117,7 +117,7 @@ namespace TSMapEditor.CCEngine
 
             public List<Voxel> Voxels = [];
 
-            public int SpanLength => (EndIndex - StartIndex) + 1;
+            public int SpanLength => EndIndex - StartIndex + 1;
             public void Read(VirtualFile file)
             {
                 if (StartIndex == -1 || EndIndex == -1)

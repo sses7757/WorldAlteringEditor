@@ -52,7 +52,7 @@ namespace TSMapEditor.Models
         }
 
 
-        private TubeDirection GetOpposingDirection(TubeDirection direction)
+        private static TubeDirection GetOpposingDirection(TubeDirection direction)
         {
             return direction switch
             {
@@ -85,7 +85,7 @@ namespace TSMapEditor.Models
                 reversedTube.Directions.Add(GetOpposingDirection(Directions[i]));
             }
 
-            if (reversedTube.Directions[reversedTube.Directions.Count - 1] != TubeDirection.None)
+            if (reversedTube.Directions[^1] != TubeDirection.None)
                 reversedTube.Directions.Add(TubeDirection.None); // Tube direction list must end in -1 aka no direction
 
             reversedTube.UnitInitialFacing = reversedTube.Directions[0];

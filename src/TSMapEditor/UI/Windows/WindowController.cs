@@ -278,7 +278,7 @@ namespace TSMapEditor.UI.Windows
             }
         }
 
-        private void RemoveFocusSwitchHandlerFromChildrenRecursive(EditorWindow window, XNAControl control)
+        private static void RemoveFocusSwitchHandlerFromChildrenRecursive(EditorWindow window, XNAControl control)
         {
             var eventHandler = window.FocusSwitchEventHandler;
 
@@ -286,7 +286,7 @@ namespace TSMapEditor.UI.Windows
             {
                 child.MouseLeftDown -= eventHandler;
                 child.LeftClick -= eventHandler;
-                RemoveFocusSwitchHandlerFromChildrenRecursive(window, child);
+				RemoveFocusSwitchHandlerFromChildrenRecursive(window, child);
             }
 
             window.FocusSwitchEventHandler = null;
@@ -312,13 +312,13 @@ namespace TSMapEditor.UI.Windows
 
         private void TriggersWindow_TeamTypeOpened(object sender, TeamTypeEventArgs e) => AITriggersWindow_TeamTypeOpened(sender, e);
 
-        private void ClearFocusSwitchHandlerFromChildrenRecursive(EditorWindow window, XNAControl control)
+        private static void ClearFocusSwitchHandlerFromChildrenRecursive(EditorWindow window, XNAControl control)
         {
             foreach (var child in control.Children)
             {
                 child.MouseLeftDown -= window.FocusSwitchEventHandler;
                 child.LeftClick -= window.FocusSwitchEventHandler;
-                ClearFocusSwitchHandlerFromChildrenRecursive(window, child);
+				ClearFocusSwitchHandlerFromChildrenRecursive(window, child);
             }
 
             window.FocusSwitchEventHandler = null;
@@ -349,7 +349,7 @@ namespace TSMapEditor.UI.Windows
                 window.UpdateOrder = ChildWindowOrderValue;
                 window.LeftClick -= Window_HandleFocusSwitch;
                 window.InteractedWith -= Window_HandleFocusSwitch;
-                RemoveFocusSwitchHandlerFromChildrenRecursive(window, window);
+				RemoveFocusSwitchHandlerFromChildrenRecursive(window, window);
                 window.Kill();
             }
         }
@@ -372,7 +372,7 @@ namespace TSMapEditor.UI.Windows
                 window.InteractedWith -= Window_HandleFocusSwitch;
                 windowParentControl.RemoveChild(window);
 
-                ClearFocusSwitchHandlerFromChildrenRecursive(window, window);
+				ClearFocusSwitchHandlerFromChildrenRecursive(window, window);
 
                 window.Kill();
             }

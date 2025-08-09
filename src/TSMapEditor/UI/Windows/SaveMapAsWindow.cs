@@ -79,7 +79,7 @@ namespace TSMapEditor.UI.Windows
         public void Open()
         {
             Show();
-            lbFileList.DirectoryPath = UserSettings.Instance.GameDirectory;
+            lbFileList.DirectoryPath = UserSettings.GameDirectory;
             tbFileName.Text = string.Empty;
         }
 
@@ -102,11 +102,11 @@ namespace TSMapEditor.UI.Windows
             map.LoadedINI.FileName = path;
             map.Save();
 
-            if (UserSettings.Instance.LastScenarioPath != path)
+            if (UserSettings.LastScenarioPath != path)
             {
-                UserSettings.Instance.LastScenarioPath.UserDefinedValue = path;
-                UserSettings.Instance.RecentFiles.PutEntry(path);
-                _ = UserSettings.Instance.SaveSettingsAsync();
+                UserSettings.LastScenarioPath.UserDefinedValue = path;
+                UserSettings.RecentFiles.PutEntry(path);
+                _ = UserSettings.SaveSettingsAsync();
             }
 
             Hide();

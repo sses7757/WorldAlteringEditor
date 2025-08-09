@@ -23,7 +23,7 @@ namespace TSMapEditor.UI.CursorActions
         }
 
         private Smudge cachedSmudge;
-        private readonly Smudge previewSmudge = new Smudge();
+        private readonly Smudge previewSmudge = new();
 
         public override void PreMapDraw(Point2D cellCoords)
         {

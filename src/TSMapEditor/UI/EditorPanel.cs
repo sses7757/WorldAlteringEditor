@@ -47,7 +47,7 @@ namespace TSMapEditor.UI
             }
         }
 
-        private T FindStartingFromIndex<T>(List<T> list, int startIndex, Func<T, bool> predicate)
+        private static T FindStartingFromIndex<T>(List<T> list, int startIndex, Func<T, bool> predicate)
         {
             for (int i = startIndex; i < list.Count; i++)
             {

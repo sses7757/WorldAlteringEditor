@@ -109,28 +109,28 @@ namespace TSMapEditor.Rendering
 
         private void ConstrainCamera()
         {
-            int minX = (int)((windowManager.RenderResolutionX / -2) / ZoomLevel);
+            int minX = (int)(windowManager.RenderResolutionX / -2 / ZoomLevel);
             if (_topLeftPoint.X < minX)
                 _topLeftPoint = new Point2D(minX, _topLeftPoint.Y);
 
             if (_floatTopLeftPoint.X < minX)
                 _floatTopLeftPoint = new Vector2(minX, _floatTopLeftPoint.Y);
 
-            int minY = (int)((windowManager.RenderResolutionY / -2) / ZoomLevel);
+            int minY = (int)(windowManager.RenderResolutionY / -2 / ZoomLevel);
             if (_topLeftPoint.Y < minY)
                 _topLeftPoint = new Point2D(_topLeftPoint.X, minY);
 
             if (_floatTopLeftPoint.Y < minY)
                 _floatTopLeftPoint = new Vector2(_floatTopLeftPoint.X, minY);
 
-            int maxX = map.Size.X * Constants.CellSizeX - (int)((windowManager.RenderResolutionX / 2) / ZoomLevel);
+            int maxX = map.Size.X * Constants.CellSizeX - (int)(windowManager.RenderResolutionX / 2 / ZoomLevel);
             if (_topLeftPoint.X > maxX)
                 _topLeftPoint = new Point2D(maxX, _topLeftPoint.Y);
 
             if (_floatTopLeftPoint.X > maxX)
                 _floatTopLeftPoint = new Vector2(maxX, _floatTopLeftPoint.Y);
 
-            int maxY = map.Size.Y * Constants.CellSizeY - (int)((windowManager.RenderResolutionY / 2) / ZoomLevel);
+            int maxY = map.Size.Y * Constants.CellSizeY - (int)(windowManager.RenderResolutionY / 2 / ZoomLevel);
             if (_topLeftPoint.Y > maxY)
                 _topLeftPoint = new Point2D(_topLeftPoint.X, maxY);
 

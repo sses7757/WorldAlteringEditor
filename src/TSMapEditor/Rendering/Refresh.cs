@@ -149,9 +149,8 @@ namespace TSMapEditor.Rendering
         private bool AddTileToRedraw(MapTile mapTile)
         {
             int hash = GetMapTileHash(mapTile);
-            if (!tilesToRedraw.ContainsKey(hash))
+            if (tilesToRedraw.TryAdd(hash, mapTile))
             {
-                tilesToRedraw.Add(hash, mapTile);
                 processedTiles.Add(hash);
                 return true;
             }
@@ -159,12 +158,12 @@ namespace TSMapEditor.Rendering
             return false;
         }
 
-        private int GetMapTileHash(MapTile mapTile)
+        private static int GetMapTileHash(MapTile mapTile)
         {
             return mapTile.Y * 1000 + mapTile.X;
         }
 
-        private int GetGameObjectHash(GameObject gameObject)
+        private static int GetGameObjectHash(GameObject gameObject)
         {
             if (gameObject.WhatAmI() == RTTIType.Infantry)
             {

@@ -32,7 +32,7 @@ namespace TSMapEditor.UI.Sidebar
 
         private RenderTarget2D renderTarget;
 
-        private (Texture2D regular, Texture2D remap) GetTexturesForSHP(UnitType unitType, ShapeImage[] textures)
+        private static (Texture2D regular, Texture2D remap) GetTexturesForSHP(UnitType unitType, ShapeImage[] textures)
         {
             Texture2D texture = null;
             Texture2D remapTexture = null;

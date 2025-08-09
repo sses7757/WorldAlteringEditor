@@ -11,7 +11,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
     {
         protected override Color ReplacementColor => Color.Yellow;
 
-        private readonly AnimRenderer buildingAnimRenderer = new AnimRenderer(renderDependencies);
+        private readonly AnimRenderer buildingAnimRenderer = new(renderDependencies);
 
         public Point2D GetBuildingCenterPoint(Structure structure)
         {
@@ -40,9 +40,9 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 heightOffset = cell.Level * Constants.CellHeight;
 
             // Cell lighting ranges from 0.0 to 2.0, XNA colors from 0.0 to 1.0. Thus division by 2
-            foundationLineColor = new Color((foundationLineColor.R / 255.0f) * (float)cell.CellLighting.R / 2.0f,
-                (foundationLineColor.G / 255.0f) * (float)cell.CellLighting.G / 2.0f,
-                (foundationLineColor.B / 255.0f) * (float)cell.CellLighting.B / 2.0f,
+            foundationLineColor = new Color(foundationLineColor.R / 255.0f * (float)cell.CellLighting.R / 2.0f,
+                foundationLineColor.G / 255.0f * (float)cell.CellLighting.G / 2.0f,
+                foundationLineColor.B / 255.0f * (float)cell.CellLighting.B / 2.0f,
                 0.5f);
 
             foreach (var edge in gameObject.ObjectType.ArtConfig.Foundation.Edges)
@@ -67,7 +67,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
 
             var cell = Map.GetTile(gameObject.Position);
             float depthFromCellHeight = cell != null ? cell.Level * Constants.DepthRenderStep : 0f;
-            float result = ((lowerPoint / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace)
+            float result = (lowerPoint / (float)Map.HeightInPixelsWithCellHeight * Constants.DownwardsDepthRenderSpace)
                 + depthFromCellHeight + Constants.DepthEpsilon * ObjectDepthAdjustments.BuildingFoundationLines;
             return result;
         }
@@ -119,7 +119,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 height = southernmostCell.Level;
             }
 
-            return ((CellMath.CellTopLeftPointFromCellCoords(southernmostCell.CoordsToPoint(), Map).Y + Constants.CellSizeY) / (float)Map.HeightInPixelsWithCellHeight) * Constants.DownwardsDepthRenderSpace +
+            return (CellMath.CellTopLeftPointFromCellCoords(southernmostCell.CoordsToPoint(), Map).Y + Constants.CellSizeY) / (float)Map.HeightInPixelsWithCellHeight * Constants.DownwardsDepthRenderSpace +
                 (height * Constants.DepthRenderStep);
         }
 
@@ -140,7 +140,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
             if (RenderDependencies.EditorState.RenderInvisibleInGameObjects)
                 DrawFoundationLines(gameObject);
 
-            bool affectedByLighting = RenderDependencies.EditorState.IsLighting && (drawParams.ShapeImage != null && drawParams.ShapeImage.SubjectToLighting);
+            bool affectedByLighting = RenderDependencies.EditorState.IsLighting && drawParams.ShapeImage != null && drawParams.ShapeImage.SubjectToLighting;
 
             // Bib is on the ground, gets grawn first
             var bibGraphics = RenderDependencies.TheaterGraphics.BuildingBibTextures[gameObject.ObjectType.Index];

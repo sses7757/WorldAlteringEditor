@@ -19,7 +19,7 @@ namespace TSMapEditor.UI
                 throw new InvalidOperationException("Only one instance of Parser can exist at a time.");
 
             globalConstants = [];
-            RefreshResolutionConstants(windowManager);
+			RefreshResolutionConstants(windowManager);
             globalConstants.Add("EMPTY_SPACE_TOP", Constants.UIEmptyTopSpace);
             globalConstants.Add("EMPTY_SPACE_BOTTOM", Constants.UIEmptyBottomSpace);
             globalConstants.Add("EMPTY_SPACE_SIDES", Constants.UIEmptySideSpace);
@@ -33,7 +33,7 @@ namespace TSMapEditor.UI
             _instance = this;
         }
 
-        public void RefreshResolutionConstants(WindowManager windowManager)
+        public static void RefreshResolutionConstants(WindowManager windowManager)
         {
             globalConstants["RESOLUTION_WIDTH"] = windowManager.RenderResolutionX;
             globalConstants["RESOLUTION_HEIGHT"] = windowManager.RenderResolutionY;
@@ -59,7 +59,7 @@ namespace TSMapEditor.UI
             return control;
         }
 
-        private XNAControl Find(IEnumerable<XNAControl> list, string controlName)
+        private static XNAControl Find(IEnumerable<XNAControl> list, string controlName)
         {
             foreach (XNAControl child in list)
             {
@@ -74,7 +74,7 @@ namespace TSMapEditor.UI
             return null;
         }
 
-        private int GetConstant(string constantName)
+        private static int GetConstant(string constantName)
         {
             return globalConstants[constantName];
         }

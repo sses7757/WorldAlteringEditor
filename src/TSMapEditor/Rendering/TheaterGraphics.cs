@@ -46,6 +46,8 @@ namespace TSMapEditor.Rendering
 
             foreach (var frame in RemapFrames.Values)
                 frame?.Dispose();
+            
+            GC.SuppressFinalize(this);
         }
 
         public PositionedTexture GetFrame(byte facing, RampType ramp, bool affectedByLighting)
@@ -165,18 +167,20 @@ namespace TSMapEditor.Rendering
 
         public void Dispose()
         {
-            Array.ForEach(Frames, frame =>
+            foreach (var frame in Frames)
             {
                 frame?.Dispose();
-            });
+            }
 
             if (RemapFrames != null)
             {
-                Array.ForEach(RemapFrames, frame =>
-                {
-                    frame?.Dispose();
-                });
-            }
+				foreach (var frame in RemapFrames)
+				{
+					frame?.Dispose();
+				}
+			}
+
+            GC.SuppressFinalize(this);
         }
 
         private XNAPalette Palette { get; }
@@ -440,7 +444,7 @@ namespace TSMapEditor.Rendering
                 alphaPaletteColors[i] = new RGBColor((byte)i, (byte)i, (byte)i);
             alphaPalette = new XNAPalette("AlphaPalette", alphaPaletteColors, graphicsDevice, false);
 
-            if (UserSettings.Instance.MultithreadedTextureLoading)
+            if (UserSettings.MultithreadedTextureLoading)
             {
                 var task1 = Task.Factory.StartNew(() => ReadTileTextures());
                 var task2 = Task.Factory.StartNew(() => ReadTerrainObjectTextures(rules.TerrainTypes));
@@ -511,7 +515,7 @@ namespace TSMapEditor.Rendering
 
                         if (v > 0)
                         {
-                            baseName += ((char)('a' + (v - 1)));
+                            baseName += (char)('a' + (v - 1));
                         }
 
                         string fileName = baseName + Theater.FileExtension;
@@ -530,7 +534,7 @@ namespace TSMapEditor.Rendering
                         {
                             if (v == 0)
                             {
-                                tileGraphics.Add(new TileImage(0, 0, tsId, i, currentTileIndex, Array.Empty<MGTMPImage>()));
+                                tileGraphics.Add(new TileImage(0, 0, tsId, i, currentTileIndex, []));
                                 break;
                             }
                             else
@@ -600,7 +604,7 @@ namespace TSMapEditor.Rendering
             {
                 var terrainType = terrainTypes[i];
 
-                string shpFileName = terrainType.ArtConfig.Image != null ? terrainType.ArtConfig.Image : terrainType.ININame;
+                string shpFileName = terrainType.ArtConfig.Image ?? terrainType.ININame;
                 string pngFileName = shpFileName + PNG_FILE_EXTENSION;
 
                 if (terrainType.ArtConfig.Theater)
@@ -669,7 +673,7 @@ namespace TSMapEditor.Rendering
                     shpFileName += SHP_FILE_EXTENSION;
 
                 // The game has hardcoded NewTheater=yes behaviour for buildings that start with a specific prefix
-                bool hardcodedNewTheater = Array.Exists(NewTheaterHardcodedPrefixes, prefix => buildingType.ININame.ToUpperInvariant().StartsWith(prefix));
+                bool hardcodedNewTheater = Array.Exists(NewTheaterHardcodedPrefixes, prefix => buildingType.ININame.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
 
                 string loadedShpName = "";
 
@@ -768,8 +772,7 @@ namespace TSMapEditor.Rendering
         {
             Logger.Log("Loading alpha image textures.");
 
-            List<GameObjectType> gameObjectTypes = new(rules.BuildingTypes);
-            gameObjectTypes.AddRange(rules.TerrainTypes);
+            List<GameObjectType> gameObjectTypes = [.. rules.BuildingTypes, .. rules.TerrainTypes];
 
             for (int i = 0; i < gameObjectTypes.Count; i++)
             {
@@ -1316,35 +1319,34 @@ namespace TSMapEditor.Rendering
                 }
                 else
                 {
-                    // Load graphics as SHP
+					byte[] shpData;
 
-                    string loadedShpName = "";
+					// Load graphics as SHP
 
-                    byte[] shpData;
+					string loadedShpName;
+					if (overlayType.ArtConfig.NewTheater)
+					{
+						string shpFileName = imageName + SHP_FILE_EXTENSION;
+						string newTheaterImageName = shpFileName[..1] + Theater.NewTheaterBuildingLetter + shpFileName[2..];
 
-                    if (overlayType.ArtConfig.NewTheater)
-                    {
-                        string shpFileName = imageName + SHP_FILE_EXTENSION;
-                        string newTheaterImageName = shpFileName[..1] + Theater.NewTheaterBuildingLetter + shpFileName[2..];
-                        
-                        shpData = fileManager.LoadFile(newTheaterImageName);
-                        loadedShpName = newTheaterImageName;
+						shpData = fileManager.LoadFile(newTheaterImageName);
+						loadedShpName = newTheaterImageName;
 
-                        if (shpData == null)
-                        {
-                            newTheaterImageName = shpFileName[..1] + Constants.NewTheaterGenericLetter + shpFileName[2..];
-                            shpData = fileManager.LoadFile(newTheaterImageName);
-                            loadedShpName = newTheaterImageName;
-                        }
-                    }
-                    else
-                    {
-                        string fileExtension = overlayType.ArtConfig.Theater ? Theater.FileExtension : SHP_FILE_EXTENSION;
-                        shpData = fileManager.LoadFile(imageName + fileExtension);
-                        loadedShpName = imageName + fileExtension;
-                    }
+						if (shpData == null)
+						{
+							newTheaterImageName = shpFileName[..1] + Constants.NewTheaterGenericLetter + shpFileName[2..];
+							shpData = fileManager.LoadFile(newTheaterImageName);
+							loadedShpName = newTheaterImageName;
+						}
+					}
+					else
+					{
+						string fileExtension = overlayType.ArtConfig.Theater ? Theater.FileExtension : SHP_FILE_EXTENSION;
+						shpData = fileManager.LoadFile(imageName + fileExtension);
+						loadedShpName = imageName + fileExtension;
+					}
 
-                    if (shpData == null)
+					if (shpData == null)
                         continue;
 
                     var shpFile = new ShpFile(loadedShpName);
@@ -1482,9 +1484,9 @@ namespace TSMapEditor.Rendering
             palettes.Clear();
         }
 
-        private void DisposeObjectImagesFromArray(IDisposable[] objImageArray)
+        private static void DisposeObjectImagesFromArray(IDisposable[] objImageArray)
         {
-            Array.ForEach(objImageArray, objectImage => { objectImage?.Dispose(); });
+            Array.ForEach(objImageArray, objectImage => objectImage?.Dispose());
             Array.Clear(objImageArray);
         }
 
@@ -1532,9 +1534,9 @@ namespace TSMapEditor.Rendering
             for (int i = 0; i < colorData.Length; i++)
             {
                 var color = colorData[i];
-                color.R = (byte)((color.R * color.A) / byte.MaxValue);
-                color.G = (byte)((color.G * color.A) / byte.MaxValue);
-                color.B = (byte)((color.B * color.A) / byte.MaxValue);
+                color.R = (byte)(color.R * color.A / byte.MaxValue);
+                color.G = (byte)(color.G * color.A / byte.MaxValue);
+                color.B = (byte)(color.B * color.A / byte.MaxValue);
                 colorData[i] = color;
             }
 

@@ -157,7 +157,7 @@ namespace TSMapEditor.UI.Sidebar
 
             var categories = new List<TreeViewCategory>
             {
-                new TreeViewCategory()
+                new()
                 {
                     Text = "Erase Smudges",
                     Tag = new object()
@@ -223,7 +223,7 @@ namespace TSMapEditor.UI.Sidebar
             renderTarget.Dispose();
         }
 
-        private TreeViewCategory FindOrMakeCategory(string categoryName, List<TreeViewCategory> categoryList)
+        private static TreeViewCategory FindOrMakeCategory(string categoryName, List<TreeViewCategory> categoryList)
         {
             var category = categoryList.Find(c => c.Text == categoryName);
             if (category != null)

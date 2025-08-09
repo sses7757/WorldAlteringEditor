@@ -22,7 +22,7 @@ namespace TSMapEditor.UI.CursorActions
         private HashSet<Point2D> cellsToCopy { get; set; } = [];
         private List<Point2D> cellsToCopyList { get; set; } = [];
 
-        private Point2D[][] edges { get; set; } = [Array.Empty<Point2D>()];
+        private Point2D[][] edges { get; set; } = [[]];
 
         private bool modified;
         private Point2D startPoint;
@@ -96,7 +96,7 @@ namespace TSMapEditor.UI.CursorActions
 
             startPoint = new Point2D(startX, startY);
             var foundationList = cellsToCopyList.Select(cc => new Point2D(cc.X - startX, cc.Y - startY)).ToList();
-            edges = Helpers.CreateEdges((endX - startX) + 2, (endY - startY) + 2, foundationList);
+            edges = Helpers.CreateEdges(endX - startX + 2, endY - startY + 2, foundationList);
 
             modified = false;
         }

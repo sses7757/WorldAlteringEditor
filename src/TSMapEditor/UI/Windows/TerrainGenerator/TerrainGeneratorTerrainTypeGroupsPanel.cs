@@ -44,7 +44,7 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 tbTerrainTypes.Name = nameof(tbTerrainTypes) + i;
                 tbTerrainTypes.X = lblTerrainTypes.X;
                 tbTerrainTypes.Y = lblTerrainTypes.Bottom + Constants.UIVerticalSpacing;
-                tbTerrainTypes.Width = (Width - 252) - tbTerrainTypes.X - Constants.UIEmptySideSpace;
+                tbTerrainTypes.Width = Width - 252 - tbTerrainTypes.X - Constants.UIEmptySideSpace;
                 AddChild(tbTerrainTypes);
                 terrainTypeTextBoxes[i] = tbTerrainTypes;
 

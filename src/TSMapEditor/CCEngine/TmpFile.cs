@@ -117,7 +117,7 @@ namespace TSMapEditor.CCEngine
             stream.ReadExactly(buffer, 0, 4);
             // The image flags of WW tiles contain
             // trash / uninitialized memory which we have to clear
-            ImageFlags = (TmpImageFlags)(BitConverter.ToUInt32(buffer, 0));
+            ImageFlags = (TmpImageFlags)BitConverter.ToUInt32(buffer, 0);
             stream.ReadExactly(buffer, 0, 3);
             Height = buffer[0];
             TerrainType = buffer[1];
@@ -192,9 +192,9 @@ namespace TSMapEditor.CCEngine
         public RGBColor RadarRightColor { get; set; }
 
         public byte[] ColorData = new byte[Constants.TileColorBufferSize];
-        public byte[] ZData = Array.Empty<byte>();
-        public byte[] ExtraGraphicsColorData = Array.Empty<byte>();
-        public byte[] ExtraGraphicsZData = Array.Empty<byte>();
+        public byte[] ZData = [];
+        public byte[] ExtraGraphicsColorData = [];
+        public byte[] ExtraGraphicsZData = [];
     }
 
     [Flags]

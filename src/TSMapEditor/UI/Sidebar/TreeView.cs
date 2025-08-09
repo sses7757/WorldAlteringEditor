@@ -200,7 +200,7 @@ namespace TSMapEditor.UI.Sidebar
                 {
                     var currentNode = category.Nodes[i];
 
-                    if (currentNode.Text.ToUpperInvariant().Contains(text.ToUpperInvariant()))
+                    if (currentNode.Text.Contains(text, StringComparison.OrdinalIgnoreCase))
                     {
                         if (findNext && currentNode == SelectedNode)
                         {
@@ -357,25 +357,24 @@ namespace TSMapEditor.UI.Sidebar
             if (node == null)
                 return;
 
-            var treeViewCategory = node as TreeViewCategory;
-            if (treeViewCategory != null)
-            {
-                if (treeViewCategory.Nodes.Count == 0)
-                {
-                    SelectedNode = node;
-                }
-                else
-                {
-                    treeViewCategory.IsOpened = !treeViewCategory.IsOpened;
-                    RefreshScrollbar();
-                }
-            }
-            else
-            {
-                SelectedNode = node;
-            }
+			if (node is TreeViewCategory treeViewCategory)
+			{
+				if (treeViewCategory.Nodes.Count == 0)
+				{
+					SelectedNode = node;
+				}
+				else
+				{
+					treeViewCategory.IsOpened = !treeViewCategory.IsOpened;
+					RefreshScrollbar();
+				}
+			}
+			else
+			{
+				SelectedNode = node;
+			}
 
-            base.OnMouseLeftDown(inputEventArgs);
+			base.OnMouseLeftDown(inputEventArgs);
         }
 
         private TreeViewNode GetItemOnCursor(Point mouseLocation)
@@ -442,8 +441,8 @@ namespace TSMapEditor.UI.Sidebar
                             UISettings.ActiveSettings.FocusColor);
                     }
 
-                    string text = null;
-                    if (category.Nodes.Count > 0)
+					string text;
+					if (category.Nodes.Count > 0)
                         text = category.IsOpened ? "- " + category.Text : "+ " + category.Text;
                     else
                         text = category.Text;

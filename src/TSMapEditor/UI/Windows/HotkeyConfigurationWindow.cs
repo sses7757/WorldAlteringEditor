@@ -102,7 +102,7 @@ namespace TSMapEditor.UI.Windows
         private void Save()
         {
             KeyboardCommands.Instance.WriteToSettings();
-            var _ = UserSettings.Instance.SaveSettingsAsync();
+            var _ = UserSettings.SaveSettingsAsync();
             Hide();
         }
 

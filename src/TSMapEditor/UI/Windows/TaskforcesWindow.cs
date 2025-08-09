@@ -605,7 +605,7 @@ namespace TSMapEditor.UI.Windows
             lblCost.Text = cost.ToString(CultureInfo.InvariantCulture) + "$";
         }
 
-        private string GetUnitEntryText(TaskForceTechnoEntry taskForceTechno)
+        private static string GetUnitEntryText(TaskForceTechnoEntry taskForceTechno)
         {
             return $"{taskForceTechno.Count} {taskForceTechno.TechnoType.ININame} ({taskForceTechno.TechnoType.GetEditorDisplayName()})";
         }

@@ -124,7 +124,7 @@ namespace TSMapEditor.UI
 
             editorSidebar = new EditorSidebar(WindowManager, editorState, map, theaterGraphics, mapUI, overlayPlacementAction)
             {
-                Width = UserSettings.Instance.SidebarWidth.GetValue(),
+                Width = UserSettings.SidebarWidth.GetValue(),
                 Y = Constants.UITopBarMenuHeight
             };
             editorSidebar.Height = WindowManager.RenderResolutionY - editorSidebar.Y;
@@ -229,7 +229,7 @@ namespace TSMapEditor.UI
             var screen = System.Windows.Forms.Screen.FromHandle(Game.Window.Handle);
             int width = screen.Bounds.Width - 300;
             int height = screen.Bounds.Height - 200;
-            bool borderless = UserSettings.Instance.FullscreenWindowed;
+            bool borderless = UserSettings.FullscreenWindowed;
             if (borderless)
             {
                 width = screen.Bounds.Width;
@@ -277,8 +277,8 @@ namespace TSMapEditor.UI
             if (Game.Window.ClientBounds.Width == 0 || Game.Window.ClientBounds.Height == 0)
                 return;
 
-            int newRenderWidth = (int)(Game.Window.ClientBounds.Width / UserSettings.Instance.RenderScale);
-            int newRenderHeight = (int)(Game.Window.ClientBounds.Height / UserSettings.Instance.RenderScale);
+            int newRenderWidth = (int)(Game.Window.ClientBounds.Width / UserSettings.RenderScale);
+            int newRenderHeight = (int)(Game.Window.ClientBounds.Height / UserSettings.RenderScale);
 
             if (newRenderWidth != WindowManager.RenderResolutionX || newRenderHeight != WindowManager.RenderResolutionY)
             {
@@ -287,7 +287,7 @@ namespace TSMapEditor.UI
                 Width = WindowManager.RenderResolutionX;
                 Height = WindowManager.RenderResolutionY;
 
-                Parser.Instance.RefreshResolutionConstants(WindowManager);
+				Parser.RefreshResolutionConstants(WindowManager);
                 SetNotificationManagerSizeAndPosition();
             }
         }
@@ -301,13 +301,13 @@ namespace TSMapEditor.UI
 
         private void InitTheme()
         {
-            bool boldFont = UserSettings.Instance.UseBoldFont;
+            bool boldFont = UserSettings.UseBoldFont;
             if (boldFont)
             {
                 Renderer.GetFontList()[0] = Renderer.GetFontList()[1];
             }
 
-            UISettings.ActiveSettings = EditorThemes.Themes[UserSettings.Instance.Theme];
+            UISettings.ActiveSettings = EditorThemes.Themes[UserSettings.Theme];
 
             Width = WindowManager.RenderResolutionX;
             Height = WindowManager.RenderResolutionY;
@@ -449,7 +449,7 @@ namespace TSMapEditor.UI
 
             bool createNew = loadMapFilePath == null;
 
-            string error = MapSetup.InitializeMap(UserSettings.Instance.GameDirectory, createNew,
+            string error = MapSetup.InitializeMap(UserSettings.GameDirectory, createNew,
                 loadMapFilePath,
                 createNew ? newMapInfo : null,
                 WindowManager);
@@ -467,15 +467,15 @@ namespace TSMapEditor.UI
 
             if (!createNew)
             {
-                UserSettings.Instance.LastScenarioPath.UserDefinedValue = loadMapFilePath;
-                UserSettings.Instance.RecentFiles.PutEntry(loadMapFilePath);
-                _ = UserSettings.Instance.SaveSettingsAsync();
+                UserSettings.LastScenarioPath.UserDefinedValue = loadMapFilePath;
+                UserSettings.RecentFiles.PutEntry(loadMapFilePath);
+                _ = UserSettings.SaveSettingsAsync();
             }
 
             ClearResources();
             WindowManager.RemoveControl(this);
 
-            MapSetup.LoadTheaterGraphics(WindowManager, UserSettings.Instance.GameDirectory);
+            MapSetup.LoadTheaterGraphics(WindowManager, UserSettings.GameDirectory);
         }
 
         private void ClearResources()
@@ -545,14 +545,13 @@ namespace TSMapEditor.UI
                 return;
             }
 
-            var overlayPlacementAction = editorState.CursorAction as OverlayPlacementAction;
-            if (overlayPlacementAction == null || overlayPlacementAction.OverlayType == null)
-            {
-                ShowTileSelector();
-                return;
-            }
+			if (editorState.CursorAction is not OverlayPlacementAction overlayPlacementAction || overlayPlacementAction.OverlayType == null)
+			{
+				ShowTileSelector();
+				return;
+			}
 
-            ShowOverlayFrameSelector();
+			ShowOverlayFrameSelector();
         }
 
         private void ShowTileSelector()
@@ -615,13 +614,13 @@ namespace TSMapEditor.UI
                 {
                     // Key matches, check modifiers
 
-                    if (((keyboardCommand.Key.Modifiers & KeyboardModifiers.Alt) == KeyboardModifiers.Alt) != Keyboard.IsAltHeldDown())
+                    if ((keyboardCommand.Key.Modifiers & KeyboardModifiers.Alt) == KeyboardModifiers.Alt != Keyboard.IsAltHeldDown())
                         continue;
 
-                    if (((keyboardCommand.Key.Modifiers & KeyboardModifiers.Ctrl) == KeyboardModifiers.Ctrl) != Keyboard.IsCtrlHeldDown())
+                    if ((keyboardCommand.Key.Modifiers & KeyboardModifiers.Ctrl) == KeyboardModifiers.Ctrl != Keyboard.IsCtrlHeldDown())
                         continue;
 
-                    if (((keyboardCommand.Key.Modifiers & KeyboardModifiers.Shift)) == KeyboardModifiers.Shift != Keyboard.IsShiftHeldDown())
+                    if ((keyboardCommand.Key.Modifiers & KeyboardModifiers.Shift) == KeyboardModifiers.Shift != Keyboard.IsShiftHeldDown())
                         continue;
 
                     // All keys match, perform the command!
@@ -652,7 +651,7 @@ namespace TSMapEditor.UI
                         if (((keyboardCommand.Key.Modifiers & KeyboardModifiers.Ctrl) == KeyboardModifiers.Ctrl) && !Keyboard.IsCtrlHeldDown())
                             continue;
 
-                        if (((keyboardCommand.Key.Modifiers & KeyboardModifiers.Shift)) == KeyboardModifiers.Shift && !Keyboard.IsShiftHeldDown())
+                        if ((keyboardCommand.Key.Modifiers & KeyboardModifiers.Shift) == KeyboardModifiers.Shift && !Keyboard.IsShiftHeldDown())
                             continue;
 
                         // All keys match, perform the command!

@@ -127,9 +127,9 @@ namespace TSMapEditor.Models
                 ConnectionMask = 0b11111111,
                 CoordinateOffset = Point2D.Zero,
                 Side = startingSide,
-                RequiredTiles = Array.Empty<int>(),
-                ForbiddenTiles = Array.Empty<int>()
-            };
+                RequiredTiles = [],
+                ForbiddenTiles = []
+			};
 
             var startNode = new CliffAStarNode()
             {
@@ -273,7 +273,7 @@ namespace TSMapEditor.Models
                 if (requiredTilesList.Count > 0)
                 {
                     requiredTiles = [.. requiredTilesList];
-                    forbiddenTiles = Array.Empty<int>();
+                    forbiddenTiles = [];
                 }
                 else
                 {
@@ -281,7 +281,7 @@ namespace TSMapEditor.Models
                         iniSection.GetListValue($"ConnectionPoint{i}.ForbiddenTiles", ',', int.Parse);
 
                     forbiddenTiles = [.. forbiddenTilesList];
-                    requiredTiles = Array.Empty<int>();
+                    requiredTiles = [];
                 }
 
                 ConnectionPoints[i] = new CliffConnectionPoint
@@ -348,13 +348,13 @@ namespace TSMapEditor.Models
             return ConnectionPoints[0].Index == entryIndex ? ConnectionPoints[1] : ConnectionPoints[0];
         }
 
-        private bool IsStraight(CliffConnectionPoint[] connectionPoints)
+        private static bool IsStraight(CliffConnectionPoint[] connectionPoints)
         {
             int mask = connectionPoints[0].ConnectionMask & connectionPoints[1].ReversedConnectionMask;
             return mask > 0;
         }
 
-        private bool IsDiagonal(CliffConnectionPoint[] connectionPoints)
+        private static bool IsDiagonal(CliffConnectionPoint[] connectionPoints)
         {
             var directions = Helpers.GetDirectionsInMask((byte)(connectionPoints[0].ConnectionMask &
                                                                 connectionPoints[1].ReversedConnectionMask));

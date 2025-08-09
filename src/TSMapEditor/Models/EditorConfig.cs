@@ -61,7 +61,7 @@ namespace TSMapEditor.Models
             ReadSmudgeCollections(rules);
             ReadBridges(rules);
             ReadConnectedOverlays(rules);
-            ReadTiberiumOverlays(rules);
+			ReadTiberiumOverlays(rules);
         }
 
         private void ReadTheaters()
@@ -295,7 +295,7 @@ namespace TSMapEditor.Models
             }
         }
 
-        private void ReadTiberiumOverlays(Rules rules)
+        private static void ReadTiberiumOverlays(Rules rules)
         {
             var iniFile = Helpers.ReadConfigINI("Tiberiums.ini");
             const string sectionName = "Tiberiums";

@@ -33,7 +33,7 @@ namespace TSMapEditor.UI.Controls
             return child;
         }
 
-        private T FindChild<T>(IEnumerable<XNAControl> list, string controlName) where T : XNAControl
+        private static T FindChild<T>(IEnumerable<XNAControl> list, string controlName) where T : XNAControl
         {
             foreach (XNAControl child in list)
             {
@@ -272,7 +272,7 @@ namespace TSMapEditor.UI.Controls
             return childControl;
         }
 
-        private string GetChildControlName(XNAControl parent, string keyValue)
+        private static string GetChildControlName(XNAControl parent, string keyValue)
         {
             string[] parts = keyValue.Split([':'], StringSplitOptions.RemoveEmptyEntries);
 

@@ -4,19 +4,14 @@ using System.Threading.Tasks;
 
 namespace TSMapEditor.Settings
 {
-    public class UserSettings
+    public static class UserSettings
     {
         private const string General = "General";
         private const string Display = "Display";
         private const string MapView = "MapView";
 
-        public UserSettings()
+        static UserSettings()
         {
-            if (Instance != null)
-                throw new InvalidOperationException("User settings can only be initialized once.");
-
-            Instance = this;
-
             UserSettingsIni = new IniFile(Environment.CurrentDirectory + "/MapEditorSettings.ini");
 
             settings =
@@ -52,9 +47,9 @@ namespace TSMapEditor.Settings
             RecentFiles.ReadFromIniFile(UserSettingsIni);
         }
 
-        public IniFile UserSettingsIni { get; }
+        public static IniFile UserSettingsIni { get; }
 
-        public void SaveSettings()
+        public static void SaveSettings()
         {
             foreach (var setting in settings)
             {
@@ -66,39 +61,37 @@ namespace TSMapEditor.Settings
             UserSettingsIni.WriteIniFile();
         }
 
-        public async Task SaveSettingsAsync()
+        public static async Task SaveSettingsAsync()
         {
             await Task.Factory.StartNew(SaveSettings);
         }
 
-        public static UserSettings Instance { get; private set; }
+        private static readonly IINILoadable[] settings;
 
-        private readonly IINILoadable[] settings;
+		public static IntSetting TargetFPS = new(Display, "TargetFPS", 240);
+		public static IntSetting GraphicsLevel = new(Display, nameof(GraphicsLevel), 1);
+        public static IntSetting ResolutionWidth = new(Display, "ResolutionWidth", -1);
+        public static IntSetting ResolutionHeight = new(Display, "ResolutionHeight", -1);
+        public static DoubleSetting RenderScale = new(Display, "RenderScale", 1.0);
+        public static BoolSetting Borderless = new(Display, "Borderless", false);
+        public static BoolSetting FullscreenWindowed = new(Display, "FullscreenWindowed", false);
 
-        public IntSetting TargetFPS = new(Display, "TargetFPS", 240);
-        public IntSetting GraphicsLevel = new(Display, nameof(GraphicsLevel), 1);
-        public IntSetting ResolutionWidth = new(Display, "ResolutionWidth", -1);
-        public IntSetting ResolutionHeight = new(Display, "ResolutionHeight", -1);
-        public DoubleSetting RenderScale = new(Display, "RenderScale", 1.0);
-        public BoolSetting Borderless = new(Display, "Borderless", false);
-        public BoolSetting FullscreenWindowed = new(Display, "FullscreenWindowed", false);
+        public static IntSetting ScrollRate = new(MapView, nameof(ScrollRate), 15);
+        public static IntSetting MapWideOverlayOpacity = new(MapView, "MapWideOverlayOpacity", 50);
 
-        public IntSetting ScrollRate = new(MapView, nameof(ScrollRate), 15);
-        public IntSetting MapWideOverlayOpacity = new(MapView, "MapWideOverlayOpacity", 50);
+        public static StringSetting Theme = new(General, "Theme", "Default");
+        public static BoolSetting UseBoldFont = new(General, "UseBoldFont", false);
+        public static BoolSetting SmartScriptActionCloning = new(General, "SmartScriptActionCloning", true);
+        public static IntSetting AutoSaveInterval = new(General, "AutoSaveInterval", 300);
+        public static IntSetting SidebarWidth = new(General, "SidebarWidth", 250);
 
-        public StringSetting Theme = new(General, "Theme", "Default");
-        public BoolSetting UseBoldFont = new(General, "UseBoldFont", false);
-        public BoolSetting SmartScriptActionCloning = new(General, "SmartScriptActionCloning", true);
-        public IntSetting AutoSaveInterval = new(General, "AutoSaveInterval", 300);
-        public IntSetting SidebarWidth = new(General, "SidebarWidth", 250);
+        public static BoolSetting MultithreadedTextureLoading = new(General, "MultithreadedTextureLoading", true);
 
-        public BoolSetting MultithreadedTextureLoading = new(General, "MultithreadedTextureLoading", true);
+        public static StringSetting GameDirectory = new(General, "GameDirectory", string.Empty);
+        public static StringSetting LastScenarioPath = new(General, nameof(LastScenarioPath), "Maps/Custom/");
 
-        public StringSetting GameDirectory = new(General, "GameDirectory", string.Empty);
-        public StringSetting LastScenarioPath = new(General, nameof(LastScenarioPath), "Maps/Custom/");
+        public static StringSetting TextEditorPath = new(General, "TextEditorPath", string.Empty);
 
-        public StringSetting TextEditorPath = new(General, "TextEditorPath", string.Empty);
-
-        public RecentFiles RecentFiles = new();
+        public static RecentFiles RecentFiles = new();
     }
 }
