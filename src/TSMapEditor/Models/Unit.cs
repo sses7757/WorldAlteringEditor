@@ -3,12 +3,8 @@
     /// <summary>
     /// Could also be called 'vehicle', but let's respect the original game's naming.
     /// </summary>
-    public class Unit : Foot<UnitType>
+    public class Unit(UnitType objectType) : Foot<UnitType>(objectType)
     {
-        public Unit(UnitType objectType) : base(objectType)
-        {
-        }
-
         public override RTTIType WhatAmI() => RTTIType.Unit;
 
         public UnitType UnitType => ObjectType;

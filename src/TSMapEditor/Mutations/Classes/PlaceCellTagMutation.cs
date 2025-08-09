@@ -7,16 +7,10 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows placing a CellTag on the map.
     /// </summary>
-    public class PlaceCellTagMutation : Mutation
+    public class PlaceCellTagMutation(IMutationTarget mutationTarget, Point2D cellCoords, Tag tag) : Mutation(mutationTarget)
     {
-        public PlaceCellTagMutation(IMutationTarget mutationTarget, Point2D cellCoords, Tag tag) : base(mutationTarget)
-        {
-            this.cellCoords = cellCoords;
-            this.tag = tag;
-        }
-
-        private readonly Point2D cellCoords;
-        private readonly Tag tag;
+        private readonly Point2D cellCoords = cellCoords;
+        private readonly Tag tag = tag;
 
         public override string GetDisplayString()
         {

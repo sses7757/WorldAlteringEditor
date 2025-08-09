@@ -5,14 +5,9 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectBuildingTypeWindow : SelectObjectWindow<BuildingType>
+    public class SelectBuildingTypeWindow(WindowManager windowManager, Map map) : SelectObjectWindow<BuildingType>(windowManager)
     {
-        public SelectBuildingTypeWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public override void Initialize()
         {

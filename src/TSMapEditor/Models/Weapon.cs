@@ -1,13 +1,8 @@
 ﻿namespace TSMapEditor.Models
 {
-    public class Weapon : INIDefineable, INIDefined
+    public class Weapon(string iniName) : INIDefineable, INIDefined
     {
-        public Weapon(string iniName)
-        {
-            ININame = iniName;
-        }
-
-        public string ININame { get; }
+        public string ININame { get; } = iniName;
 
         public int Index { get; set; }
 

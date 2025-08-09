@@ -25,9 +25,9 @@ namespace TSMapEditor.Models
         /// </summary>
         public TileImage TileImage { get; set; }
         public TerrainObject TerrainObject { get; set; }
-        public List<Structure> Structures { get; set; } = new List<Structure>();
-        public List<Unit> Vehicles { get; set; } = new List<Unit>();
-        public List<Aircraft> Aircraft { get; set; } = new List<Aircraft>();
+        public List<Structure> Structures { get; set; } = [];
+        public List<Unit> Vehicles { get; set; } = [];
+        public List<Aircraft> Aircraft { get; set; } = [];
         public Infantry[] Infantry { get; set; } = new Infantry[SubCellCount];
         public TileImage PreviewTileImage { get; set; }
         public int PreviewSubTileIndex { get; set; }
@@ -35,7 +35,7 @@ namespace TSMapEditor.Models
 
         public Overlay Overlay { get; set; }
         public Smudge Smudge { get; set; }
-        public List<Waypoint> Waypoints { get; set; } = new List<Waypoint>();
+        public List<Waypoint> Waypoints { get; set; } = [];
 
         public CellTag CellTag { get; set; }
 
@@ -55,7 +55,7 @@ namespace TSMapEditor.Models
 
         public MapColor CellLighting { get; set; } = new MapColor(1.0, 1.0, 1.0);
 
-        public List<(Structure Source, double DistanceInLeptons)> LightSources { get; set; } = new();
+        public List<(Structure Source, double DistanceInLeptons)> LightSources { get; set; } = [];
 
         public void RefreshLighting(Lighting lighting, LightingPreviewMode lightingPreviewMode)
         {
@@ -404,27 +404,18 @@ namespace TSMapEditor.Models
 
         public bool ContainsObject(AbstractObject abstractObject)
         {
-            switch (abstractObject.WhatAmI())
+            return abstractObject.WhatAmI() switch
             {
-                case RTTIType.Aircraft:
-                    return Aircraft.Contains((Aircraft)abstractObject);
-                case RTTIType.Terrain:
-                    return TerrainObject == abstractObject;
-                case RTTIType.Building:
-                    return Structures.Contains((Structure)abstractObject);
-                case RTTIType.Unit:
-                    return Vehicles.Contains((Unit)abstractObject);
-                case RTTIType.Infantry:
-                    return Array.Exists(Infantry, inf => inf == abstractObject);
-                case RTTIType.Overlay:
-                    return Overlay == abstractObject;
-                case RTTIType.Smudge:
-                    return Smudge == abstractObject;
-                case RTTIType.Waypoint:
-                    return Waypoints.Contains((Waypoint)abstractObject);
-            }
-
-            return false;
+                RTTIType.Aircraft => Aircraft.Contains((Aircraft)abstractObject),
+                RTTIType.Terrain => TerrainObject == abstractObject,
+                RTTIType.Building => Structures.Contains((Structure)abstractObject),
+                RTTIType.Unit => Vehicles.Contains((Unit)abstractObject),
+                RTTIType.Infantry => Array.Exists(Infantry, inf => inf == abstractObject),
+                RTTIType.Overlay => Overlay == abstractObject,
+                RTTIType.Smudge => Smudge == abstractObject,
+                RTTIType.Waypoint => Waypoints.Contains((Waypoint)abstractObject),
+                _ => false,
+            };
         }
 
         public bool IsClearGround()
@@ -447,8 +438,8 @@ namespace TSMapEditor.Models
             SubTileIndex = newSubTileIndex;
         }
 
-        public Point2D CoordsToPoint() => new Point2D(X, Y);
+        public Point2D CoordsToPoint() => new(X, Y);
 
-        public Point2D GetTileCenter() => new Point2D(Constants.CellSizeX / 2, Constants.CellSizeY / 2);
+        public Point2D GetTileCenter() => new(Constants.CellSizeX / 2, Constants.CellSizeY / 2);
     }
 }

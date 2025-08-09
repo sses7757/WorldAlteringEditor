@@ -7,16 +7,10 @@ namespace TSMapEditor.Mutations.Classes
     /// A mutation that allows changing a Techno's 
     /// (building/vehicle/infantry/aircraft) attached trigger tag.
     /// </summary>
-    public class ChangeAttachedTagMutation : Mutation
+    public class ChangeAttachedTagMutation(IMutationTarget mutationTarget, TechnoBase techno, Tag tag) : Mutation(mutationTarget)
     {
-        public ChangeAttachedTagMutation(IMutationTarget mutationTarget, TechnoBase techno, Tag tag) : base(mutationTarget)
-        {
-            this.techno = techno;
-            this.tag = tag;
-        }
-
-        private readonly TechnoBase techno;
-        private readonly Tag tag;
+        private readonly TechnoBase techno = techno;
+        private readonly Tag tag = tag;
 
         private Tag oldAttachedTag;
 

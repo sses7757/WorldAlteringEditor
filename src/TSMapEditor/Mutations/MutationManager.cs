@@ -7,8 +7,8 @@ namespace TSMapEditor.Mutations
     /// </summary>
     public class MutationManager
     {
-        public List<Mutation> UndoList { get; } = new List<Mutation>();
-        public List<Mutation> RedoList { get; } = new List<Mutation>();
+        public List<Mutation> UndoList { get; } = [];
+        public List<Mutation> RedoList { get; } = [];
 
         /// <summary>
         /// Performs a new mutation on the map.

@@ -13,16 +13,10 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
     /// A panel that allows the user to customize how the terrain 
     /// generator places terrain types on the map.
     /// </summary>
-    public class TerrainGeneratorTerrainTypeGroupsPanel : EditorPanel
+    public class TerrainGeneratorTerrainTypeGroupsPanel(WindowManager windowManager, Map map) : EditorPanel(windowManager)
     {
         private const int MaxTerrainTypeGroupCount = 8;
-
-        public TerrainGeneratorTerrainTypeGroupsPanel(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private EditorTextBox[] terrainTypeTextBoxes;
         private EditorNumberTextBox[] terrainTypeOpenChances;
@@ -77,12 +71,14 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 lblOccupiedChance.Text = "Occupied cell chance:";
                 AddChild(lblOccupiedChance);
 
-                var tbOccupiedChance = new EditorNumberTextBox(WindowManager);
-                tbOccupiedChance.Name = nameof(tbOpenChance) + i;
-                tbOccupiedChance.X = lblOccupiedChance.X;
-                tbOccupiedChance.Y = tbTerrainTypes.Y;
-                tbOccupiedChance.AllowDecimals = true;
-                tbOccupiedChance.Width = 120;
+                var tbOccupiedChance = new EditorNumberTextBox(WindowManager)
+                {
+                    Name = nameof(tbOpenChance) + i,
+                    X = lblOccupiedChance.X,
+                    Y = tbTerrainTypes.Y,
+                    AllowDecimals = true,
+                    Width = 120
+                };
                 AddChild(tbOccupiedChance);
                 terrainTypeOccupiedChances[i] = tbOccupiedChance;
 
@@ -104,7 +100,7 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 if (string.IsNullOrWhiteSpace(text))
                     continue;
 
-                string[] parts = text.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = text.Split([','], StringSplitOptions.RemoveEmptyEntries);
                 var terrainTypes = new List<TerrainType>();
                 for (int a = 0; a < parts.Length; a++)
                 {

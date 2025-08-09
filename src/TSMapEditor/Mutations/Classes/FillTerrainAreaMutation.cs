@@ -21,8 +21,8 @@ namespace TSMapEditor.Mutations.Classes
             this.tile = tile;
         }
 
-        private MapTile targetTile;
-        private TileImage tile;
+        private readonly MapTile targetTile;
+        private readonly TileImage tile;
         private OriginalCellTerrainData[] undoData;
 
         public override string GetDisplayString()
@@ -44,7 +44,7 @@ namespace TSMapEditor.Mutations.Classes
                 cell.ChangeTileIndex(tile.TileID, 0);
             }
 
-            undoData = originalData.ToArray();
+            undoData = [.. originalData];
             MutationTarget.InvalidateMap();
         }
 

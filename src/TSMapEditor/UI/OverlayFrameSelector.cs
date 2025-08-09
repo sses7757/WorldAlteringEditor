@@ -9,22 +9,13 @@ using TSMapEditor.Rendering;
 
 namespace TSMapEditor.UI
 {
-    class OverlayFrameSelectorFrame
+    class OverlayFrameSelectorFrame(Point location, Point offset, Point size, int overlayFrameIndex, Texture2D texture)
     {
-        public OverlayFrameSelectorFrame(Point location, Point offset, Point size, int overlayFrameIndex, Texture2D texture)
-        {
-            Location = location;
-            Offset = offset;
-            Size = size;
-            OverlayFrameIndex = overlayFrameIndex;
-            Texture = texture;
-        }
-
-        public Point Location { get; set; }
-        public Point Offset { get; set; }
-        public Point Size { get; set; }
-        public int OverlayFrameIndex { get; set; }
-        public Texture2D Texture { get; set; }
+        public Point Location { get; set; } = location;
+        public Point Offset { get; set; } = offset;
+        public Point Size { get; set; } = size;
+        public int OverlayFrameIndex { get; set; } = overlayFrameIndex;
+        public Texture2D Texture { get; set; } = texture;
     }
 
     public class OverlayFrameSelector : XNAPanel
@@ -84,7 +75,7 @@ namespace TSMapEditor.UI
 
         private OverlayType overlayType;
 
-        private List<OverlayFrameSelectorFrame> framesInView = new List<OverlayFrameSelectorFrame>();
+        private readonly List<OverlayFrameSelectorFrame> framesInView = [];
 
         private int viewY = 0;
 

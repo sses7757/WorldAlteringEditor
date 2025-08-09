@@ -6,14 +6,9 @@ namespace TSMapEditor.Models.ArtConfig
     /// <summary>
     /// A Tiberian Sun / Red Alert 2 infantry art sequence.
     /// </summary>
-    public class InfantrySequence
+    public class InfantrySequence(string iniName)
     {
-        public InfantrySequence(string iniName)
-        {
-            ININame = iniName;
-        }
-
-        public string ININame { get; }
+        public string ININame { get; } = iniName;
 
         // We only care about the 'Ready' status
         public InfantrySequencePart Ready { get; private set; }
@@ -35,17 +30,10 @@ namespace TSMapEditor.Models.ArtConfig
         }
     }
 
-    public struct InfantrySequencePart
+    public struct InfantrySequencePart(int startFrame, int frameCount, int facingMultiplier)
     {
-        public InfantrySequencePart(int startFrame, int frameCount, int facingMultiplier)
-        {
-            StartFrame = startFrame;
-            FrameCount = frameCount;
-            FacingMultiplier = facingMultiplier;
-        }
-
-        public int StartFrame;
-        public int FrameCount;
-        public int FacingMultiplier;
+        public int StartFrame = startFrame;
+        public int FrameCount = frameCount;
+        public int FacingMultiplier = facingMultiplier;
     }
 }

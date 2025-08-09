@@ -64,7 +64,7 @@ namespace CNCMaps.FileFormats.VirtualFileSystem
             {
                 // ensure
                 BaseStream.Position = BaseOffset + Pos;
-                BaseStream.Read(buffer, offset, count);
+                BaseStream.ReadExactly(buffer, offset, count);
             }
             Pos += count;
             return count;
@@ -96,7 +96,7 @@ namespace CNCMaps.FileFormats.VirtualFileSystem
                 // ensure
                 BaseStream.Position = BaseOffset + Pos;
                 byte[] rbuff = new byte[count];
-                BaseStream.Read(rbuff, 0, count);
+                BaseStream.ReadExactly(rbuff, 0, count);
                 for (int i = 0; i < count; i++)
                     *buffer++ = rbuff[i];
             }
@@ -109,21 +109,21 @@ namespace CNCMaps.FileFormats.VirtualFileSystem
             // ensure
             BaseStream.Position = BaseOffset + Pos;
             buff = new byte[Size];
-            BaseStream.Read(buff, 0, (int)Size);
+            BaseStream.ReadExactly(buff, 0, (int)Size);
             isBufferInitialized = true;
         }
 
         public byte[] Read(int numBytes)
         {
             var ret = new byte[numBytes];
-            Read(ret, 0, numBytes);
+            ReadExactly(ret, 0, numBytes);
             return ret;
         }
 
         public sbyte[] ReadSigned(int numBytes)
         {
             var b = new byte[numBytes];
-            Read(b, 0, numBytes);
+            ReadExactly(b, 0, numBytes);
             sbyte[] ret = new sbyte[numBytes];
             Buffer.BlockCopy(b, 0, ret, 0, b.Length);
             return ret;
@@ -172,7 +172,7 @@ namespace CNCMaps.FileFormats.VirtualFileSystem
         public float ReadFloat2()
         {
             var ori = Read(sizeof(Single)).ToList();
-            byte[] rev = new[] { ori[3], ori[2], ori[1], ori[0] };
+            byte[] rev = [ori[3], ori[2], ori[1], ori[0]];
             return BitConverter.ToSingle(rev, 0);
         }
 
@@ -186,7 +186,7 @@ namespace CNCMaps.FileFormats.VirtualFileSystem
             throw new NotSupportedException();
         }
 
-        public void Dispose()
+        public new void Dispose()
         {
             base.Close();
             BaseStream?.Close();

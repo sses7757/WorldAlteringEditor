@@ -8,18 +8,11 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows placing infantry on the map.
     /// </summary>
-    public class PlaceInfantryMutation : Mutation
+    public class PlaceInfantryMutation(IMutationTarget mutationTarget, InfantryType infantryType, Point2D cellCoords, SubCell subCell) : Mutation(mutationTarget)
     {
-        public PlaceInfantryMutation(IMutationTarget mutationTarget, InfantryType infantryType, Point2D cellCoords, SubCell subCell) : base(mutationTarget)
-        {
-            this.infantryType = infantryType;
-            this.cellCoords = cellCoords;
-            this.subCell = subCell;
-        }
-
-        private readonly InfantryType infantryType;
-        private readonly Point2D cellCoords;
-        private readonly SubCell subCell;
+        private readonly InfantryType infantryType = infantryType;
+        private readonly Point2D cellCoords = cellCoords;
+        private readonly SubCell subCell = subCell;
 
         private Infantry placedInfantry;
 
@@ -30,17 +23,16 @@ namespace TSMapEditor.Mutations.Classes
 
         public override void Perform()
         {
-            var cell = MutationTarget.Map.GetTile(cellCoords);
-            if (cell == null)
-                throw new InvalidOperationException("Invalid cell coords");
-
+            var cell = MutationTarget.Map.GetTile(cellCoords) ?? throw new InvalidOperationException("Invalid cell coords");
             if (cell.Infantry[(int)subCell] != null)
                 throw new InvalidOperationException(nameof(PlaceInfantryMutation) + ": cannot place infantry on an occupied sub-cell spot!");
 
-            var infantry = new Infantry(infantryType);
-            infantry.Owner = MutationTarget.ObjectOwner;
-            infantry.Position = cellCoords;
-            infantry.SubCell = subCell;
+            var infantry = new Infantry(infantryType)
+            {
+                Owner = MutationTarget.ObjectOwner,
+                Position = cellCoords,
+                SubCell = subCell
+            };
             placedInfantry = infantry;
 
             MutationTarget.Map.PlaceInfantry(infantry);

@@ -9,18 +9,11 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows placing connected overlays.
     /// </summary>
-    class PlaceConnectedOverlayMutation : Mutation
+    class PlaceConnectedOverlayMutation(IMutationTarget mutationTarget, ConnectedOverlayType connectedOverlayType, Point2D cellCoords) : Mutation(mutationTarget)
     {
-        public PlaceConnectedOverlayMutation(IMutationTarget mutationTarget, ConnectedOverlayType connectedOverlayType, Point2D cellCoords) : base(mutationTarget)
-        {
-            this.connectedOverlayType = connectedOverlayType;
-            this.cellCoords = cellCoords;
-            brush = mutationTarget.BrushSize;
-        }
-
-        private readonly ConnectedOverlayType connectedOverlayType;
-        private readonly BrushSize brush;
-        private readonly Point2D cellCoords;
+        private readonly ConnectedOverlayType connectedOverlayType = connectedOverlayType;
+        private readonly BrushSize brush = mutationTarget.BrushSize;
+        private readonly Point2D cellCoords = cellCoords;
 
         private OriginalOverlayInfo[] undoData;
 
@@ -68,7 +61,7 @@ namespace TSMapEditor.Mutations.Classes
                 UpdateConnectedOverlay(tile);
             });
 
-            undoData = originalOverlayInfos.ToArray();
+            undoData = [.. originalOverlayInfos];
             MutationTarget.AddRefreshPoint(cellCoords, Math.Max(brush.Width, brush.Height) + 1);
         }
 

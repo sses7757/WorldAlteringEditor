@@ -12,14 +12,9 @@ namespace TSMapEditor.Mutations
     /// A mutation modifies something in the map in a way that makes the effect
     /// un-doable and re-doable through the Undo/Redo system.
     /// </summary>
-    public abstract class Mutation
+    public abstract class Mutation(IMutationTarget mutationTarget)
     {
-        public Mutation(IMutationTarget mutationTarget)
-        {
-            MutationTarget = mutationTarget;
-        }
-
-        protected IMutationTarget MutationTarget { get; }
+        protected IMutationTarget MutationTarget { get; } = mutationTarget;
 
         protected Map Map => MutationTarget.Map;
 
@@ -32,7 +27,7 @@ namespace TSMapEditor.Mutations
         public int EventID { get; protected set; } = -1;
 
 
-        private static readonly Point2D[] surroundingTiles = new Point2D[] { new Point2D(-1, 0), new Point2D(1, 0), new Point2D(0, -1), new Point2D(0, 1) };
+        private static readonly Point2D[] surroundingTiles = [new(-1, 0), new(1, 0), new(0, -1), new(0, 1)];
 
         protected void ApplyGenericAutoLAT(int minX, int minY, int maxX, int maxY)
         {
@@ -60,7 +55,7 @@ namespace TSMapEditor.Mutations
             {
                 for (int x = minX; x <= maxX; x++)
                 {
-                    Point2D cellCoords = new Point2D(x, y);
+                    Point2D cellCoords = new(x, y);
                     int tileIndex = GetAutoLATTileIndexForCell(Map, cellCoords, null, null, false);
 
                     if (tileIndex > -1)
@@ -243,7 +238,7 @@ namespace TSMapEditor.Mutations
             {
                 for (int x = minX; x <= maxX; x++)
                 {
-                    Point2D cellCoords = new Point2D(x, y);
+                    Point2D cellCoords = new(x, y);
                     int tileIndex = GetAutoLATTileIndexForCell(Map, cellCoords, baseTileSet, altBaseTileSet, false);
 
                     if (tileIndex > -1)

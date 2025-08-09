@@ -5,14 +5,9 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class GenerateStandardHousesWindow : INItializableWindow
+    public class GenerateStandardHousesWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public GenerateStandardHousesWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public override void Initialize()
         {
@@ -55,10 +50,12 @@ namespace TSMapEditor.UI.Windows
 
                 if (!Constants.IsRA2YR)
                 {
-                    var houseType = new HouseType(house.ININame);
-                    houseType.Index = i;
-                    houseType.Color = house.Color;
-                    houseType.XNAColor = house.XNAColor;
+                    var houseType = new HouseType(house.ININame)
+                    {
+                        Index = i,
+                        Color = house.Color,
+                        XNAColor = house.XNAColor
+                    };
 
                     // Find reasonable default for Side and ActsLike
                     Helpers.FindDefaultSideForNewHouseType(houseType, map.Rules);
@@ -75,8 +72,7 @@ namespace TSMapEditor.UI.Windows
 
                     // Try to set a meaningful default country value
                     house.HouseType = houseTypes.Find(ht => ht.ININame == house.ININame);
-                    if (house.HouseType == null)
-                        house.HouseType = houseTypes[0];
+                    house.HouseType ??= houseTypes[0];
                 }
             }
 

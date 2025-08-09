@@ -4,11 +4,8 @@ using System.Collections.Generic;
 
 namespace TSMapEditor.Models
 {
-    public class BridgeLoadException : Exception
+    public class BridgeLoadException(string message) : Exception(message)
     {
-        public BridgeLoadException(string message) : base(message)
-        {
-        }
     }
 
     public enum BridgeKind
@@ -32,17 +29,11 @@ namespace TSMapEditor.Models
 
             if (bridgeType.Kind == BridgeKind.Low)
             {
-                string bridgeStart = iniSection.GetStringValue($"BridgeStart.{suffix}", null);
-                if (bridgeStart == null)
-                    throw new BridgeLoadException($"Low bridge {bridgeType.Name} has no start overlay!");
-
+                string bridgeStart = iniSection.GetStringValue($"BridgeStart.{suffix}", null) ?? throw new BridgeLoadException($"Low bridge {bridgeType.Name} has no start overlay!");
                 Start = rules.FindOverlayType(bridgeStart) ??
                         throw new BridgeLoadException($"Low bridge {bridgeType.Name} has an invalid start overlay {bridgeStart}!");
 
-                string bridgeEnd = iniSection.GetStringValue($"BridgeEnd.{suffix}", null);
-                if (bridgeEnd == null)
-                    throw new BridgeLoadException($"Low bridge {bridgeType.Name} has no end overlay!");
-
+                string bridgeEnd = iniSection.GetStringValue($"BridgeEnd.{suffix}", null) ?? throw new BridgeLoadException($"Low bridge {bridgeType.Name} has no end overlay!");
                 End = rules.FindOverlayType(bridgeEnd) ??
                       throw new BridgeLoadException($"Low bridge {bridgeType.Name} has an invalid end overlay {bridgeEnd}!");
 
@@ -54,10 +45,7 @@ namespace TSMapEditor.Models
             }
             else
             {
-                string piece = iniSection.GetStringValue($"BridgePieces.{suffix}", null);
-                if (piece == null)
-                    throw new BridgeLoadException($"High bridge {bridgeType.Name} has no bridge piece!");
-
+                string piece = iniSection.GetStringValue($"BridgePieces.{suffix}", null) ?? throw new BridgeLoadException($"High bridge {bridgeType.Name} has no bridge piece!");
                 OverlayType bridgePiece = rules.FindOverlayType(piece) ??
                       throw new BridgeLoadException($"High bridge {bridgeType.Name} has an invalid bridge piece {piece}!");
 
@@ -68,7 +56,7 @@ namespace TSMapEditor.Models
 
         public OverlayType Start;
         public OverlayType End;
-        public List<OverlayType> Pieces = new List<OverlayType>();
+        public List<OverlayType> Pieces = [];
     }
 
     public class BridgeType

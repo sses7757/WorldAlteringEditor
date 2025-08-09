@@ -6,12 +6,8 @@ namespace TSMapEditor.UI.CursorActions.HeightActions
     /// <summary>
     /// Non-steep, "FinalSun-like" ground lowering cursor action.
     /// </summary>
-    internal class FSLowerGroundCursorAction : CursorAction
+    internal class FSLowerGroundCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public FSLowerGroundCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Lower Ground (Non-Steep Ramps)";
 
         public override void OnActionEnter()

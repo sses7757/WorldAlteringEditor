@@ -2,13 +2,8 @@
 
 namespace TSMapEditor.Models
 {
-    public abstract class Techno<T> : TechnoBase where T : TechnoType
+    public abstract class Techno<T>(T objectType) : TechnoBase where T : TechnoType
     {
-        public Techno(T objectType)
-        {
-            ObjectType = objectType;
-        }
-
         public override GameObjectType GetObjectType() => ObjectType;
 
         public override double GetWeaponRange() => ObjectType.GetWeaponRange();
@@ -31,7 +26,7 @@ namespace TSMapEditor.Models
 
         public override bool IsInvisibleInGame() => ObjectType.InvisibleInGame;
 
-        public T ObjectType { get; }
+        public T ObjectType { get; } = objectType;
     }
 
     public abstract class TechnoBase : GameObject

@@ -31,11 +31,9 @@ namespace TSMapEditor.Models
             TechnoType technoType = null;
             technoType = rules.AircraftTypes.Find(a => a.ININame == objectININame);
 
-            if (technoType == null)
-                technoType = rules.UnitTypes.Find(u => u.ININame == objectININame);
+            technoType ??= rules.UnitTypes.Find(u => u.ININame == objectININame);
 
-            if (technoType == null)
-                technoType = rules.InfantryTypes.Find(i => i.ININame == objectININame);
+            technoType ??= rules.InfantryTypes.Find(i => i.ININame == objectININame);
 
             if (technoType == null)
                 return null;
@@ -51,19 +49,14 @@ namespace TSMapEditor.Models
     /// <summary>
     /// A taskforce. A group of unit types that can be used in team types.
     /// </summary>
-    public class TaskForce : IIDContainer, IHintable
+    public class TaskForce(string iniName) : IIDContainer, IHintable
     {
         public const int MaxTechnoCount = 6;
-
-        public TaskForce(string iniName)
-        {
-            ININame = iniName;
-        }
 
         public string GetInternalID() => ININame;
         public void SetInternalID(string id) => ININame = id;
 
-        public string ININame { get; private set; }
+        public string ININame { get; private set; } = iniName;
 
         public string Name { get; set; }
 
@@ -128,7 +121,7 @@ namespace TSMapEditor.Models
 
         public string GetHintText()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.Append("Contains:");
 
             int totalCost = 0;
@@ -159,9 +152,11 @@ namespace TSMapEditor.Models
         /// <param name="iniName">The INI name of the new task force.</param>
         public TaskForce Clone(string iniName)
         {
-            var newTaskForce = new TaskForce(iniName);
-            newTaskForce.Name = Name + " (Clone)";
-            newTaskForce.Group = Group;
+            var newTaskForce = new TaskForce(iniName)
+            {
+                Name = Name + " (Clone)",
+                Group = Group
+            };
 
             for (int i = 0; i < TechnoTypes.Length; i++)
             {
@@ -197,8 +192,10 @@ namespace TSMapEditor.Models
             if (taskforceSection == null)
                 return null;
 
-            var taskForce = new TaskForce(taskforceSection.SectionName);
-            taskForce.Name = taskforceSection.GetStringValue(nameof(Name), string.Empty);
+            var taskForce = new TaskForce(taskforceSection.SectionName)
+            {
+                Name = taskforceSection.GetStringValue(nameof(Name), string.Empty)
+            };
             taskForce.Group = taskforceSection.GetIntValue(nameof(Group), taskForce.Group);
 
             for (int i = 0; i < MaxTechnoCount; i++)

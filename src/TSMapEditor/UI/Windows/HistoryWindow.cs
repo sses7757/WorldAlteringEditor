@@ -7,14 +7,9 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class HistoryWindow : INItializableWindow
+    public class HistoryWindow(WindowManager windowManager, MutationManager mutationManager) : INItializableWindow(windowManager)
     {
-        public HistoryWindow(WindowManager windowManager, MutationManager mutationManager) : base(windowManager)
-        {
-            this.mutationManager = mutationManager;
-        }
-
-        private readonly MutationManager mutationManager;
+        private readonly MutationManager mutationManager = mutationManager;
 
         private XNAListBox lbRedoHistory;
         private XNAListBox lbUndoHistory;

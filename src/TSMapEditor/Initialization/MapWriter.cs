@@ -83,7 +83,7 @@ namespace TSMapEditor.Initialization
             // the tiles first by X then by Level and then by TileIndex gives good compression. 
             // https://modenc.renegadeprojects.com/IsoMapPack5
 
-            tilesToSave = tilesToSave.OrderBy(t => t.X).ThenBy(t => t.Level).ThenBy(t => t.TileIndex).ToList();
+            tilesToSave = [.. tilesToSave.OrderBy(t => t.X).ThenBy(t => t.Level).ThenBy(t => t.TileIndex)];
 
             // Now we pretty much have to reverse the process done in MapLoader.ReadIsoMapPack
 
@@ -687,8 +687,8 @@ namespace TSMapEditor.Initialization
             const int maxOutputSize = 8192;
             // generate blocks
             int processedBytes = 0;
-            List<byte> finalData = new List<byte>();
-            List<byte> block = new List<byte>(maxOutputSize);
+            List<byte> finalData = [];
+            List<byte> block = new(maxOutputSize);
             while (buffer.Count > processedBytes)
             {
                 ushort blockOutputSize = (ushort)Math.Min(buffer.Count - processedBytes, maxOutputSize);
@@ -697,7 +697,7 @@ namespace TSMapEditor.Initialization
                     block.Add(buffer[i]);
                 }
 
-                byte[] compressedBlock = MiniLZO.MiniLZO.Compress(block.ToArray());
+                byte[] compressedBlock = MiniLZO.MiniLZO.Compress([.. block]);
                 // InputSize
                 finalData.AddRange(BitConverter.GetBytes((ushort)compressedBlock.Length));
                 // OutputSize
@@ -709,7 +709,7 @@ namespace TSMapEditor.Initialization
                 block.Clear();
             }
 
-            return finalData.ToArray();
+            return [.. finalData];
         }
 
         /// <summary>

@@ -4,12 +4,8 @@ using System;
 
 namespace TSMapEditor.UI.Controls
 {
-    public class EditorDescriptionPanel : EditorPanel
+    public class EditorDescriptionPanel(WindowManager windowManager) : EditorPanel(windowManager)
     {
-        public EditorDescriptionPanel(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         private XNALabel lblDescription;
 
         public override string Text

@@ -12,7 +12,7 @@ namespace TSMapEditor.UI.Sidebar
     /// </summary>
     public class TreeViewCategory : TreeViewNode
     {
-        public List<TreeViewNode> Nodes { get; set; } = new List<TreeViewNode>();
+        public List<TreeViewNode> Nodes { get; set; } = [];
         public bool IsOpened { get; set; }
     }
 
@@ -36,9 +36,11 @@ namespace TSMapEditor.UI.Sidebar
         public TreeView(WindowManager windowManager) : base(windowManager)
         {
             DrawMode = ControlDrawMode.UNIQUE_RENDER_TARGET;
-            ScrollBar = new XNAScrollBar(WindowManager);
-            ScrollBar.Name = "TreeViewScrollBar";
-            ScrollBar.ScrollStep = LineHeight;
+            ScrollBar = new XNAScrollBar(WindowManager)
+            {
+                Name = "TreeViewScrollBar",
+                ScrollStep = LineHeight
+            };
         }
 
         public event EventHandler SelectedItemChanged;
@@ -99,7 +101,7 @@ namespace TSMapEditor.UI.Sidebar
 
         public TreeViewNode HoveredNode { get; set; }
 
-        public List<TreeViewCategory> Categories { get; set; } = new List<TreeViewCategory>();
+        public List<TreeViewCategory> Categories { get; set; } = [];
 
         public void AddCategory(TreeViewCategory category)
         {

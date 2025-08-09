@@ -6,16 +6,10 @@ using TSMapEditor.Models.Enums;
 
 namespace TSMapEditor.CCEngine
 {
-    public class ScriptActionPresetOption
+    public class ScriptActionPresetOption(int value, string text)
     {
-        public int Value;
-        public string Text;
-
-        public ScriptActionPresetOption(int value, string text)
-        {
-            Value = value;
-            Text = text;
-        }
+        public int Value = value;
+        public string Text = text;
 
         public string GetOptionText()
         {
@@ -26,20 +20,15 @@ namespace TSMapEditor.CCEngine
         }
     }
 
-    public class ScriptAction
+    public class ScriptAction(int id)
     {
-        public ScriptAction(int id)
-        {
-            ID = id;
-        }
-
-        public int ID { get; set; }
+        public int ID { get; set; } = id;
         public string Name { get; set; } = "Unknown action";
         public string Description { get; set; } = "No description";
         public string ParamDescription { get; set; } = "Use 0";
         public string OptionsSectionName { get; set; } = string.Empty;
         public TriggerParamType ParamType { get; set; } = TriggerParamType.Unknown;
-        public List<ScriptActionPresetOption> PresetOptions { get; } = new List<ScriptActionPresetOption>(0);
+        public List<ScriptActionPresetOption> PresetOptions { get; } = [];
         public bool UseWindowSelection { get; set; } = false;
 
         public void ReadIniSection(IniFile iniFile, string sectionName)
@@ -86,8 +75,8 @@ namespace TSMapEditor.CCEngine
                     break;
                 }
 
-                int presetValue = Conversions.IntFromString(value.Substring(0, commaIndex), 0);
-                string presetText = value.Substring(commaIndex + 1);
+                int presetValue = Conversions.IntFromString(value[..commaIndex], 0);
+                string presetText = value[(commaIndex + 1)..];
 
                 PresetOptions.Add(new ScriptActionPresetOption(presetValue, presetText));
 

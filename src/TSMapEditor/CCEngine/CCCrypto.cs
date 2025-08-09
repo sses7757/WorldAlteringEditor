@@ -92,7 +92,7 @@ internal class BlowfishStream : Stream
     /// <summary>
     /// Staging buffer for block decryption.
     /// </summary>
-    private byte[] stagingBuffer = new byte[256];
+    private readonly byte[] stagingBuffer = new byte[256];
 
     /// <summary>
     /// Current offset in staging buffer.
@@ -108,19 +108,19 @@ internal class BlowfishStream : Stream
     /// <summary>
     /// Array of Blowfish subkeys. Also referred to as P array.
     /// </summary>
-    private uint[] subkeys = new uint[18]
-    {
+    private readonly uint[] subkeys =
+    [
         0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344,
         0xa4093822, 0x299f31d0, 0x082efa98, 0xec4e6c89,
         0x452821e6, 0x38d01377, 0xbe5466cf, 0x34e90c6c,
         0xc0ac29b7, 0xc97c50dd, 0x3f84d5b5, 0xb5470917,
         0x9216d5d9, 0x8979fb1b,
-    };
+    ];
 
     /// <summary>
     /// Array of Blowfish substitution boxes. Also referred to as S arrays.
     /// </summary>
-    private uint[,] substitutions = new uint[4, 256]
+    private readonly uint[,] substitutions = new uint[4, 256]
     {
         {
             0xd1310ba6, 0x98dfb5ac, 0x2ffd72db, 0xd01adfb7, 0xb8e1afed, 0x6a267e96, 0xba7c9045, 0xf12c7f99,

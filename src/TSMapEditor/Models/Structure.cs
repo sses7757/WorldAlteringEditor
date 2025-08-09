@@ -38,7 +38,7 @@ namespace TSMapEditor.Models
                     }
                 });
             }
-            Anims = anims.ToArray();
+            Anims = [.. anims];
 
             if (objectType.Turret && !objectType.TurretAnimIsVoxel && objectType.ArtConfig.TurretAnim != null)
             {
@@ -75,14 +75,10 @@ namespace TSMapEditor.Models
 
                 foreach (var powerUpAnim in PowerUpAnims)
                 {
-                    if (powerUpAnim != null)
-                    {
-                        powerUpAnim.Position = GetSouthernmostFoundationCell();
-                    }
+                    powerUpAnim?.Position = GetSouthernmostFoundationCell();
                 }
 
-                if (TurretAnim != null)
-                    TurretAnim.Position = GetSouthernmostFoundationCell();
+                TurretAnim?.Position = GetSouthernmostFoundationCell();
             }
         }
 
@@ -99,14 +95,10 @@ namespace TSMapEditor.Models
 
                 foreach (var powerUpAnim in PowerUpAnims)
                 {
-                    if (powerUpAnim != null)
-                    {
-                        powerUpAnim.Owner = value;
-                    }
+                    powerUpAnim?.Owner = value;
                 }
 
-                if (TurretAnim != null)
-                    TurretAnim.Owner = value;
+                TurretAnim?.Owner = value;
             }
         }
 
@@ -120,14 +112,10 @@ namespace TSMapEditor.Models
 
                 foreach (var powerUpAnim in PowerUpAnims)
                 {
-                    if (powerUpAnim != null)
-                    {
-                        powerUpAnim.Facing = value;
-                    }
+                    powerUpAnim?.Facing = value;
                 }
 
-                if (TurretAnim != null)
-                    TurretAnim.Facing = value;
+                TurretAnim?.Facing = value;
             }
         }
 
@@ -155,19 +143,19 @@ namespace TSMapEditor.Models
         /// </summary>
         public bool IsBaseNodeDummy { get; set; }
 
-        public List<MapTile> LitTiles { get; set; } = new();
+        public List<MapTile> LitTiles { get; set; } = [];
 
         public void LightTiles(MapTile[][] tiles)
         {
             ClearLitTiles();
 
-            Dictionary<MapTile, double> litTiles = new();
+            Dictionary<MapTile, double> litTiles = [];
             int foundationWidth = ObjectType.ArtConfig.Foundation.Width;
             int foundationHeight = ObjectType.ArtConfig.Foundation.Height;
             
-            List<int> xCenter = foundationWidth % 2 == 0 ? new List<int> { foundationWidth / 2 - 1, foundationWidth / 2 } : new List<int> { foundationWidth / 2 };
-            List<int> yCenter = foundationHeight % 2 == 0 ? new List<int> { foundationHeight / 2 - 1, foundationHeight / 2 } : new List<int> { foundationHeight / 2 };
-            Point2D[] centers = xCenter.SelectMany(item1 => yCenter, (item1, item2) => new Point2D(item1, item2)).ToArray();
+            List<int> xCenter = foundationWidth % 2 == 0 ? [foundationWidth / 2 - 1, foundationWidth / 2] : [foundationWidth / 2];
+            List<int> yCenter = foundationHeight % 2 == 0 ? [foundationHeight / 2 - 1, foundationHeight / 2] : [foundationHeight / 2];
+            Point2D[] centers = [.. xCenter.SelectMany(item1 => yCenter, (item1, item2) => new Point2D(item1, item2))];
 
             int radius = (int)Math.Ceiling((double)ObjectType.LightVisibility / Constants.CellSizeInLeptons) - 1;
 
@@ -212,7 +200,7 @@ namespace TSMapEditor.Models
                 kvp.Key.LightSources.Add((this, kvp.Value));
             }
 
-            LitTiles = litTiles.Keys.ToList();
+            LitTiles = [.. litTiles.Keys];
         }
 
         public void ClearLitTiles()
@@ -265,7 +253,7 @@ namespace TSMapEditor.Models
                 });
             }
 
-            PowerUpAnims = anims.ToArray();
+            PowerUpAnims = [.. anims];
         }
 
         public override double GetCloakGeneratorRange()
@@ -323,9 +311,9 @@ namespace TSMapEditor.Models
         {
             var clone = MemberwiseClone() as Structure;
 
-            clone.Upgrades = Upgrades.ToArray();
+            clone.Upgrades = [.. Upgrades];
 
-            clone.Anims = Anims.Select(anim => anim.Clone() as Animation).ToArray();
+            clone.Anims = [.. Anims.Select(anim => anim.Clone() as Animation)];
             foreach (var anim in clone.Anims)
                 anim.ParentBuilding = clone;
 
@@ -337,7 +325,7 @@ namespace TSMapEditor.Models
 
             clone.UpdatePowerUpAnims();
 
-            clone.LitTiles = new List<MapTile>();
+            clone.LitTiles = [];
 
             return clone;
         }

@@ -1,11 +1,7 @@
 ﻿namespace TSMapEditor.Models
 {
-    public class SmudgeType : GameObjectType
+    public class SmudgeType(string iniName) : GameObjectType(iniName)
     {
-        public SmudgeType(string iniName) : base(iniName)
-        {
-        }
-
         public override RTTIType WhatAmI() => RTTIType.Smudge;
 
 

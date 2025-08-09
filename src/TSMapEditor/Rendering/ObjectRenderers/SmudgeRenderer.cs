@@ -6,12 +6,8 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering.ObjectRenderers
 {
-    public class SmudgeRenderer : ObjectRenderer<Smudge>
+    public class SmudgeRenderer(RenderDependencies renderDependencies) : ObjectRenderer<Smudge>(renderDependencies)
     {
-        public SmudgeRenderer(RenderDependencies renderDependencies) : base(renderDependencies)
-        {
-        }
-
         protected override Color ReplacementColor => Color.Cyan;
 
         protected override CommonDrawParams GetDrawParams(Smudge gameObject)
@@ -57,7 +53,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
 
             Texture2D texture = frame.Texture;
 
-            Color color = new Color(lighting.X / 2f,
+            Color color = new(lighting.X / 2f,
                 lighting.Y / 2f,
                 lighting.Z / 2f, depth);
 

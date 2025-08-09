@@ -9,13 +9,9 @@ using HCT = TSMapEditor.Mutations.Classes.HeightMutations.HeightComparisonType;
 
 namespace TSMapEditor.Mutations.Classes.HeightMutations
 {
-    public abstract class RaiseGroundMutationBase : AlterElevationMutationBase
+    public abstract class RaiseGroundMutationBase(IMutationTarget mutationTarget, Point2D originCell, BrushSize brushSize) : AlterElevationMutationBase(mutationTarget, originCell, brushSize)
     {
-        protected RaiseGroundMutationBase(IMutationTarget mutationTarget, Point2D originCell, BrushSize brushSize) : base(mutationTarget, originCell, brushSize)
-        {
-        }
-
-        private TransitionRampInfo flatGroundCheck = new TransitionRampInfo(RampType.None, new() { HCT.Equal, HCT.Equal, HCT.Equal, HCT.Equal, HCT.Equal, HCT.Equal, HCT.Equal, HCT.Equal });
+        private readonly TransitionRampInfo flatGroundCheck = new(RampType.None, [HCT.Equal, HCT.Equal, HCT.Equal, HCT.Equal, HCT.Equal, HCT.Equal, HCT.Equal, HCT.Equal]);
 
 
         /// <summary>
@@ -136,7 +132,7 @@ namespace TSMapEditor.Mutations.Classes.HeightMutations
             // During the processing, we might get new cells to process.
             // We repeat the process until no new cells to process have been added to the list.
             List<Point2D> cellsToCheck = new(totalProcessedCells);
-            List<Point2D> newCells = new();
+            List<Point2D> newCells = [];
 
             while (cellsToCheck.Count > 0)
             {

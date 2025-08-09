@@ -19,8 +19,8 @@ namespace TSMapEditor.Settings
 
             UserSettingsIni = new IniFile(Environment.CurrentDirectory + "/MapEditorSettings.ini");
 
-            settings = new IINILoadable[]
-            {
+            settings =
+            [
                 TargetFPS,
                 GraphicsLevel,
                 ResolutionWidth,
@@ -44,7 +44,7 @@ namespace TSMapEditor.Settings
                 LastScenarioPath,
 
                 TextEditorPath
-            };
+            ];
 
             foreach (var setting in settings)
                 setting.LoadValue(UserSettingsIni);
@@ -75,30 +75,30 @@ namespace TSMapEditor.Settings
 
         private readonly IINILoadable[] settings;
 
-        public IntSetting TargetFPS = new IntSetting(Display, "TargetFPS", 240);
-        public IntSetting GraphicsLevel = new IntSetting(Display, nameof(GraphicsLevel), 1);
-        public IntSetting ResolutionWidth = new IntSetting(Display, "ResolutionWidth", -1);
-        public IntSetting ResolutionHeight = new IntSetting(Display, "ResolutionHeight", -1);
-        public DoubleSetting RenderScale = new DoubleSetting(Display, "RenderScale", 1.0);
-        public BoolSetting Borderless = new BoolSetting(Display, "Borderless", false);
-        public BoolSetting FullscreenWindowed = new BoolSetting(Display, "FullscreenWindowed", false);
+        public IntSetting TargetFPS = new(Display, "TargetFPS", 240);
+        public IntSetting GraphicsLevel = new(Display, nameof(GraphicsLevel), 1);
+        public IntSetting ResolutionWidth = new(Display, "ResolutionWidth", -1);
+        public IntSetting ResolutionHeight = new(Display, "ResolutionHeight", -1);
+        public DoubleSetting RenderScale = new(Display, "RenderScale", 1.0);
+        public BoolSetting Borderless = new(Display, "Borderless", false);
+        public BoolSetting FullscreenWindowed = new(Display, "FullscreenWindowed", false);
 
-        public IntSetting ScrollRate = new IntSetting(MapView, nameof(ScrollRate), 15);
-        public IntSetting MapWideOverlayOpacity = new IntSetting(MapView, "MapWideOverlayOpacity", 50);
+        public IntSetting ScrollRate = new(MapView, nameof(ScrollRate), 15);
+        public IntSetting MapWideOverlayOpacity = new(MapView, "MapWideOverlayOpacity", 50);
 
-        public StringSetting Theme = new StringSetting(General, "Theme", "Default");
-        public BoolSetting UseBoldFont = new BoolSetting(General, "UseBoldFont", false);
-        public BoolSetting SmartScriptActionCloning = new BoolSetting(General, "SmartScriptActionCloning", true);
-        public IntSetting AutoSaveInterval = new IntSetting(General, "AutoSaveInterval", 300);
-        public IntSetting SidebarWidth = new IntSetting(General, "SidebarWidth", 250);
+        public StringSetting Theme = new(General, "Theme", "Default");
+        public BoolSetting UseBoldFont = new(General, "UseBoldFont", false);
+        public BoolSetting SmartScriptActionCloning = new(General, "SmartScriptActionCloning", true);
+        public IntSetting AutoSaveInterval = new(General, "AutoSaveInterval", 300);
+        public IntSetting SidebarWidth = new(General, "SidebarWidth", 250);
 
-        public BoolSetting MultithreadedTextureLoading = new BoolSetting(General, "MultithreadedTextureLoading", true);
+        public BoolSetting MultithreadedTextureLoading = new(General, "MultithreadedTextureLoading", true);
 
-        public StringSetting GameDirectory = new StringSetting(General, "GameDirectory", string.Empty);
-        public StringSetting LastScenarioPath = new StringSetting(General, nameof(LastScenarioPath), "Maps/Custom/");
+        public StringSetting GameDirectory = new(General, "GameDirectory", string.Empty);
+        public StringSetting LastScenarioPath = new(General, nameof(LastScenarioPath), "Maps/Custom/");
 
-        public StringSetting TextEditorPath = new StringSetting(General, "TextEditorPath", string.Empty);
+        public StringSetting TextEditorPath = new(General, "TextEditorPath", string.Empty);
 
-        public RecentFiles RecentFiles = new RecentFiles();
+        public RecentFiles RecentFiles = new();
     }
 }

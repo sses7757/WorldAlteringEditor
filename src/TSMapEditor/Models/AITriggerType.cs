@@ -13,16 +13,10 @@ namespace TSMapEditor.Models
         NotEqual
     }
 
-    public struct AITriggerComparator
+    public struct AITriggerComparator(AITriggerComparatorOperator comparatorOperator, int quantity)
     {
-        public AITriggerComparatorOperator ComparatorOperator;
-        public int Quantity;
-
-        public AITriggerComparator(AITriggerComparatorOperator comparatorOperator, int quantity)
-        {
-            ComparatorOperator = comparatorOperator;
-            Quantity = quantity;
-        }
+        public AITriggerComparatorOperator ComparatorOperator = comparatorOperator;
+        public int Quantity = quantity;
 
         public static AITriggerComparator? Parse(string value)
         {
@@ -39,7 +33,7 @@ namespace TSMapEditor.Models
             return new AITriggerComparator((AITriggerComparatorOperator)operatorPart, quantity);
         }
 
-        public string ToStringValue()
+        public readonly string ToStringValue()
         {
             int quantity = Helpers.ReverseEndianness(Quantity);
 
@@ -47,17 +41,13 @@ namespace TSMapEditor.Models
         }
     }
 
-    public class AITriggerType : IIDContainer
+    public class AITriggerType(string iniName) : IIDContainer
     {
         // [AITriggerTypes]
         // ID=Name,Team1,OwnerHouse,TechLevel,ConditionType,ConditionObject,Comparator,StartingWeight,MinimumWeight,MaximumWeight,IsForSkirmish,unused,Side,IsBaseDefense,Team2,EnabledInE,EnabledInM,EnabledInH
 
-        public AITriggerType(string iniName)
-        {
-            ININame = iniName;
-        }
 
-        public string ININame { get; private set; }
+        public string ININame { get; private set; } = iniName;
 
         public string GetInternalID() => ININame;
         public void SetInternalID(string internalID) => ININame = internalID;

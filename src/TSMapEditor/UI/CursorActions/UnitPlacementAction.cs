@@ -9,20 +9,15 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows placing units on the map.
     /// </summary>
-    class UnitPlacementAction : CursorAction
+    class UnitPlacementAction(ICursorActionTarget cursorActionTarget, RKeyboard keyboard) : CursorAction(cursorActionTarget)
     {
-        public UnitPlacementAction(ICursorActionTarget cursorActionTarget, RKeyboard keyboard) : base(cursorActionTarget)
-        {
-            this.keyboard = keyboard;
-        }
-
         public override string GetName() => "Place Vehicle";
 
         private Unit unit;
 
         private UnitType _unitType;
 
-        private readonly RKeyboard keyboard;
+        private readonly RKeyboard keyboard = keyboard;
 
         public UnitType UnitType
         {
@@ -47,8 +42,7 @@ namespace TSMapEditor.UI.CursorActions
 
         public override void OnActionEnter()
         {
-            if (unit != null)
-                unit.Owner = CursorActionTarget.MutationTarget.ObjectOwner;
+            unit?.Owner = CursorActionTarget.MutationTarget.ObjectOwner;
         }
 
         public override void PreMapDraw(Point2D cellCoords)

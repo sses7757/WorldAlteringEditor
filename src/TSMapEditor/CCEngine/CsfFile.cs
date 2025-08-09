@@ -6,11 +6,8 @@ using TSMapEditor.Models;
 namespace TSMapEditor.CCEngine
 {
 
-    public class CsfLoadException : Exception
+    public class CsfLoadException(string message) : Exception(message)
     {
-        public CsfLoadException(string message) : base(message)
-        {
-        }
     }
 
     public enum CsfVersion
@@ -117,17 +114,15 @@ namespace TSMapEditor.CCEngine
 
         public void ParseFromFile(string filePath)
         {
-            using (FileStream stream = File.OpenRead(filePath))
-            {
-                Parse(stream);
-            }
+            using FileStream stream = File.OpenRead(filePath);
+            Parse(stream);
         }
 
         public void Parse(Stream stream)
         {
             byte[] buffer = new byte[stream.Length];
             stream.Position = 0;
-            stream.Read(buffer, 0, buffer.Length);
+            stream.ReadExactly(buffer);
             ParseFromBuffer(buffer);
         }
 
@@ -145,7 +140,7 @@ namespace TSMapEditor.CCEngine
                         strings.Add(ParseLabel(memoryStream));
                 }
 
-                Strings = strings.ToArray();
+                Strings = [.. strings];
             }
             catch (CsfLoadException ex)
             {

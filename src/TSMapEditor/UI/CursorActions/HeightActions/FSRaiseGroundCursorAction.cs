@@ -6,12 +6,8 @@ namespace TSMapEditor.UI.CursorActions.HeightActions
     /// <summary>
     /// Non-steep, "FinalSun-like" ground raising cursor action.
     /// </summary>
-    public class FSRaiseGroundCursorAction : CursorAction
+    public class FSRaiseGroundCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public FSRaiseGroundCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Raise Ground (Non-Steep Ramps)";
 
         public override void OnActionEnter()

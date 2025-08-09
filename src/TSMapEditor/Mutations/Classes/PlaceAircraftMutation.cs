@@ -7,16 +7,10 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows placing aircraft on the map.
     /// </summary>
-    public class PlaceAircraftMutation : Mutation
+    public class PlaceAircraftMutation(IMutationTarget mutationTarget, AircraftType aircraftType, Point2D cellCoords) : Mutation(mutationTarget)
     {
-        public PlaceAircraftMutation(IMutationTarget mutationTarget, AircraftType aircraftType, Point2D cellCoords) : base(mutationTarget)
-        {
-            this.aircraftType = aircraftType;
-            this.cellCoords = cellCoords;
-        }
-
-        private readonly AircraftType aircraftType;
-        private readonly Point2D cellCoords;
+        private readonly AircraftType aircraftType = aircraftType;
+        private readonly Point2D cellCoords = cellCoords;
         private Aircraft aircraft;
 
         public override string GetDisplayString()
@@ -30,9 +24,11 @@ namespace TSMapEditor.Mutations.Classes
             if (cell == null)
                 return;
 
-            aircraft = new Aircraft(aircraftType);
-            aircraft.Owner = MutationTarget.ObjectOwner;
-            aircraft.Position = cellCoords;
+            aircraft = new Aircraft(aircraftType)
+            {
+                Owner = MutationTarget.ObjectOwner,
+                Position = cellCoords
+            };
             MutationTarget.Map.PlaceAircraft(aircraft);
             MutationTarget.AddRefreshPoint(cellCoords);
         }

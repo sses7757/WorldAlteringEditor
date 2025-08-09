@@ -8,16 +8,10 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows placing a building on the map.
     /// </summary>
-    public class PlaceBuildingMutation : Mutation
+    public class PlaceBuildingMutation(IMutationTarget mutationTarget, BuildingType buildingType, Point2D cellCoords) : Mutation(mutationTarget)
     {
-        public PlaceBuildingMutation(IMutationTarget mutationTarget, BuildingType buildingType, Point2D cellCoords) : base(mutationTarget)
-        {
-            this.buildingType = buildingType;
-            this.cellCoords = cellCoords;
-        }
-
-        private readonly BuildingType buildingType;
-        private readonly Point2D cellCoords;
+        private readonly BuildingType buildingType = buildingType;
+        private readonly Point2D cellCoords = cellCoords;
 
         private Structure placedBuilding;
 
@@ -30,9 +24,11 @@ namespace TSMapEditor.Mutations.Classes
         {
             var cell = MutationTarget.Map.GetTileOrFail(cellCoords);
 
-            var structure = new Structure(buildingType);
-            structure.Owner = MutationTarget.ObjectOwner;
-            structure.Position = cellCoords;
+            var structure = new Structure(buildingType)
+            {
+                Owner = MutationTarget.ObjectOwner,
+                Position = cellCoords
+            };
             MutationTarget.Map.PlaceBuilding(structure);
             MutationTarget.AddRefreshPoint(cellCoords);
 

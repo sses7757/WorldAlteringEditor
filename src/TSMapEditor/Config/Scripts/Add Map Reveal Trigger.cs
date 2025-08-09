@@ -33,7 +33,7 @@ namespace WAEScript
             return error;
         }
 
-        private string error;
+        private readonly string error;
 
         private const string mapRevealTriggerName = "Map Reveal Trigger";
 
@@ -43,17 +43,23 @@ namespace WAEScript
         /// <param name="map">Map argument that allows us to access map data.</param>
         public void Perform(Map map)
         {
-            var trigger = new Trigger(map.GetNewUniqueInternalId());
-            trigger.Name = mapRevealTriggerName;
-            trigger.HouseType = "Neutral";
+            var trigger = new Trigger(map.GetNewUniqueInternalId())
+            {
+                Name = mapRevealTriggerName,
+                HouseType = "Neutral"
+            };
 
-            var timeElapsedCondition = new TriggerCondition();
-            timeElapsedCondition.ConditionIndex = 13;
+            var timeElapsedCondition = new TriggerCondition
+            {
+                ConditionIndex = 13
+            };
             timeElapsedCondition.Parameters[0] = "0";
             trigger.Conditions.Add(timeElapsedCondition);
 
-            var mapRevealAction = new TriggerAction();
-            mapRevealAction.ActionIndex = 16;
+            var mapRevealAction = new TriggerAction
+            {
+                ActionIndex = 16
+            };
             mapRevealAction.Parameters[0] = "0";
             trigger.Actions.Add(mapRevealAction);
 

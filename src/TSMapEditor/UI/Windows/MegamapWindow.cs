@@ -8,17 +8,13 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class MegamapClickedEventArgs : EventArgs
+    public class MegamapClickedEventArgs(Point2D clickedPoint) : EventArgs
     {
-        public MegamapClickedEventArgs(Point2D clickedPoint)
-        {
-            ClickedPoint = clickedPoint;
-        }
 
         /// <summary>
         /// The pixel point on the entire map that was clicked on.
         /// </summary>
-        public Point2D ClickedPoint { get; }
+        public Point2D ClickedPoint { get; } = clickedPoint;
     }
 
     public class MegamapWindow : EditorWindow
@@ -70,8 +66,7 @@ namespace TSMapEditor.UI.Windows
         {
             CalculateTextureDrawRectangle();
 
-            if (closeButton != null)
-                closeButton.X = Width - closeButton.Width;
+            closeButton?.X = Width - closeButton.Width;
         }
 
         private readonly ICursorActionTarget cursorActionTarget;
@@ -129,11 +124,13 @@ namespace TSMapEditor.UI.Windows
         {
             if (enableToolbar)
             {
-                closeButton = new EditorButton(WindowManager);
-                closeButton.Name = "btnCloseX";
-                closeButton.Width = Constants.UIButtonHeight;
-                closeButton.Height = Constants.UIButtonHeight;
-                closeButton.Text = "X";
+                closeButton = new EditorButton(WindowManager)
+                {
+                    Name = "btnCloseX",
+                    Width = Constants.UIButtonHeight,
+                    Height = Constants.UIButtonHeight,
+                    Text = "X"
+                };
                 closeButton.X = Width - closeButton.Width;
                 closeButton.Y = 0;
                 AddChild(closeButton);

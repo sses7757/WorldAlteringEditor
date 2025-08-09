@@ -10,18 +10,11 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows placing overlay collections.
     /// </summary>
-    class PlaceOverlayCollectionMutation : Mutation
+    class PlaceOverlayCollectionMutation(IMutationTarget mutationTarget, OverlayCollection overlayCollection, Point2D cellCoords) : Mutation(mutationTarget)
     {
-        public PlaceOverlayCollectionMutation(IMutationTarget mutationTarget, OverlayCollection overlayCollection, Point2D cellCoords) : base(mutationTarget)
-        {
-            this.overlayCollection = overlayCollection;
-            this.brush = mutationTarget.BrushSize;
-            this.cellCoords = cellCoords;
-        }
-
-        private readonly OverlayCollection overlayCollection;
-        private readonly BrushSize brush;
-        private readonly Point2D cellCoords;
+        private readonly OverlayCollection overlayCollection = overlayCollection;
+        private readonly BrushSize brush = mutationTarget.BrushSize;
+        private readonly Point2D cellCoords = cellCoords;
 
         private OriginalOverlayInfo[] undoData;
 
@@ -76,7 +69,7 @@ namespace TSMapEditor.Mutations.Classes
                 }
             }
 
-            undoData = originalOverlayInfos.ToArray();
+            undoData = [.. originalOverlayInfos];
             MutationTarget.AddRefreshPoint(cellCoords, Math.Max(brush.Width, brush.Height) + 1);
         }
 

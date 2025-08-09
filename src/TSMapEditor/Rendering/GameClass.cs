@@ -22,7 +22,7 @@ namespace TSMapEditor.Rendering
     {
         private const double PowerSavingTime = 100.0;
 
-        private GraphicsDeviceManager graphics;
+        private readonly GraphicsDeviceManager graphics;
 
         public GameClass()
         {
@@ -54,10 +54,12 @@ namespace TSMapEditor.Rendering
             new UserSettings();
             AutosaveTimer.Purge();
 
-            graphics = new GraphicsDeviceManager(this);
-            graphics.HardwareModeSwitch = false;
-            graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+            graphics = new GraphicsDeviceManager(this)
+            {
+                HardwareModeSwitch = false,
+                GraphicsProfile = GraphicsProfile.HiDef,
+                PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8
+            };
             Content.RootDirectory = "Content";
             graphics.SynchronizeWithVerticalRetrace = false;
             Window.Title = "C&C World-Altering Editor (WAE)";
@@ -71,7 +73,7 @@ namespace TSMapEditor.Rendering
             string exceptLogPath = Environment.CurrentDirectory + DSC + "except.txt";
             File.Delete(exceptLogPath);
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
             string fullName = typeof(GameClass).Assembly.FullName;
 

@@ -8,16 +8,10 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows placing terrain object collections.
     /// </summary>
-    class PlaceTerrainObjectCollectionMutation : Mutation
+    class PlaceTerrainObjectCollectionMutation(IMutationTarget mutationTarget, TerrainObjectCollection terrainObjectCollection, Point2D cellCoords) : Mutation(mutationTarget)
     {
-        public PlaceTerrainObjectCollectionMutation(IMutationTarget mutationTarget, TerrainObjectCollection terrainObjectCollection, Point2D cellCoords) : base(mutationTarget)
-        {
-            this.terrainObjectCollection = terrainObjectCollection;
-            this.cellCoords = cellCoords;
-        }
-
-        private readonly TerrainObjectCollection terrainObjectCollection;
-        private readonly Point2D cellCoords;
+        private readonly TerrainObjectCollection terrainObjectCollection = terrainObjectCollection;
+        private readonly Point2D cellCoords = cellCoords;
 
         public override string GetDisplayString()
         {

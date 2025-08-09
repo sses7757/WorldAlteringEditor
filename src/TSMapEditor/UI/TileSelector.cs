@@ -18,19 +18,11 @@ namespace TSMapEditor.UI
         Name
     }
 
-    public class TileSelector : XNAControl
+    public class TileSelector(WindowManager windowManager, Map map, TheaterGraphics theaterGraphics,
+        PlaceTerrainCursorAction placeTerrainCursorAction, EditorState editorState) : XNAControl(windowManager)
     {
         private const int TileSetListWidth = 180;
         private const int ResizeDragThreshold = 30;
-
-        public TileSelector(WindowManager windowManager, Map map, TheaterGraphics theaterGraphics,
-            PlaceTerrainCursorAction placeTerrainCursorAction, EditorState editorState) : base(windowManager)
-        {
-            this.map = map;
-            this.theaterGraphics = theaterGraphics;
-            this.placeTerrainCursorAction = placeTerrainCursorAction;
-            this.editorState = editorState;
-        }
 
         protected override void OnClientRectangleUpdated()
         {
@@ -45,10 +37,10 @@ namespace TSMapEditor.UI
             base.OnClientRectangleUpdated();
         }
 
-        private readonly Map map;
-        private readonly TheaterGraphics theaterGraphics;
-        private readonly PlaceTerrainCursorAction placeTerrainCursorAction;
-        private readonly EditorState editorState;
+        private readonly Map map = map;
+        private readonly TheaterGraphics theaterGraphics = theaterGraphics;
+        private readonly PlaceTerrainCursorAction placeTerrainCursorAction = placeTerrainCursorAction;
+        private readonly EditorState editorState = editorState;
 
         public TileDisplay TileDisplay { get; private set; }
 

@@ -10,12 +10,8 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows copying terrain tiles.
     /// </summary>
-    public class CopyRectangularTerrainCursorAction : CopyTerrainCursorActionBase
+    public class CopyRectangularTerrainCursorAction(ICursorActionTarget cursorActionTarget) : CopyTerrainCursorActionBase(cursorActionTarget)
     {
-        public CopyRectangularTerrainCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Copy Terrain (Rectangular)";
 
         public Point2D? StartCellCoords { get; set; } = null;

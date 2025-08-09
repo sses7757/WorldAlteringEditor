@@ -68,7 +68,7 @@ namespace TSMapEditor.UI.Controls
         public override float Alpha { get; set; }
         public bool IsMasterControlOnCursor { get; set; }
 
-        private XNAControl masterControl;
+        private readonly XNAControl masterControl;
 
         private TimeSpan cursorTime = TimeSpan.Zero;
 

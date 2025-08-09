@@ -12,13 +12,8 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to edit a <see cref="HouseType"/> (also known as Country in RA2/YR).
     /// </summary>
-    public class EditHouseTypeWindow : INItializableWindow
+    public class EditHouseTypeWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public EditHouseTypeWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
         private EditorTextBox tbName;
         private XNADropDown ddParentCountry;
         private EditorTextBox tbSuffix;
@@ -32,7 +27,7 @@ namespace TSMapEditor.UI.Windows
         private XNACheckBox chkMultiplayPassive;
         private XNACheckBox chkWallOwner;
 
-        private readonly Map map;
+        private readonly Map map = map;
 
         private HouseType editedCountry { get; set; }
 

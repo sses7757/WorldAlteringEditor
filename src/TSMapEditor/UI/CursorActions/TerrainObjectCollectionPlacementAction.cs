@@ -5,12 +5,8 @@ using TSMapEditor.Mutations.Classes;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class TerrainObjectCollectionPlacementAction : CursorAction
+    public class TerrainObjectCollectionPlacementAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public TerrainObjectCollectionPlacementAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Place TerrainObject Collection";
 
         private TerrainObject terrainObject;

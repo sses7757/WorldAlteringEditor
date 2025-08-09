@@ -8,16 +8,10 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class ApplyINICodeWindow : INItializableWindow
+    public class ApplyINICodeWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
         private const string EditorSection = "$Editor";
-
-        public ApplyINICodeWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private EditorListBox lbINIFiles;
 

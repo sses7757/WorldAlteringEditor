@@ -7,12 +7,8 @@ using System.IO;
 
 namespace TSMapEditor.UI.Controls
 {
-    public class EditorLinkLabel : XNALinkLabel
+    public class EditorLinkLabel(WindowManager windowManager) : XNALinkLabel(windowManager)
     {
-        public EditorLinkLabel(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         public string URL { get; set; }
 
         protected override void ParseControlINIAttribute(IniFile iniFile, string key, string value)

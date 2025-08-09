@@ -17,19 +17,12 @@ namespace TSMapEditor.Settings
     /// Abstract base class for INI settings of all types.
     /// </summary>
     /// <typeparam name="T">The type of the setting.</typeparam>
-    public abstract class SettingBase<T> : ISetting<T>
+    public abstract class SettingBase<T>(string section, string key, T defaultValue) : ISetting<T>
     {
-        public SettingBase(string section, string key, T defaultValue)
-        {
-            Section = section;
-            Key = key;
-            DefaultValue = defaultValue;
-        }
+        public string Section { get; } = section;
+        public string Key { get; } = key;
+        public T DefaultValue { get; } = defaultValue;
 
-        public string Section { get; }
-        public string Key { get; }
-        public T DefaultValue { get; }
-        
         public bool HasUserDefinedValue { get; private set; }
         private T _userDefinedValue;
         public T UserDefinedValue 

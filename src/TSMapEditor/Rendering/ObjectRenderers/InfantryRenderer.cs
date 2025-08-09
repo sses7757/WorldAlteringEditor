@@ -4,12 +4,8 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering.ObjectRenderers
 {
-    public sealed class InfantryRenderer : ObjectRenderer<Infantry>
+    public sealed class InfantryRenderer(RenderDependencies renderDependencies) : ObjectRenderer<Infantry>(renderDependencies)
     {
-        public InfantryRenderer(RenderDependencies renderDependencies) : base(renderDependencies)
-        {
-        }
-
         protected override Color ReplacementColor => Color.Teal;
 
         protected override CommonDrawParams GetDrawParams(Infantry gameObject)

@@ -7,33 +7,21 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows.MainMenuWindows
 {
-    public class CreateNewMapEventArgs : EventArgs
+    public class CreateNewMapEventArgs(string theater, Point2D mapSize, byte startingLevel) : EventArgs
     {
-        public CreateNewMapEventArgs(string theater, Point2D mapSize, byte startingLevel)
-        {
-            Theater = theater;
-            MapSize = mapSize;
-            StartingLevel = startingLevel;
-        }
-
-        public string Theater { get; }
-        public Point2D MapSize { get; }
-        public byte StartingLevel { get; }
+        public string Theater { get; } = theater;
+        public Point2D MapSize { get; } = mapSize;
+        public byte StartingLevel { get; } = startingLevel;
     }
 
-    public class CreateNewMapWindow : INItializableWindow
+    public class CreateNewMapWindow(WindowManager windowManager, bool canExit) : INItializableWindow(windowManager)
     {
         private const int MinMapSize = 50;
         private const int MaxMapSize = 512;
 
-        public CreateNewMapWindow(WindowManager windowManager, bool canExit) : base(windowManager)
-        {
-            this.canExit = canExit;
-        }
-
         public event EventHandler<CreateNewMapEventArgs> OnCreateNewMap;
 
-        private readonly bool canExit;
+        private readonly bool canExit = canExit;
 
         private XNADropDown ddTheater;
         private EditorNumberTextBox tbWidth;

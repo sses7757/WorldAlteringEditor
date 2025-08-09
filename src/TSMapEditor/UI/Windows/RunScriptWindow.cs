@@ -8,16 +8,11 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class RunScriptWindow : INItializableWindow
+    public class RunScriptWindow(WindowManager windowManager, ScriptDependencies scriptDependencies) : INItializableWindow(windowManager)
     {
-        public RunScriptWindow(WindowManager windowManager, ScriptDependencies scriptDependencies) : base(windowManager)
-        {
-            this.scriptDependencies = scriptDependencies;
-        }
-
         public event EventHandler ScriptRun;
 
-        private readonly ScriptDependencies scriptDependencies;
+        private readonly ScriptDependencies scriptDependencies = scriptDependencies;
 
         private EditorListBox lbScriptFiles;
 

@@ -5,14 +5,9 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectTriggerWindow : SelectObjectWindow<Trigger>
+    public class SelectTriggerWindow(WindowManager windowManager, Map map) : SelectObjectWindow<Trigger>(windowManager)
     {
-        public SelectTriggerWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public override void Initialize()
         {

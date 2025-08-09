@@ -15,16 +15,10 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
     /// A panel that allows the user to customize how the terrain 
     /// generator places overlay on the map.
     /// </summary>
-    public class TerrainGeneratorOverlayGroupsPanel : EditorPanel
+    public class TerrainGeneratorOverlayGroupsPanel(WindowManager windowManager, Map map) : EditorPanel(windowManager)
     {
         private const int MaxOverlayGroupCount = 8;
-
-        public TerrainGeneratorOverlayGroupsPanel(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private EditorTextBox[] overlayNames;
         private EditorTextBox[] frameIndices;
@@ -65,11 +59,13 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 lblTileIndices.Text = $"Indexes of frames to place (leave blank for all)";
                 AddChild(lblTileIndices);
 
-                var tbTileIndices = new EditorTextBox(WindowManager);
-                tbTileIndices.Name = nameof(selTileSet) + i;
-                tbTileIndices.X = lblTileIndices.X;
-                tbTileIndices.Y = lblTileIndices.Bottom + Constants.UIVerticalSpacing;
-                tbTileIndices.Width = 280;
+                var tbTileIndices = new EditorTextBox(WindowManager)
+                {
+                    Name = nameof(selTileSet) + i,
+                    X = lblTileIndices.X,
+                    Y = lblTileIndices.Bottom + Constants.UIVerticalSpacing,
+                    Width = 280
+                };
                 AddChild(tbTileIndices);
                 frameIndices[i] = tbTileIndices;
 
@@ -96,11 +92,13 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 lblOccupiedChance.Text = "Occupied cell chance:";
                 AddChild(lblOccupiedChance);
 
-                var tbOccupiedChance = new EditorNumberTextBox(WindowManager);
-                tbOccupiedChance.Name = nameof(tbOpenChance) + i;
-                tbOccupiedChance.X = lblOccupiedChance.X;
-                tbOccupiedChance.Y = selTileSet.Y;
-                tbOccupiedChance.AllowDecimals = true;
+                var tbOccupiedChance = new EditorNumberTextBox(WindowManager)
+                {
+                    Name = nameof(tbOpenChance) + i,
+                    X = lblOccupiedChance.X,
+                    Y = selTileSet.Y,
+                    AllowDecimals = true
+                };
                 tbOccupiedChance.Width = Width - tbOccupiedChance.X - Constants.UIEmptySideSpace;
                 AddChild(tbOccupiedChance);
                 overlayGroupOccupiedChances[i] = tbOccupiedChance;
@@ -133,8 +131,8 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 string frameIndexesText = frameIndices[i].Text.Trim();
                 if (!string.IsNullOrEmpty(frameIndexesText))
                 {
-                    string[] parts = frameIndexesText.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    frameIndexes = parts.Select(str => Conversions.IntFromString(str, -1)).ToList();
+                    string[] parts = frameIndexesText.Split([','], StringSplitOptions.RemoveEmptyEntries);
+                    frameIndexes = [.. parts.Select(str => Conversions.IntFromString(str, -1))];
                     int invalidElement = frameIndexes.Find(index => index <= -1 || index >= map.TheaterInstance.GetOverlayFrameCount(overlayType));
 
                     if (invalidElement != 0) // this can never be 0 if an invalid element exists, because each valid overlay has at least 1 frame

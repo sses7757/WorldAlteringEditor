@@ -6,14 +6,9 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class RenderedObjectsConfigurationWindow : INItializableWindow
+    public class RenderedObjectsConfigurationWindow(WindowManager windowManager, EditorState editorState) : INItializableWindow(windowManager)
     {
-        public RenderedObjectsConfigurationWindow(WindowManager windowManager, EditorState editorState) : base(windowManager)
-        {
-            this.editorState = editorState;
-        }
-
-        private readonly EditorState editorState;
+        private readonly EditorState editorState = editorState;
 
         private XNACheckBox chkTerrainTiles;
         private XNACheckBox chkSmudges;

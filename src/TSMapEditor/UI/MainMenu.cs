@@ -17,15 +17,10 @@ using Microsoft.Win32;
 
 namespace TSMapEditor.UI
 {
-    public class MainMenu : EditorPanel
+    public class MainMenu(WindowManager windowManager) : EditorPanel(windowManager)
     {
         private const string DirectoryPrefix = "<DIR> ";
         private const int BrowseButtonWidth = 70;
-
-        public MainMenu(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         private string gameDirectory;
 
         private EditorTextBox tbGameDirectory;
@@ -152,11 +147,13 @@ namespace TSMapEditor.UI
                 lblRecentFiles.Text = "Recent files:";
                 AddChild(lblRecentFiles);
 
-                var recentFilesPanel = new RecentFilesPanel(WindowManager);
-                recentFilesPanel.X = lblRecentFiles.X;
-                recentFilesPanel.Y = lblRecentFiles.Bottom + Constants.UIVerticalSpacing;
-                recentFilesPanel.Width = Width - (Constants.UIEmptySideSpace * 2);
-                recentFilesPanel.Height = recentFilesHeight - lblRecentFiles.Height - (Constants.UIVerticalSpacing * 2);
+                var recentFilesPanel = new RecentFilesPanel(WindowManager)
+                {
+                    X = lblRecentFiles.X,
+                    Y = lblRecentFiles.Bottom + Constants.UIVerticalSpacing,
+                    Width = Width - (Constants.UIEmptySideSpace * 2),
+                    Height = recentFilesHeight - lblRecentFiles.Height - (Constants.UIVerticalSpacing * 2)
+                };
                 recentFilesPanel.FileSelected += RecentFilesPanel_FileSelected;
                 AddChild(recentFilesPanel);
 
@@ -278,7 +275,7 @@ namespace TSMapEditor.UI
                     // Optionally, if the path starts with the HKLM identifier, look for the key in the local machine's registry instead.
                     if (registryInstallPath.StartsWith(hklmIdentifier))
                     {
-                        key = Registry.LocalMachine.OpenSubKey(registryInstallPath.Substring(hklmIdentifier.Length));
+                        key = Registry.LocalMachine.OpenSubKey(registryInstallPath[hklmIdentifier.Length..]);
                     }
                     else
                     {
@@ -287,8 +284,8 @@ namespace TSMapEditor.UI
 
                     bool isValid = false;
 
-                    object value = key.GetValue("InstallPath", string.Empty);
-                    if (!(value is string valueAsString))
+                    object value = key?.GetValue("InstallPath", string.Empty);
+                    if (value is not string valueAsString)
                     {
                         tbGameDirectory.Text = string.Empty;
                     }
@@ -313,7 +310,7 @@ namespace TSMapEditor.UI
                         }
                     }
 
-                    key.Close();
+                    key?.Close();
 
                     // Break when we find the first valid installation path
                     if (isValid)
@@ -392,18 +389,16 @@ namespace TSMapEditor.UI
         private void BtnBrowseGameDirectory_LeftClick(object sender, EventArgs e)
         {
 #if WINDOWS
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.InitialDirectory = tbGameDirectory.Text;
-                openFileDialog.Filter =
-                    $"Game executable|{string.Join(';', Constants.ExpectedClientExecutableNames)}";
-                openFileDialog.RestoreDirectory = true;
+            using OpenFileDialog openFileDialog = new();
+            openFileDialog.InitialDirectory = tbGameDirectory.Text;
+            openFileDialog.Filter =
+                $"Game executable|{string.Join(';', Constants.ExpectedClientExecutableNames)}";
+            openFileDialog.RestoreDirectory = true;
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    tbGameDirectory.Text = Path.GetDirectoryName(openFileDialog.FileName);
-                    InputIgnoreTime = TimeSpan.FromSeconds(Constants.UIAccidentalClickPreventionTime);
-                }
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                tbGameDirectory.Text = Path.GetDirectoryName(openFileDialog.FileName);
+                InputIgnoreTime = TimeSpan.FromSeconds(Constants.UIAccidentalClickPreventionTime);
             }
 #endif
         }
@@ -411,18 +406,16 @@ namespace TSMapEditor.UI
         private void BtnBrowseMapPath_LeftClick(object sender, EventArgs e)
         {
 #if WINDOWS
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.InitialDirectory = tbMapPath.Text;
-                openFileDialog.Filter = Constants.OpenFileDialogFilter.Replace(':', ';');
-                openFileDialog.RestoreDirectory = true;
+            using OpenFileDialog openFileDialog = new();
+            openFileDialog.InitialDirectory = tbMapPath.Text;
+            openFileDialog.Filter = Constants.OpenFileDialogFilter.Replace(':', ';');
+            openFileDialog.RestoreDirectory = true;
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    tbMapPath.Text = openFileDialog.FileName;
-                    InputIgnoreTime = TimeSpan.FromSeconds(Constants.UIAccidentalClickPreventionTime);
-                    BtnLoad_LeftClick(this, new EventArgs());
-                }
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                tbMapPath.Text = openFileDialog.FileName;
+                InputIgnoreTime = TimeSpan.FromSeconds(Constants.UIAccidentalClickPreventionTime);
+                BtnLoad_LeftClick(this, new EventArgs());
             }
 #endif
         }

@@ -42,8 +42,10 @@ namespace TSMapEditor.UI.Sidebar
                 if (textures[unitType.Index] != null)
                 {
                     int frameCount = textures[unitType.Index].GetFrameCount();
-                    var unit = new Unit(unitType);
-                    unit.Facing = FacingSouthEast;
+                    var unit = new Unit(unitType)
+                    {
+                        Facing = FacingSouthEast
+                    };
 
                     int frameIndex = unit.GetFrameIndex(frameCount);
 

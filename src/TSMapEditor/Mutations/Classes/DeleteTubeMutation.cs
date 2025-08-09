@@ -6,14 +6,9 @@ using TSMapEditor.UI;
 
 namespace TSMapEditor.Mutations.Classes
 {
-    public class DeleteTubeMutation : Mutation
+    public class DeleteTubeMutation(IMutationTarget mutationTarget, Point2D cellCoords) : Mutation(mutationTarget)
     {
-        public DeleteTubeMutation(IMutationTarget mutationTarget, Point2D cellCoords) : base(mutationTarget)
-        {
-            this.cellCoords = cellCoords;
-        }
-
-        private readonly Point2D cellCoords;
+        private readonly Point2D cellCoords = cellCoords;
 
         private Tube deletedTube;
         private int deletedTubeIndex;

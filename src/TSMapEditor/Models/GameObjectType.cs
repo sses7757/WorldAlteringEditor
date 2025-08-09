@@ -4,15 +4,10 @@ using TSMapEditor.Rendering;
 
 namespace TSMapEditor.Models
 {
-    public abstract class GameObjectType : AbstractObject, INIDefined
+    public abstract class GameObjectType(string iniName) : AbstractObject, INIDefined
     {
-        public GameObjectType(string iniName)
-        {
-            ININame = iniName;
-        }
-
         [INI(false)]
-        public string ININame { get; }
+        public string ININame { get; } = iniName;
 
         [INI(false)]
         public int Index { get; set; }

@@ -7,17 +7,11 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows placing smudge collections.
     /// </summary>
-    class PlaceSmudgeCollectionMutation : Mutation
+    class PlaceSmudgeCollectionMutation(IMutationTarget mutationTarget, SmudgeCollection smudgeCollection, Point2D cellCoords) : Mutation(mutationTarget)
     {
-        public PlaceSmudgeCollectionMutation(IMutationTarget mutationTarget, SmudgeCollection smudgeCollection, Point2D cellCoords) : base(mutationTarget)
-        {
-            this.smudgeCollection = smudgeCollection;
-            this.cellCoords = cellCoords;
-        }
-
         private Smudge oldSmudge;
-        private readonly SmudgeCollection smudgeCollection;
-        private readonly Point2D cellCoords;
+        private readonly SmudgeCollection smudgeCollection = smudgeCollection;
+        private readonly Point2D cellCoords = cellCoords;
 
         public override string GetDisplayString()
         {

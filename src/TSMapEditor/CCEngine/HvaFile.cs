@@ -6,9 +6,8 @@ using Microsoft.Xna.Framework;
 
 namespace TSMapEditor.CCEngine
 {
-    public class HvaLoadException : Exception
+    public class HvaLoadException(string message) : Exception(message)
     {
-        public HvaLoadException(string message) : base(message) { }
     }
 
     /// <summary>
@@ -22,14 +21,10 @@ namespace TSMapEditor.CCEngine
         public int NumFrames { get; set; }
         public List<Section> Sections { get; set; }
 
-        public class Section
+        public class Section(int numMatrices)
         {
             public string Name;
-            public List<float[]> Matrices;
-            public Section(int numMatrices)
-            {
-                Matrices = new List<float[]>(numMatrices);
-            }
+            public List<float[]> Matrices = new List<float[]>(numMatrices);
         }
 
         public HvaFile(Stream baseStream, string filename, int baseOffset, int fileSize, bool isBuffered = true)

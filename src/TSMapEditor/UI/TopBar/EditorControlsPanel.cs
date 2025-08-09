@@ -12,49 +12,28 @@ using TSMapEditor.UI.Windows;
 
 namespace TSMapEditor.UI.TopBar
 {
-    public class EditorControlsPanel : INItializableWindow
+    public class EditorControlsPanel(WindowManager windowManager, Map map, TheaterGraphics theaterGraphics,
+        EditorConfig editorConfig, EditorState editorState, WindowController windowController,
+        PlaceTerrainCursorAction terrainPlacementAction,
+        PlaceWaypointCursorAction placeWaypointCursorAction,
+        ICursorActionTarget cursorActionTarget) : INItializableWindow(windowManager)
     {
-        public EditorControlsPanel(WindowManager windowManager, Map map, TheaterGraphics theaterGraphics,
-            EditorConfig editorConfig, EditorState editorState, WindowController windowController,
-            PlaceTerrainCursorAction terrainPlacementAction,
-            PlaceWaypointCursorAction placeWaypointCursorAction,
-            ICursorActionTarget cursorActionTarget) : base(windowManager)
-        {
-            this.map = map;
-            this.theaterGraphics = theaterGraphics;
-            this.editorConfig = editorConfig;
-            this.editorState = editorState;
-            this.windowController = windowController;
-            this.terrainPlacementAction = terrainPlacementAction;
-            this.placeWaypointCursorAction = placeWaypointCursorAction;
-            this.cursorActionTarget = cursorActionTarget;
-
-            deletionModeCursorAction = new DeletionModeCursorAction(cursorActionTarget);
-            fsRaiseGroundCursorAction = new FSRaiseGroundCursorAction(cursorActionTarget);
-            fsLowerGroundCursorAction = new FSLowerGroundCursorAction(cursorActionTarget);
-            raiseGroundCursorAction = new RaiseGroundCursorAction(cursorActionTarget);
-            lowerGroundCursorAction = new LowerGroundCursorAction(cursorActionTarget);
-            raiseCellsCursorAction = new RaiseCellsCursorAction(cursorActionTarget);
-            lowerCellsCursorAction = new LowerCellsCursorAction(cursorActionTarget);
-            flattenGroundCursorAction = new FlattenGroundCursorAction(cursorActionTarget);
-        }
-
-        private readonly Map map;
-        private readonly TheaterGraphics theaterGraphics;
-        private readonly EditorConfig editorConfig;
-        private readonly EditorState editorState;
-        private readonly WindowController windowController;
-        private readonly ICursorActionTarget cursorActionTarget;
-        private readonly PlaceTerrainCursorAction terrainPlacementAction;
-        private readonly PlaceWaypointCursorAction placeWaypointCursorAction;
-        private readonly DeletionModeCursorAction deletionModeCursorAction;
-        private readonly FSRaiseGroundCursorAction fsRaiseGroundCursorAction;
-        private readonly FSLowerGroundCursorAction fsLowerGroundCursorAction;
-        private readonly RaiseGroundCursorAction raiseGroundCursorAction;
-        private readonly LowerGroundCursorAction lowerGroundCursorAction;
-        private readonly RaiseCellsCursorAction raiseCellsCursorAction;
-        private readonly LowerCellsCursorAction lowerCellsCursorAction;
-        private readonly FlattenGroundCursorAction flattenGroundCursorAction;
+        private readonly Map map = map;
+        private readonly TheaterGraphics theaterGraphics = theaterGraphics;
+        private readonly EditorConfig editorConfig = editorConfig;
+        private readonly EditorState editorState = editorState;
+        private readonly WindowController windowController = windowController;
+        private readonly ICursorActionTarget cursorActionTarget = cursorActionTarget;
+        private readonly PlaceTerrainCursorAction terrainPlacementAction = terrainPlacementAction;
+        private readonly PlaceWaypointCursorAction placeWaypointCursorAction = placeWaypointCursorAction;
+        private readonly DeletionModeCursorAction deletionModeCursorAction = new DeletionModeCursorAction(cursorActionTarget);
+        private readonly FSRaiseGroundCursorAction fsRaiseGroundCursorAction = new FSRaiseGroundCursorAction(cursorActionTarget);
+        private readonly FSLowerGroundCursorAction fsLowerGroundCursorAction = new FSLowerGroundCursorAction(cursorActionTarget);
+        private readonly RaiseGroundCursorAction raiseGroundCursorAction = new RaiseGroundCursorAction(cursorActionTarget);
+        private readonly LowerGroundCursorAction lowerGroundCursorAction = new LowerGroundCursorAction(cursorActionTarget);
+        private readonly RaiseCellsCursorAction raiseCellsCursorAction = new RaiseCellsCursorAction(cursorActionTarget);
+        private readonly LowerCellsCursorAction lowerCellsCursorAction = new LowerCellsCursorAction(cursorActionTarget);
+        private readonly FlattenGroundCursorAction flattenGroundCursorAction = new FlattenGroundCursorAction(cursorActionTarget);
 
         private XNADropDown ddBrushSize;
         private XNACheckBox chkAutoLAT;
@@ -161,8 +140,10 @@ namespace TSMapEditor.UI.TopBar
                 return;
             }
 
-            var generateTerrainCursorAction = new GenerateTerrainCursorAction(cursorActionTarget);
-            generateTerrainCursorAction.TerrainGeneratorConfiguration = windowController.TerrainGeneratorConfigWindow.TerrainGeneratorConfig;
+            var generateTerrainCursorAction = new GenerateTerrainCursorAction(cursorActionTarget)
+            {
+                TerrainGeneratorConfiguration = windowController.TerrainGeneratorConfigWindow.TerrainGeneratorConfig
+            };
             editorState.CursorAction = generateTerrainCursorAction;
         }
 
@@ -184,9 +165,11 @@ namespace TSMapEditor.UI.TopBar
             btnClearTerrain.ExtraTexture = theaterGraphics.GetTileGraphics(0).TMPImages[0].TextureFromTmpImage_RGBA(GraphicsDevice);
             btnClearTerrain.LeftClick += (s, e) => EnterLATPlacementMode(0);
             latPanel.AddChild(btnClearTerrain);
-            var clearToolTip = new ToolTip(WindowManager, btnClearTerrain);
-            clearToolTip.Text = "Clear";
-            clearToolTip.ToolTipDelay = 0;
+            var clearToolTip = new ToolTip(WindowManager, btnClearTerrain)
+            {
+                Text = "Clear",
+                ToolTipDelay = 0
+            };
 
             int prevRight = btnClearTerrain.Right;
             int y = btnClearTerrain.Y;
@@ -220,12 +203,14 @@ namespace TSMapEditor.UI.TopBar
                 if (alreadyExists)
                     continue;
 
-                var btn = new EditorButton(WindowManager);
-                btn.Name = "btn" + autoLATGround.GroundTileSet.SetName;
-                btn.X = prevRight + Constants.UIHorizontalSpacing;
-                btn.Y = y;
-                btn.Width = btnClearTerrain.Width;
-                btn.Height = btnClearTerrain.Height;
+                var btn = new EditorButton(WindowManager)
+                {
+                    Name = "btn" + autoLATGround.GroundTileSet.SetName,
+                    X = prevRight + Constants.UIHorizontalSpacing,
+                    Y = y,
+                    Width = btnClearTerrain.Width,
+                    Height = btnClearTerrain.Height
+                };
                 var tileGraphics = theaterGraphics.GetTileGraphics(autoLATGround.GroundTileSet.StartTileIndex);
                 btn.ExtraTexture = tileGraphics != null && tileGraphics.TMPImages.Length > 0 ? tileGraphics.TMPImages[0].TextureFromTmpImage_RGBA(GraphicsDevice) : null;
                 btn.Tag = autoLATGround;
@@ -242,13 +227,13 @@ namespace TSMapEditor.UI.TopBar
                 }
 
                 var toolTip = new ToolTip(WindowManager, btn);
-                string[] allBases = map.TheaterInstance.Theater.LATGrounds.FindAll(lg => lg.GroundTileSet == autoLATGround.GroundTileSet).Select(lg =>
+                string[] allBases = [.. map.TheaterInstance.Theater.LATGrounds.FindAll(lg => lg.GroundTileSet == autoLATGround.GroundTileSet).Select(lg =>
                 {
                     if (lg.BaseTileSet == null)
                         return "Clear";
 
                     return lg.BaseTileSet.SetName;
-                }).ToArray();
+                })];
 
                 toolTip.Text = $"{autoLATGround.GroundTileSet.SetName} (placed on top of {string.Join(" or ", allBases)})";
 

@@ -27,8 +27,8 @@ namespace TSMapEditor.CCEngine
 
         private Texture2D Texture;
         private Texture2D TextureWithLight;
-        private Palette PaletteWithLight;
-        private bool HasFullyBrightColors;
+        private readonly Palette PaletteWithLight;
+        private readonly bool HasFullyBrightColors;
 
         public void Dispose()
         {

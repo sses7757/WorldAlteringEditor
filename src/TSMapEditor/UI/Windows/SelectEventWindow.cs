@@ -6,14 +6,9 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectEventWindow : SelectObjectWindow<TriggerEventType>
+    public class SelectEventWindow(WindowManager windowManager, Map map) : SelectObjectWindow<TriggerEventType>(windowManager)
     {
-        public SelectEventWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public bool IsAddingNew { get; set; }
 

@@ -5,15 +5,9 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// Struct for un-do data of mutations that change smudges of cells.
     /// </summary>
-    struct OriginalSmudgeInfo
+    struct OriginalSmudgeInfo(int smudgeTypeIndex, Point2D cellCoords)
     {
-        public int SmudgeTypeIndex;
-        public Point2D CellCoords;
-
-        public OriginalSmudgeInfo(int smudgeTypeIndex, Point2D cellCoords)
-        {
-            SmudgeTypeIndex = smudgeTypeIndex;
-            CellCoords = cellCoords;
-        }
+        public int SmudgeTypeIndex = smudgeTypeIndex;
+        public Point2D CellCoords = cellCoords;
     }
 }

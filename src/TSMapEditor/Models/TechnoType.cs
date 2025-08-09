@@ -2,12 +2,8 @@
 
 namespace TSMapEditor.Models
 {
-    public abstract class TechnoType : GameObjectType
+    public abstract class TechnoType(string iniName) : GameObjectType(iniName)
     {
-        public TechnoType(string iniName) : base(iniName)
-        {
-        }
-
         public string Image { get; set; }
         public string Owner { get; set; }
         public bool NoShadow { get; set; }

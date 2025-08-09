@@ -11,12 +11,8 @@ namespace TSMapEditor.UI.CursorActions.HeightActions
     /// the mouse button tells which height level which gets assigned to
     /// all other cells that the cursor passes through.
     /// </summary>
-    public class FlattenGroundCursorAction : CursorAction
+    public class FlattenGroundCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public FlattenGroundCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         private int desiredHeightLevel = -1;
 
         public override string GetName() => "Flatten Ground";

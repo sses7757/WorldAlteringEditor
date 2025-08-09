@@ -1,13 +1,8 @@
 ﻿namespace TSMapEditor.Models
 {
-    public class LocalVariable
+    public class LocalVariable(int index)
     {
-        public LocalVariable(int index)
-        {
-            Index = index;
-        }
-
-        public int Index { get; }
+        public int Index { get; } = index;
         public string Name { get; set; }
         public int InitialState { get; set; }
     }

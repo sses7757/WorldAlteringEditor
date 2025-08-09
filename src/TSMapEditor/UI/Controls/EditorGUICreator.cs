@@ -24,8 +24,7 @@ namespace TSMapEditor.UI.Controls
         {
             get
             {
-                if (_instance == null)
-                    _instance = new EditorGUICreator();
+                _instance ??= new EditorGUICreator();
 
                 return _instance;
             }

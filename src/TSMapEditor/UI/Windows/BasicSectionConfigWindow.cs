@@ -10,14 +10,9 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to configure basic properties of the map.
     /// </summary>
-    public class BasicSectionConfigWindow : INItializableWindow
+    public class BasicSectionConfigWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public BasicSectionConfigWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private EditorTextBox tbName;
         private EditorTextBox tbAuthor;

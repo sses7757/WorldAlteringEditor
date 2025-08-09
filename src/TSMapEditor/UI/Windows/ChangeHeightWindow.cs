@@ -7,14 +7,9 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class ChangeHeightWindow : INItializableWindow
+    public class ChangeHeightWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public ChangeHeightWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private XNADropDown ddHeightLevel;
 

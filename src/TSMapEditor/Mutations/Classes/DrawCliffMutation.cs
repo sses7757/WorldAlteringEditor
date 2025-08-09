@@ -39,7 +39,7 @@ namespace TSMapEditor.Mutations.Classes
             public byte Level;
         }
 
-        private readonly List<CliffUndoData> undoData = new List<CliffUndoData>();
+        private readonly List<CliffUndoData> undoData = [];
 
         private readonly List<Point2D> cliffPath;
         private readonly CliffType cliffType;
@@ -89,7 +89,7 @@ namespace TSMapEditor.Mutations.Classes
                 lastNode.Destination = end;
             }
 
-            Stopwatch stopwatch = new Stopwatch();
+            Stopwatch stopwatch = new();
             stopwatch.Start();
             openSet.Enqueue(lastNode, (lastNode.FScore, lastNode.Tile?.ExtraPriority ?? 0));
 

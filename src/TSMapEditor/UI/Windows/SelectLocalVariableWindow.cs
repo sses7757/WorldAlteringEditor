@@ -5,14 +5,9 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectLocalVariableWindow : SelectObjectWindow<LocalVariable>
+    public class SelectLocalVariableWindow(WindowManager windowManager, Map map) : SelectObjectWindow<LocalVariable>(windowManager)
     {
-        public SelectLocalVariableWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public override void Initialize()
         {

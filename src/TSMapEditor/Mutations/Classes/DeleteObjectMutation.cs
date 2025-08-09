@@ -7,20 +7,13 @@ using TSMapEditor.UI;
 
 namespace TSMapEditor.Mutations.Classes
 {
-    public class DeleteObjectMutation : Mutation
+    public class DeleteObjectMutation(IMutationTarget mutationTarget, Point2D cellCoords, BrushSize brushSize, DeletionMode deletionMode) : Mutation(mutationTarget)
     {
-        public DeleteObjectMutation(IMutationTarget mutationTarget, Point2D cellCoords, BrushSize brushSize, DeletionMode deletionMode) : base(mutationTarget)
-        {
-            this.cellCoords = cellCoords;
-            this.brushSize = brushSize;
-            this.deletionMode = deletionMode;
-        }
+        private readonly Point2D cellCoords = cellCoords;
+        private readonly BrushSize brushSize = brushSize;
+        private readonly DeletionMode deletionMode = deletionMode;
 
-        private readonly Point2D cellCoords;
-        private readonly BrushSize brushSize;
-        private readonly DeletionMode deletionMode;
-
-        private List<AbstractObject> deletedObjects = new List<AbstractObject>();
+        private readonly List<AbstractObject> deletedObjects = [];
 
         public override string GetDisplayString()
         {
@@ -31,25 +24,17 @@ namespace TSMapEditor.Mutations.Classes
 
         private DeletionMode DeletionModeFromObject(AbstractObject obj)
         {
-            switch (obj.WhatAmI())
+            return obj.WhatAmI() switch
             {
-                case RTTIType.CellTag:
-                    return DeletionMode.CellTags;
-                case RTTIType.Waypoint:
-                    return DeletionMode.Waypoints;
-                case RTTIType.Infantry:
-                    return DeletionMode.Infantry;
-                case RTTIType.Aircraft:
-                    return DeletionMode.Aircraft;
-                case RTTIType.Unit:
-                    return DeletionMode.Vehicles;
-                case RTTIType.Building:
-                    return DeletionMode.Structures;
-                case RTTIType.Terrain:
-                    return DeletionMode.TerrainObjects;
-                default:
-                    throw new Exception($"{nameof(DeleteObjectMutation)}: Cannot set deletion mode from object of type " + obj.WhatAmI());
-            }
+                RTTIType.CellTag => DeletionMode.CellTags,
+                RTTIType.Waypoint => DeletionMode.Waypoints,
+                RTTIType.Infantry => DeletionMode.Infantry,
+                RTTIType.Aircraft => DeletionMode.Aircraft,
+                RTTIType.Unit => DeletionMode.Vehicles,
+                RTTIType.Building => DeletionMode.Structures,
+                RTTIType.Terrain => DeletionMode.TerrainObjects,
+                _ => throw new Exception($"{nameof(DeleteObjectMutation)}: Cannot set deletion mode from object of type " + obj.WhatAmI()),
+            };
         }
 
         public override void Perform()

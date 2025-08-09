@@ -10,16 +10,11 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to view and edit the map's size and visible area.
     /// </summary>
-    public class MapSizeWindow : INItializableWindow
+    public class MapSizeWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public MapSizeWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
         public event EventHandler OnResizeMapButtonClicked;
 
-        private readonly Map map;
+        private readonly Map map = map;
 
         private EditorNumberTextBox tbMapWidth;
         private EditorNumberTextBox tbMapHeight;

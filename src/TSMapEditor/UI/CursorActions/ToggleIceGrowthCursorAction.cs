@@ -7,12 +7,8 @@ using TSMapEditor.Mutations.Classes;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class ToggleIceGrowthCursorAction : CursorAction
+    public class ToggleIceGrowthCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public ToggleIceGrowthCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => ToggleIceGrowth ? "Enable Ice Growth" : "Disable Ice Growth";
 
         public bool ToggleIceGrowth { get; set; } = true;

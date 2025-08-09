@@ -9,7 +9,7 @@ namespace TSMapEditor.UI
 {
     public static class EditorThemes
     {
-        public static Dictionary<string, UISettings> Themes { get; set; } = new Dictionary<string, UISettings>();
+        public static Dictionary<string, UISettings> Themes { get; set; } = [];
 
         public static void Initialize()
         {

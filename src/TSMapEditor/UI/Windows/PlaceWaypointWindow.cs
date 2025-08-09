@@ -10,18 +10,11 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class PlaceWaypointWindow : INItializableWindow
+    public class PlaceWaypointWindow(WindowManager windowManager, Map map, MutationManager mutationManager, IMutationTarget mutationTarget) : INItializableWindow(windowManager)
     {
-        public PlaceWaypointWindow(WindowManager windowManager, Map map, MutationManager mutationManager, IMutationTarget mutationTarget) : base(windowManager)
-        {
-            this.map = map;
-            this.mutationManager = mutationManager;
-            this.mutationTarget = mutationTarget;
-        }
-
-        private readonly Map map;
-        private readonly MutationManager mutationManager;
-        private readonly IMutationTarget mutationTarget;
+        private readonly Map map = map;
+        private readonly MutationManager mutationManager = mutationManager;
+        private readonly IMutationTarget mutationTarget = mutationTarget;
 
         private EditorNumberTextBox tbWaypointNumber;
         private XNALabel lblDescription;
@@ -70,7 +63,7 @@ namespace TSMapEditor.UI.Windows
                 return;
             }
 
-            string waypointColor = ddWaypointColor.SelectedItem != null ? ddWaypointColor.SelectedItem.Text : null;
+            string waypointColor = ddWaypointColor.SelectedItem?.Text;
 
             mutationManager.PerformMutation(new PlaceWaypointMutation(mutationTarget, cellCoords, tbWaypointNumber.Value, waypointColor));
 

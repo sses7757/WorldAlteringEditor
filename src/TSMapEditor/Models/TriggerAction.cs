@@ -45,8 +45,10 @@ namespace TSMapEditor.Models
 
             int actionIndex = int.Parse(array[startIndex], CultureInfo.InvariantCulture);
 
-            var triggerAction = new TriggerAction();
-            triggerAction.ActionIndex = actionIndex;
+            var triggerAction = new TriggerAction
+            {
+                ActionIndex = actionIndex
+            };
             for (int i = 0; i < PARAM_COUNT; i++)
                 triggerAction.Parameters[i] = array[startIndex + 1 + i];
 

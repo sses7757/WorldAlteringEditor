@@ -28,21 +28,13 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to edit map scripts.
     /// </summary>
-    public class ScriptsWindow : INItializableWindow
+    public class ScriptsWindow(WindowManager windowManager, Map map, EditorState editorState,
+        INotificationManager notificationManager, ICursorActionTarget cursorActionTarget) : INItializableWindow(windowManager)
     {
-        public ScriptsWindow(WindowManager windowManager, Map map, EditorState editorState,
-            INotificationManager notificationManager, ICursorActionTarget cursorActionTarget) : base(windowManager)
-        {
-            this.map = map;
-            this.editorState = editorState ?? throw new ArgumentNullException(nameof(editorState));
-            this.notificationManager = notificationManager ?? throw new ArgumentNullException(nameof(notificationManager));
-            selectCellCursorAction = new SelectCellCursorAction(cursorActionTarget);
-        }
-
-        private readonly Map map;
-        private readonly EditorState editorState;
-        private readonly INotificationManager notificationManager;
-        private SelectCellCursorAction selectCellCursorAction;
+        private readonly Map map = map;
+        private readonly EditorState editorState = editorState ?? throw new ArgumentNullException(nameof(editorState));
+        private readonly INotificationManager notificationManager = notificationManager ?? throw new ArgumentNullException(nameof(notificationManager));
+        private readonly SelectCellCursorAction selectCellCursorAction = new SelectCellCursorAction(cursorActionTarget);
 
         private EditorListBox lbScriptTypes;
         private EditorSuggestionTextBox tbFilter;
@@ -107,8 +99,10 @@ namespace TSMapEditor.UI.Windows
 
             tbFilter.TextChanged += TbFilter_TextChanged;
 
-            var presetValuesContextMenu = new EditorContextMenu(WindowManager);
-            presetValuesContextMenu.Width = 250;
+            var presetValuesContextMenu = new EditorContextMenu(WindowManager)
+            {
+                Width = 250
+            };
             btnEditorPresetValues.ContextMenu = presetValuesContextMenu;
             btnEditorPresetValues.ContextMenu.OptionSelected += ContextMenu_OptionSelected;
             btnEditorPresetValues.LeftClick += BtnEditorPresetValues_LeftClick;
@@ -158,8 +152,10 @@ namespace TSMapEditor.UI.Windows
             var buildingTargetWindowDarkeningPanel = DarkeningPanel.InitializeAndAddToParentControlWithChild(WindowManager, Parent, selectBuildingTargetWindow);
             buildingTargetWindowDarkeningPanel.Hidden += BuildingTargetWindowDarkeningPanel_Hidden;
 
-            selectAnimationWindow = new SelectAnimationWindow(WindowManager, map);
-            selectAnimationWindow.IncludeNone = false;
+            selectAnimationWindow = new SelectAnimationWindow(WindowManager, map)
+            {
+                IncludeNone = false
+            };
             var animationWindowDarkeningPanel = DarkeningPanel.InitializeAndAddToParentControlWithChild(WindowManager, Parent, selectAnimationWindow);
             animationWindowDarkeningPanel.Hidden += AnimationWindowDarkeningPanel_Hidden;
 
@@ -259,7 +255,7 @@ namespace TSMapEditor.UI.Windows
 
                     if (map.Waypoints.Exists(wp => wp.Identifier == clonedEntry.Argument + indexOffset))
                     {
-                        clonedEntry.Argument = clonedEntry.Argument + indexOffset;
+                        clonedEntry.Argument += indexOffset;
                     }
                 }
             }
@@ -719,10 +715,7 @@ namespace TSMapEditor.UI.Windows
                 }
             }
 
-            var fittingItem = btnEditorPresetValues.ContextMenu.Items.Find(item => item.Text == entry.Argument.ToString());
-            if (fittingItem == null)
-                fittingItem = btnEditorPresetValues.ContextMenu.Items.Find(item => item.Text.StartsWith(entry.Argument.ToString()));
-
+            var fittingItem = btnEditorPresetValues.ContextMenu.Items.Find(item => item.Text == entry.Argument.ToString()) ?? btnEditorPresetValues.ContextMenu.Items.Find(item => item.Text.StartsWith(entry.Argument.ToString()));
             if (fittingItem != null)
                 return fittingItem.Text;
 
@@ -774,23 +767,13 @@ namespace TSMapEditor.UI.Windows
                 shouldViewTop = true;
             }
 
-            switch (ScriptSortMode)
+            sortedScripts = ScriptSortMode switch
             {
-                case ScriptSortMode.Color:
-                    sortedScripts = sortedScripts.OrderBy(script => script.EditorColor).ThenBy(script => script.ININame);
-                    break;
-                case ScriptSortMode.Name:
-                    sortedScripts = sortedScripts.OrderBy(script => script.Name).ThenBy(script => script.ININame);
-                    break;
-                case ScriptSortMode.ColorThenName:
-                    sortedScripts = sortedScripts.OrderBy(script => script.EditorColor).ThenBy(script => script.Name);
-                    break;
-                case ScriptSortMode.ID:
-                default:
-                    sortedScripts = sortedScripts.OrderBy(script => script.ININame);
-                    break;
-            }
-
+                ScriptSortMode.Color => sortedScripts.OrderBy(script => script.EditorColor).ThenBy(script => script.ININame),
+                ScriptSortMode.Name => sortedScripts.OrderBy(script => script.Name).ThenBy(script => script.ININame),
+                ScriptSortMode.ColorThenName => sortedScripts.OrderBy(script => script.EditorColor).ThenBy(script => script.Name),
+                _ => sortedScripts.OrderBy(script => script.ININame),
+            };
             foreach (var script in sortedScripts)
             {
                 lbScriptTypes.AddItem(new XNAListBoxItem() { 

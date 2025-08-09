@@ -6,14 +6,9 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectScriptActionWindow : SelectObjectWindow<ScriptAction>
+    public class SelectScriptActionWindow(WindowManager windowManager, EditorConfig editorConfig) : SelectObjectWindow<ScriptAction>(windowManager)
     {
-        public SelectScriptActionWindow(WindowManager windowManager, EditorConfig editorConfig) : base(windowManager)
-        {
-            this.editorConfig = editorConfig;
-        }
-
-        private EditorConfig editorConfig;
+        private readonly EditorConfig editorConfig = editorConfig;
 
         public override void Initialize()
         {

@@ -1,11 +1,7 @@
 ﻿namespace TSMapEditor.Models
 {
-    public class Aircraft : Foot<AircraftType>
+    public class Aircraft(AircraftType objectType) : Foot<AircraftType>(objectType)
     {
-        public Aircraft(AircraftType objectType) : base(objectType)
-        {
-        }
-
         public AircraftType AircraftType => ObjectType;
 
         // [Aircraft]

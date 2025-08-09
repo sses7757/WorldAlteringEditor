@@ -4,12 +4,8 @@ using System.Globalization;
 
 namespace TSMapEditor.UI.Controls
 {
-    public class EditorNumberTextBox : EditorTextBox
+    public class EditorNumberTextBox(WindowManager windowManager) : EditorTextBox(windowManager)
     {
-        public EditorNumberTextBox(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         public int DefaultValue { get; set; } = 0;
         public double DoubleDefaultValue { get; set; } = 0.0;
 
@@ -40,7 +36,7 @@ namespace TSMapEditor.UI.Controls
                 if (firstNonDigitIndex == -1)
                     return Conversions.IntFromString(Text, DefaultValue);
 
-                return Conversions.IntFromString(Text.Substring(0, firstNonDigitIndex), DefaultValue);
+                return Conversions.IntFromString(Text[..firstNonDigitIndex], DefaultValue);
             }
             set => Text = value.ToString(CultureInfo.InvariantCulture);
         }
@@ -65,7 +61,7 @@ namespace TSMapEditor.UI.Controls
                 if (firstNonDigitIndex == -1)
                     return Conversions.DoubleFromString(Text, DoubleDefaultValue);
 
-                return Conversions.DoubleFromString(Text.Substring(0, firstNonDigitIndex), DefaultValue);
+                return Conversions.DoubleFromString(Text[..firstNonDigitIndex], DefaultValue);
             }
             set => Text = value.ToString("0.#######################", CultureInfo.InvariantCulture); // prevent scientific notation
         }

@@ -3,16 +3,10 @@ using TSMapEditor.GameMath;
 
 namespace TSMapEditor.UI
 {
-    public class BrushSize
+    public class BrushSize(int width, int height)
     {
-        public BrushSize(int width, int height)
-        {
-            Width = width;
-            Height = height;
-        }
-
-        public int Width { get; }
-        public int Height { get; }
+        public int Width { get; } = width;
+        public int Height { get; } = height;
 
         public void DoForBrushSize(Action<Point2D> action)
         {

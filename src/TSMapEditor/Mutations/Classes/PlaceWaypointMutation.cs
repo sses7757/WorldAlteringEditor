@@ -7,18 +7,11 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows placing a waypoint on the map.
     /// </summary>
-    public class PlaceWaypointMutation : Mutation
+    public class PlaceWaypointMutation(IMutationTarget mutationTarget, Point2D cellCoords, int waypointNumber, string waypointColor = null) : Mutation(mutationTarget)
     {
-        public PlaceWaypointMutation(IMutationTarget mutationTarget, Point2D cellCoords, int waypointNumber, string waypointColor = null) : base(mutationTarget)
-        {
-            this.cellCoords = cellCoords;
-            this.waypointNumber = waypointNumber;
-            this.waypointColor = waypointColor;
-        }
-
-        private readonly Point2D cellCoords;
-        private readonly int waypointNumber;
-        private readonly string waypointColor;
+        private readonly Point2D cellCoords = cellCoords;
+        private readonly int waypointNumber = waypointNumber;
+        private readonly string waypointColor = waypointColor;
         private Waypoint waypoint;
 
         public override string GetDisplayString()
@@ -28,8 +21,12 @@ namespace TSMapEditor.Mutations.Classes
 
         public override void Perform()
         {
-            waypoint = new Waypoint() { Identifier = waypointNumber, Position = cellCoords };
-            waypoint.EditorColor = waypointColor;
+            waypoint = new Waypoint
+            {
+                Identifier = waypointNumber,
+                Position = cellCoords,
+                EditorColor = waypointColor
+            };
             MutationTarget.Map.AddWaypoint(waypoint);
             MutationTarget.AddRefreshPoint(cellCoords, 1);
         }

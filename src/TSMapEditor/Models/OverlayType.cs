@@ -3,12 +3,8 @@ using TSMapEditor.Models.Enums;
 
 namespace TSMapEditor.Models
 {
-    public class OverlayType : GameObjectType, IArtConfigContainer
+    public class OverlayType(string iniName) : GameObjectType(iniName), IArtConfigContainer
     {
-        public OverlayType(string iniName) : base(iniName)
-        {
-        }
-
         public override RTTIType WhatAmI() => RTTIType.OverlayType;
 
         // We might not need all of these properties at least immediately,

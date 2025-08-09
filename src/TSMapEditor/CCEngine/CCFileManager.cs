@@ -9,22 +9,22 @@ namespace TSMapEditor.CCEngine
     {
         public string GameDirectory { get; set; }
         
-        private List<string> searchDirectories = new();
+        private readonly List<string> searchDirectories = [];
 
         /// <summary>
         /// Contains information on which MIX file each found game file can be loaded from.
         /// </summary>
-        private Dictionary<uint, FileLocationInfo> fileLocationInfos = new();
+        private readonly Dictionary<uint, FileLocationInfo> fileLocationInfos = [];
 
         /// <summary>
         /// List of all MIX files that have been registered with the file manager.
         /// </summary>
-        private List<MixFile> mixFiles = new();
+        private readonly List<MixFile> mixFiles = [];
 
         /// <summary>
         /// List of all CSF files that have been registered with the file manager.
         /// </summary>
-        public List<CsfFile> CsfFiles { get; } = new();
+        public List<CsfFile> CsfFiles { get; } = [];
 
         public void ReadConfig()
         {
@@ -214,9 +214,7 @@ namespace TSMapEditor.CCEngine
         /// <param name="name">The name of the CSf file.</param>
         public void LoadStringTable(string name)
         {
-            var data = LoadFile(name);
-            if (data == null)
-                throw new FileNotFoundException("CSF file not found: " + name);
+            var data = LoadFile(name) ?? throw new FileNotFoundException("CSF file not found: " + name);
             var file = new CsfFile(name);
             file.ParseFromBuffer(data);
             CsfFiles.Add(file);
@@ -270,18 +268,11 @@ namespace TSMapEditor.CCEngine
         private bool IsSpecialMixName(string name)
         {
             name = name.ToUpper();
-            switch (name)
+            return name switch
             {
-                case "$TSECACHE":
-                case "$RA2ECACHE":
-                case "$TSELOCAL":
-                case "$RA2ELOCAL":
-                case "$EXPAND":
-                case "$EXPANDMD":
-                    return true;
-                default:
-                    return false;
-            }
+                "$TSECACHE" or "$RA2ECACHE" or "$TSELOCAL" or "$RA2ELOCAL" or "$EXPAND" or "$EXPANDMD" => true,
+                _ => false,
+            };
         }
 
         private void HandleSpecialMixName(string name)
@@ -315,17 +306,10 @@ namespace TSMapEditor.CCEngine
     /// Struct for holding data on which MIX file a file exists in,
     /// and where the file exists within the MIX file.
     /// </summary>
-    internal struct FileLocationInfo
+    internal struct FileLocationInfo(MixFile mixFile, int offset, int size)
     {
-        public FileLocationInfo(MixFile mixFile, int offset, int size)
-        {
-            MixFile = mixFile;
-            Offset = offset;
-            Size = size;
-        }
-
-        public MixFile MixFile { get; private set; }
-        public int Offset { get; private set; }
-        public int Size { get; private set; }
+        public MixFile MixFile { get; private set; } = mixFile;
+        public int Offset { get; private set; } = offset;
+        public int Size { get; private set; } = size;
     }
 }

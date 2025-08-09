@@ -8,12 +8,8 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows placing down infantry.
     /// </summary>
-    public class InfantryPlacementAction : CursorAction
+    public class InfantryPlacementAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public InfantryPlacementAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Place Infantry";
 
         private Infantry infantry;
@@ -44,8 +40,7 @@ namespace TSMapEditor.UI.CursorActions
 
         public override void OnActionEnter()
         {
-            if (infantry != null)
-                infantry.Owner = CursorActionTarget.MutationTarget.ObjectOwner;
+            infantry?.Owner = CursorActionTarget.MutationTarget.ObjectOwner;
         }
 
         public override void PreMapDraw(Point2D cellCoords)

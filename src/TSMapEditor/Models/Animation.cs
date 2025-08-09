@@ -3,13 +3,8 @@ using TSMapEditor.GameMath;
 
 namespace TSMapEditor.Models
 {
-    public class Animation : GameObject
+    public class Animation(AnimType animType) : GameObject
     {
-        public Animation(AnimType animType)
-        {
-            AnimType = animType;
-        }
-
         public Animation(AnimType animType, Point2D position) : this(animType)
         {
             Position = position;
@@ -19,7 +14,7 @@ namespace TSMapEditor.Models
 
         public override GameObjectType GetObjectType() => AnimType;
 
-        public AnimType AnimType { get; private set; }
+        public AnimType AnimType { get; private set; } = animType;
         public House Owner { get; set; }
         public byte Facing { get; set; }
         public bool IsBuildingAnim { get; set; }

@@ -7,17 +7,12 @@ namespace TSMapEditor.CCEngine
     /// <summary>
     /// A Tiberian Sun TMP file.
     /// </summary>
-    public class TmpFile
+    public class TmpFile(string fileName)
     {
-        public TmpFile(string fileName)
-        {
-            this.fileName = fileName;
-        }
-
-        private readonly string fileName;
+        private readonly string fileName = fileName;
 
         private TmpFileHeader tmpFileHeader;
-        private List<TmpImage> tmpImages = new List<TmpImage>();
+        private readonly List<TmpImage> tmpImages = [];
 
         public int ImageCount => tmpImages.Count;
         public TmpImage GetImage(int id) => tmpImages[id];
@@ -28,17 +23,15 @@ namespace TSMapEditor.CCEngine
 
         public void ParseFromFile(string filePath)
         {
-            using (FileStream stream = File.OpenRead(filePath))
-            {
-                Parse(stream);
-            }
+            using FileStream stream = File.OpenRead(filePath);
+            Parse(stream);
         }
 
         public void Parse(Stream stream)
         {
             byte[] buffer = new byte[stream.Length];
             stream.Position = 0;
-            stream.Read(buffer, 0, buffer.Length);
+            stream.ReadExactly(buffer);
             ParseFromBuffer(buffer);
         }
 
@@ -47,7 +40,7 @@ namespace TSMapEditor.CCEngine
             tmpFileHeader = new TmpFileHeader(buffer);
             int tileCount = tmpFileHeader.Width * tmpFileHeader.Height;
 
-            List<int> tmpHeaderOffsets = new List<int>();
+            List<int> tmpHeaderOffsets = [];
 
             for (int i = 0; i < tileCount; i++)
             {
@@ -55,20 +48,18 @@ namespace TSMapEditor.CCEngine
                 tmpHeaderOffsets.Add(offset);
             }
 
-            using (var memoryStream = new MemoryStream(buffer))
+            using var memoryStream = new MemoryStream(buffer);
+            for (int i = 0; i < tileCount; i++)
             {
-                for (int i = 0; i < tileCount; i++)
+                if (tmpHeaderOffsets[i] == 0)
                 {
-                    if (tmpHeaderOffsets[i] == 0)
-                    {
-                        tmpImages.Add(null);
-                    }
-                    else
-                    {
-                        memoryStream.Position = tmpHeaderOffsets[i];
-                        TmpImage tmpImage = new TmpImage(memoryStream, fileName);
-                        tmpImages.Add(tmpImage);
-                    }
+                    tmpImages.Add(null);
+                }
+                else
+                {
+                    memoryStream.Position = tmpHeaderOffsets[i];
+                    TmpImage tmpImage = new(memoryStream, fileName);
+                    tmpImages.Add(tmpImage);
                 }
             }
         }
@@ -123,34 +114,34 @@ namespace TSMapEditor.CCEngine
             YExtra = ReadIntFromStream(stream);
             ExtraWidth = ReadUIntFromStream(stream);
             ExtraHeight = ReadUIntFromStream(stream);
-            stream.Read(buffer, 0, 4);
+            stream.ReadExactly(buffer, 0, 4);
             // The image flags of WW tiles contain
             // trash / uninitialized memory which we have to clear
             ImageFlags = (TmpImageFlags)(BitConverter.ToUInt32(buffer, 0));
-            stream.Read(buffer, 0, 3);
+            stream.ReadExactly(buffer, 0, 3);
             Height = buffer[0];
             TerrainType = buffer[1];
             RampType = (RampType)buffer[2];
             RadarLeftColor = ReadRGBColorFromStream(stream);
             RadarRightColor = ReadRGBColorFromStream(stream);
-            stream.Read(buffer, 0, 3); // Discard 3 more bytes of WW trash data / uninitialized memory
-            stream.Read(ColorData, 0, Constants.TileColorBufferSize);
+            stream.ReadExactly(buffer, 0, 3); // Discard 3 more bytes of WW trash data / uninitialized memory
+            stream.ReadExactly(ColorData, 0, Constants.TileColorBufferSize);
 
             if ((ImageFlags & TmpImageFlags.HasZData) == TmpImageFlags.HasZData)
             {
                 ZData = new byte[Constants.TileColorBufferSize];
-                stream.Read(ZData, 0, ZData.Length);
+                stream.ReadExactly(ZData);
             }
              
             if ((ImageFlags & TmpImageFlags.HasExtraData) == TmpImageFlags.HasExtraData)
             {
                 ExtraGraphicsColorData = new byte[ExtraWidth * ExtraHeight];
-                stream.Read(ExtraGraphicsColorData, 0, ExtraGraphicsColorData.Length);
+                stream.ReadExactly(ExtraGraphicsColorData);
             
                 if ((ImageFlags & TmpImageFlags.HasZData) == TmpImageFlags.HasZData && ExtraZDataOffset > 0)
                 {
                     ExtraGraphicsZData = new byte[ExtraWidth * ExtraHeight];
-                    stream.Read(ExtraGraphicsZData, 0, ExtraGraphicsZData.Length);
+                    stream.ReadExactly(ExtraGraphicsZData);
                 }
             }
         }
@@ -165,23 +156,23 @@ namespace TSMapEditor.CCEngine
 
         private int ReadIntFromStream(Stream stream)
         {
-            stream.Read(buffer, 0, 4);
+            stream.ReadExactly(buffer, 0, 4);
             return BitConverter.ToInt32(buffer, 0);
         }
 
         private uint ReadUIntFromStream(Stream stream)
         {
-            stream.Read(buffer, 0, 4);
+            stream.ReadExactly(buffer, 0, 4);
             return BitConverter.ToUInt32(buffer, 0);
         }
 
         private RGBColor ReadRGBColorFromStream(Stream stream)
         {
-            stream.Read(buffer, 0, 3);
+            stream.ReadExactly(buffer, 0, 3);
             return new RGBColor(buffer, 0, 0);
         }
 
-        byte[] buffer = new byte[4];
+        readonly byte[] buffer = new byte[4];
 
         public int X { get; private set; }
         public int Y { get; private set; }

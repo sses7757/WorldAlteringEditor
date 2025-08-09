@@ -8,14 +8,9 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to select a TaskForce (for example, for a TeamType).
     /// </summary>
-    public class SelectTaskForceWindow : SelectObjectWindow<TaskForce>
+    public class SelectTaskForceWindow(WindowManager windowManager, Map map) : SelectObjectWindow<TaskForce>(windowManager)
     {
-        public SelectTaskForceWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public override void Initialize()
         {

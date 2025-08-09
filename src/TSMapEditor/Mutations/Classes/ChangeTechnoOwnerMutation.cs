@@ -6,18 +6,11 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that changes the owner of an object.
     /// </summary>
-    public class ChangeTechnoOwnerMutation : Mutation
+    public class ChangeTechnoOwnerMutation(TechnoBase techno, House newOwner, IMutationTarget mutationTarget) : Mutation(mutationTarget)
     {
-        public ChangeTechnoOwnerMutation(TechnoBase techno, House newOwner, IMutationTarget mutationTarget) : base(mutationTarget)
-        {
-            this.techno = techno;
-            this.oldOwner = techno.Owner;
-            this.newOwner = newOwner;
-        }
-
-        private readonly TechnoBase techno;
-        private readonly House oldOwner;
-        private readonly House newOwner;
+        private readonly TechnoBase techno = techno;
+        private readonly House oldOwner = techno.Owner;
+        private readonly House newOwner = newOwner;
 
         public override string GetDisplayString()
         {

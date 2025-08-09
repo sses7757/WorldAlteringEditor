@@ -6,12 +6,8 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering.ObjectRenderers
 {
-    public sealed class UnitRenderer : ObjectRenderer<Unit>
+    public sealed class UnitRenderer(RenderDependencies renderDependencies) : ObjectRenderer<Unit>(renderDependencies)
     {
-        public UnitRenderer(RenderDependencies renderDependencies) : base(renderDependencies)
-        {
-        }
-
         protected override Color ReplacementColor => Color.Red;
 
         protected override CommonDrawParams GetDrawParams(Unit gameObject)
@@ -95,7 +91,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
 
                 float rotationFromFacing = 2 * (float)Math.PI * ((float)facing / Constants.FacingMax);
 
-                Vector2 leptonTurretOffset = new Vector2(0, -gameObject.UnitType.ArtConfig.TurretOffset);
+                Vector2 leptonTurretOffset = new(0, -gameObject.UnitType.ArtConfig.TurretOffset);
                 leptonTurretOffset = Vector2.Transform(leptonTurretOffset, Matrix.CreateRotationZ(rotationFromFacing));
 
                 Point2D turretOffset = Helpers.ScreenCoordsFromWorldLeptons(leptonTurretOffset);

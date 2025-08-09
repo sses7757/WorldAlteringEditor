@@ -14,16 +14,11 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
     /// <summary>
     /// A window that allows the user to configure the terrain generator (see <see cref="TerrainGeneratorConfiguration"/>).
     /// </summary>
-    public class TerrainGeneratorConfigWindow : EditorWindow
+    public class TerrainGeneratorConfigWindow(WindowManager windowManager, Map map) : EditorWindow(windowManager)
     {
-        public TerrainGeneratorConfigWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
         public event EventHandler ConfigApplied;
 
-        private readonly Map map;
+        private readonly Map map = map;
 
         public TerrainGeneratorConfiguration TerrainGeneratorConfig { get; private set; }
 
@@ -78,12 +73,14 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
             AddChild(btnSaveConfig);
             btnSaveConfig.LeftClick += BtnSaveConfig_LeftClick;
 
-            var btnDeleteConfig = new EditorButton(WindowManager);
-            btnDeleteConfig.Name = nameof(btnSaveConfig);
-            btnDeleteConfig.Width = 160;
-            btnDeleteConfig.X = btnSaveConfig.Right + Constants.UIHorizontalSpacing;
-            btnDeleteConfig.Y = btnSaveConfig.Y;
-            btnDeleteConfig.Text = "Delete Custom Preset...";
+            var btnDeleteConfig = new EditorButton(WindowManager)
+            {
+                Name = nameof(btnSaveConfig),
+                Width = 160,
+                X = btnSaveConfig.Right + Constants.UIHorizontalSpacing,
+                Y = btnSaveConfig.Y,
+                Text = "Delete Custom Preset..."
+            };
             AddChild(btnDeleteConfig);
             btnDeleteConfig.LeftClick += BtnDeleteConfig_LeftClick;
 
@@ -168,11 +165,13 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
 
             Height = btnApply.Bottom + Constants.UIEmptyBottomSpace;
 
-            var closeButton = new EditorButton(WindowManager);
-            closeButton.Name = "btnCloseX";
-            closeButton.Width = Constants.UIButtonHeight;
-            closeButton.Height = Constants.UIButtonHeight;
-            closeButton.Text = "X";
+            var closeButton = new EditorButton(WindowManager)
+            {
+                Name = "btnCloseX",
+                Width = Constants.UIButtonHeight,
+                Height = Constants.UIButtonHeight,
+                Text = "X"
+            };
             closeButton.X = Width - closeButton.Width;
             closeButton.Y = 0;
             AddChild(closeButton);
@@ -239,8 +238,7 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
         {
             for (int i = 0; i < panels.Length; i++)
             {
-                if (panels[i] != null)
-                    panels[i].Disable();
+                panels[i]?.Disable();
             }
         }
 
@@ -325,10 +323,10 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                     LoadConfig(new TerrainGeneratorConfiguration("Blank Config",
                         map.LoadedTheaterName,
                         true,
-                        new List<TerrainGeneratorTerrainTypeGroup>(),
-                        new List<TerrainGeneratorTileGroup>(),
-                        new List<TerrainGeneratorOverlayGroup>(),
-                        new List<TerrainGeneratorSmudgeGroup>()));
+                        [],
+                        [],
+                        [],
+                        []));
                 }
             }
         }

@@ -62,24 +62,24 @@ namespace TSMapEditor.UI
         private const float RightClickScrollRateDivisor = 48f;
         private const double ZoomStep = 0.1;
 
-        private static Color[] MarbleMadnessTileHeightLevelColors = new Color[]
-        {
-            new Color(165, 28, 68),
-            new Color(202, 149, 101),
-            new Color(170, 125, 76),
-            new Color(149, 109, 64),
-            new Color(133, 97, 56),
-            new Color(226, 101, 182),
-            new Color(194, 198, 255),
-            new Color(20, 153, 20),
-            new Color(4, 129, 16),
-            new Color(40, 165, 28),
-            new Color(230, 198, 109),
-            new Color(153, 20, 48),
-            new Color(80, 190, 56),
-            new Color(56, 89, 133),
-            new Color(194, 198, 255)
-        };
+        private static readonly Color[] MarbleMadnessTileHeightLevelColors =
+        [
+            new(165, 28, 68),
+            new(202, 149, 101),
+            new(170, 125, 76),
+            new(149, 109, 64),
+            new(133, 97, 56),
+            new(226, 101, 182),
+            new(194, 198, 255),
+            new(20, 153, 20),
+            new(4, 129, 16),
+            new(40, 165, 28),
+            new(230, 198, 109),
+            new(153, 20, 48),
+            new(80, 190, 56),
+            new(56, 89, 133),
+            new(194, 198, 255)
+        ];
 
         public MapUI(WindowManager windowManager, Map map, TheaterGraphics theaterGraphics, EditorGraphics editorGraphics,
             EditorState editorState, MutationManager mutationManager, WindowController windowController) : base(windowManager)
@@ -139,7 +139,7 @@ namespace TSMapEditor.UI
         private IMovable draggedOrRotatedObject = null;
 
         private bool isRightClickScrolling = false;
-        private Point rightClickScrollInitPos = new Point(-1, -1);
+        private Point rightClickScrollInitPos = new(-1, -1);
 
         private Point lastClickedPoint;
         private Point pressedDownPoint;
@@ -154,7 +154,7 @@ namespace TSMapEditor.UI
 
         private int currentEventID = 0;
 
-        private MapView mapView;
+        private readonly MapView mapView;
 
 
         public void AddRefreshPoint(Point2D point, int size = 1) => mapView.InvalidateMap();
@@ -226,17 +226,15 @@ namespace TSMapEditor.UI
 #if WINDOWS
                 string initialPath = string.IsNullOrWhiteSpace(UserSettings.Instance.LastScenarioPath.GetValue()) ? UserSettings.Instance.GameDirectory : UserSettings.Instance.LastScenarioPath.GetValue();
 
-                using (System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog())
-                {
-                    saveFileDialog.InitialDirectory = Path.GetDirectoryName(initialPath);
-                    saveFileDialog.FileName = Path.ChangeExtension(Path.GetFileName(initialPath), ".png");
-                    saveFileDialog.Filter = "PNG files|*.png|All files|*.*";
-                    saveFileDialog.RestoreDirectory = true;
+                using System.Windows.Forms.SaveFileDialog saveFileDialog = new();
+                saveFileDialog.InitialDirectory = Path.GetDirectoryName(initialPath);
+                saveFileDialog.FileName = Path.ChangeExtension(Path.GetFileName(initialPath), ".png");
+                saveFileDialog.Filter = "PNG files|*.png|All files|*.*";
+                saveFileDialog.RestoreDirectory = true;
 
-                    if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        mapView.ExtractMegamapTo(e, saveFileDialog.FileName);
-                    }
+                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    mapView.ExtractMegamapTo(e, saveFileDialog.FileName);
                 }
 #else
                 mapUI.ExtractMegamapTo(e, Path.Combine(Environment.CurrentDirectory, "megamap.png"));
@@ -270,11 +268,13 @@ namespace TSMapEditor.UI
 
         private void ViewMegamap_Triggered(object sender, EventArgs e)
         {
-            var mmw = new MegamapWindow(WindowManager, this, false);
-            mmw.Width = WindowManager.RenderResolutionX;
-            mmw.Height = WindowManager.RenderResolutionY;
-            mmw.DrawOrder = int.MaxValue;
-            mmw.UpdateOrder = int.MaxValue;
+            var mmw = new MegamapWindow(WindowManager, this, false)
+            {
+                Width = WindowManager.RenderResolutionX,
+                Height = WindowManager.RenderResolutionY,
+                DrawOrder = int.MaxValue,
+                UpdateOrder = int.MaxValue
+            };
             WindowManager.AddAndInitializeControl(mmw);
             InvalidateMapForMinimap();
         }
@@ -656,7 +656,7 @@ namespace TSMapEditor.UI
         private Point2D GetCursorMapPoint()
         {
             Point cursorPoint = GetCursorPoint();
-            Point2D cursorMapPoint = new Point2D(Camera.TopLeftPoint.X + (int)(cursorPoint.X / Camera.ZoomLevel),
+            Point2D cursorMapPoint = new(Camera.TopLeftPoint.X + (int)(cursorPoint.X / Camera.ZoomLevel),
                     Camera.TopLeftPoint.Y - Constants.MapYBaseline + (int)(cursorPoint.Y / Camera.ZoomLevel));
 
             return cursorMapPoint;
@@ -694,10 +694,7 @@ namespace TSMapEditor.UI
             if (tile == null)
                 return;
 
-            BrushSize singleTileBrushSize = Map.EditorConfig.BrushSizes.Find(bs => bs.Width == 1 && bs.Height == 1);
-            if (singleTileBrushSize == null)
-                throw new InvalidOperationException($"{nameof(DeleteObjectFromCell)}: 1x1 sized brush not found!");
-
+            BrushSize singleTileBrushSize = Map.EditorConfig.BrushSizes.Find(bs => bs.Width == 1 && bs.Height == 1) ?? throw new InvalidOperationException($"{nameof(DeleteObjectFromCell)}: 1x1 sized brush not found!");
             if (Map.HasObjectToDelete(cellCoords, EditorState.DeletionMode))
                 MutationManager.PerformMutation(new DeleteObjectMutation(MutationTarget, tile.CoordsToPoint(), singleTileBrushSize, EditorState.DeletionMode));
 

@@ -10,7 +10,7 @@ namespace TSMapEditor.Settings
         public const int MaxEntries = 4;
         private const string IniSectionName = "RecentFiles";
 
-        private List<string> entries = new List<string>(MaxEntries);
+        private readonly List<string> entries = new(MaxEntries);
 
         public void PutEntry(string entry)
         {
@@ -29,7 +29,7 @@ namespace TSMapEditor.Settings
             }
         }
 
-        public List<string> GetEntries() => new List<string>(entries);
+        public List<string> GetEntries() => new(entries);
 
         private void TrimEntries()
         {

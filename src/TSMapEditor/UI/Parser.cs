@@ -18,7 +18,7 @@ namespace TSMapEditor.UI
             if (_instance != null)
                 throw new InvalidOperationException("Only one instance of Parser can exist at a time.");
 
-            globalConstants = new Dictionary<string, int>();
+            globalConstants = [];
             RefreshResolutionConstants(windowManager);
             globalConstants.Add("EMPTY_SPACE_TOP", Constants.UIEmptyTopSpace);
             globalConstants.Add("EMPTY_SPACE_BOTTOM", Constants.UIEmptyBottomSpace);
@@ -55,10 +55,7 @@ namespace TSMapEditor.UI
             if (controlName == primaryControl.Name)
                 return primaryControl;
 
-            var control = Find(primaryControl.Children, controlName);
-            if (control == null)
-                throw new KeyNotFoundException($"Control '{controlName}' not found while parsing input '{Input}'");
-
+            var control = Find(primaryControl.Children, controlName) ?? throw new KeyNotFoundException($"Control '{controlName}' not found while parsing input '{Input}'");
             return control;
         }
 

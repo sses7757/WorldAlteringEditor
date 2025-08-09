@@ -9,13 +9,8 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that prompts the user for the name and parent country of the new house.
     /// </summary>
-    public class NewHouseWindow : INItializableWindow
+    public class NewHouseWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public NewHouseWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
         private EditorTextBox tbHouseName;
         private XNADropDown ddParentCountry;
         private EditorButton btnAdd;
@@ -23,7 +18,7 @@ namespace TSMapEditor.UI.Windows
         public HouseType ParentCountry { get; set; }
         public bool Success { get; set; }
 
-        private readonly Map map;
+        private readonly Map map = map;
 
         public override void Initialize()
         {
@@ -87,14 +82,13 @@ namespace TSMapEditor.UI.Windows
                 PercentBuilt = 100,
                 PlayerControl = false,
                 TechLevel = Constants.MaxHouseTechLevel,
-                ID = map.Houses.Count
+                ID = map.Houses.Count,
+                Color = newHouseType.Color,
+                XNAColor = newHouseType.XNAColor,
+                Country = houseTypeName,
+
+                HouseType = newHouseType
             };
-
-            newHouse.Color = newHouseType.Color;
-            newHouse.XNAColor = newHouseType.XNAColor;
-            newHouse.Country = houseTypeName;
-
-            newHouse.HouseType = newHouseType;
 
             map.AddHouse(newHouse);
 

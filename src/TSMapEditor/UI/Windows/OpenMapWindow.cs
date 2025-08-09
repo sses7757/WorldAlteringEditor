@@ -7,25 +7,16 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class FileSelectedEventArgs : EventArgs
+    public class FileSelectedEventArgs(string filePath) : EventArgs
     {
-        public FileSelectedEventArgs(string filePath)
-        {
-            FilePath = filePath;
-        }
-
-        public string FilePath { get; }
+        public string FilePath { get; } = filePath;
     }
 
     /// <summary>
     /// A window that allows the user to open a map.
     /// </summary>
-    public class OpenMapWindow : EditorWindow
+    public class OpenMapWindow(WindowManager windowManager) : EditorWindow(windowManager)
     {
-        public OpenMapWindow(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         public event EventHandler<FileSelectedEventArgs> OnFileSelected;
 
         private FileBrowserListBox lbFileList;

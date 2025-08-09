@@ -3,12 +3,8 @@ using TSMapEditor.Mutations.Classes.HeightMutations;
 
 namespace TSMapEditor.UI.CursorActions.HeightActions
 {
-    internal class LowerGroundCursorAction : CursorAction
+    internal class LowerGroundCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public LowerGroundCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Lower Ground (Steep Ramps)";
 
         public override void OnActionEnter()

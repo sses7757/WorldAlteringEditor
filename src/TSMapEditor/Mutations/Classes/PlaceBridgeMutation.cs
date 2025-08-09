@@ -63,7 +63,7 @@ namespace TSMapEditor.Mutations.Classes
         private readonly BridgeType bridgeType;
 
 
-        private List<OriginalOverlayInfo> originalOverlayInfos = new List<OriginalOverlayInfo>();
+        private readonly List<OriginalOverlayInfo> originalOverlayInfos = [];
 
         public override string GetDisplayString()
         {

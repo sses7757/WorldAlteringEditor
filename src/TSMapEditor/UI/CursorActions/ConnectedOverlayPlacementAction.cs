@@ -6,27 +6,17 @@ using TSMapEditor.Mutations.Classes;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class ConnectedOverlayPlacementAction : CursorAction
+    public class ConnectedOverlayPlacementAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public ConnectedOverlayPlacementAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Place Connected Overlay";
         public ConnectedOverlayType ConnectedOverlayType { get; set; }
-        struct OriginalOverlayInfo
+        struct OriginalOverlayInfo(OverlayType overlayType, int frameIndex)
         {
-            public OverlayType OverlayType;
-            public int FrameIndex;
-
-            public OriginalOverlayInfo(OverlayType overlayType, int frameIndex)
-            {
-                OverlayType = overlayType;
-                FrameIndex = frameIndex;
-            }
+            public OverlayType OverlayType = overlayType;
+            public int FrameIndex = frameIndex;
         }
 
-        private List<OriginalOverlayInfo> originalOverlay = new List<OriginalOverlayInfo>();
+        private readonly List<OriginalOverlayInfo> originalOverlay = [];
 
         public override void PreMapDraw(Point2D cellCoords)
         {

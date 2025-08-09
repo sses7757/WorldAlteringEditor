@@ -15,7 +15,7 @@ public class IniFileEx: IniFile
     private static readonly string PhobosIncludeSection = "$Include";
     private static readonly string PhobosInheritsSection = "$Inherits";
 
-    private readonly HashSet<IniSection> alreadyInheritedSections = new();
+    private readonly HashSet<IniSection> alreadyInheritedSections = [];
 
     public IniFileEx() : base() { }
 

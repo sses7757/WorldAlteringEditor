@@ -2,10 +2,8 @@
 
 namespace TSMapEditor.Models
 {
-    public class AnimType : GameObjectType, IArtConfigContainer
+    public class AnimType(string iniName) : GameObjectType(iniName), IArtConfigContainer
     {
-        public AnimType(string iniName) : base(iniName) { }
-
         public override RTTIType WhatAmI() => RTTIType.AnimType;
 
         public AnimArtConfig ArtConfig { get; set; } = new AnimArtConfig();

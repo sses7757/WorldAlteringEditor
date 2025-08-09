@@ -9,12 +9,8 @@ namespace TSMapEditor.UI.Windows
     /// A window that allows the user to configure which 
     /// object types should be copied when copying parts of a map.
     /// </summary>
-    public class CopiedEntryTypesWindow : INItializableWindow
+    public class CopiedEntryTypesWindow(WindowManager windowManager) : INItializableWindow(windowManager)
     {
-        public CopiedEntryTypesWindow(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         private XNACheckBox chkTerrainTiles;
         private XNACheckBox chkOverlay;
         private XNACheckBox chkSmudges;

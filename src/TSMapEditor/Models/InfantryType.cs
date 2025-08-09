@@ -2,12 +2,8 @@
 
 namespace TSMapEditor.Models
 {
-    public class InfantryType : TechnoType, IArtConfigContainer
+    public class InfantryType(string iniName) : TechnoType(iniName), IArtConfigContainer
     {
-        public InfantryType(string iniName) : base(iniName)
-        {
-        }
-
         public InfantryArtConfig ArtConfig { get; } = new InfantryArtConfig();
         public IArtConfig GetArtConfig() => ArtConfig;
 

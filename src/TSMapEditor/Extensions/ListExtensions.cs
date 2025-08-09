@@ -98,8 +98,10 @@ namespace TSMapEditor.Extensions
                 if (teamTypeSection == null)
                     continue;
 
-                var teamType = new TeamType(kvp.Value);
-                teamType.IsGlobalTeamType = isGlobal;
+                var teamType = new TeamType(kvp.Value)
+                {
+                    IsGlobalTeamType = isGlobal
+                };
                 teamType.ReadPropertiesFromIniSection(teamTypeSection);
                 string houseTypeIniName = teamTypeSection.GetStringValue("House", string.Empty);
                 string scriptId = teamTypeSection.GetStringValue("Script", string.Empty);

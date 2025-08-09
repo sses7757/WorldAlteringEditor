@@ -11,25 +11,17 @@ using TSMapEditor.UI.CursorActions;
 
 namespace TSMapEditor.UI.Sidebar
 {
-    public class TerrainObjectListPanel : XNAPanel, ISearchBoxContainer
+    public class TerrainObjectListPanel(WindowManager windowManager, EditorState editorState,
+        Map map, TheaterGraphics theaterGraphics, ICursorActionTarget cursorActionTarget) : XNAPanel(windowManager), ISearchBoxContainer
     {
-        public TerrainObjectListPanel(WindowManager windowManager, EditorState editorState,
-            Map map, TheaterGraphics theaterGraphics, ICursorActionTarget cursorActionTarget) : base(windowManager)
-        {
-            EditorState = editorState;
-            Map = map;
-            TheaterGraphics = theaterGraphics;
-            this.cursorActionTarget = cursorActionTarget;
-        }
-
-        protected EditorState EditorState { get; }
-        protected Map Map { get; }
-        protected TheaterGraphics TheaterGraphics { get; }
+        protected EditorState EditorState { get; } = editorState;
+        protected Map Map { get; } = map;
+        protected TheaterGraphics TheaterGraphics { get; } = theaterGraphics;
 
         public XNASuggestionTextBox SearchBox { get; private set; }
         public TreeView ObjectTreeView { get; private set; }
 
-        private readonly ICursorActionTarget cursorActionTarget;
+        private readonly ICursorActionTarget cursorActionTarget = cursorActionTarget;
 
         private TerrainObjectPlacementAction terrainObjectPlacementAction;
 
@@ -211,7 +203,7 @@ namespace TSMapEditor.UI.Sidebar
                     Tag = terrainType
                 });
 
-                category.Nodes = category.Nodes.OrderBy(n => n.Text).ToList();
+                category.Nodes = [.. category.Nodes.OrderBy(n => n.Text)];
             }
 
             renderTarget.Dispose();

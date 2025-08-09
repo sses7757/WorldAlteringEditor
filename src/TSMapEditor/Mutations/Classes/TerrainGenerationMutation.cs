@@ -11,40 +11,28 @@ using TSMapEditor.UI;
 
 namespace TSMapEditor.Mutations.Classes
 {
-    public class TerrainGeneratorConfiguration
+    public class TerrainGeneratorConfiguration(string name,
+        string theater,
+        bool isUserConfiguration,
+        List<TerrainGeneratorTerrainTypeGroup> terrainTypeGroups,
+        List<TerrainGeneratorTileGroup> tileGroups,
+        List<TerrainGeneratorOverlayGroup> overlayGroups,
+        List<TerrainGeneratorSmudgeGroup> smudgeGroups,
+        Color? color = null)
     {
         private const string TerrainTypeGroupString = "TerrainTypeGroup";
         private const string TileGroupString = "TileGroup";
         private const string OverlayGroupString = "OverlayGroup";
         private const string SmudgeGroupString = "SmudgeGroup";
 
-        public TerrainGeneratorConfiguration(string name,
-            string theater,
-            bool isUserConfiguration,
-            List<TerrainGeneratorTerrainTypeGroup> terrainTypeGroups,
-            List<TerrainGeneratorTileGroup> tileGroups,
-            List<TerrainGeneratorOverlayGroup> overlayGroups,
-            List<TerrainGeneratorSmudgeGroup> smudgeGroups,
-            Color? color = null)
-        {
-            Name = name;
-            Theater = theater;
-            Color = color;
-            IsUserConfiguration = isUserConfiguration;
-            TerrainTypeGroups = terrainTypeGroups;
-            TileGroups = tileGroups;
-            OverlayGroups = overlayGroups;
-            SmudgeGroups = smudgeGroups;
-        }
-
-        public string Name { get; }
-        public string Theater { get; }
-        public Color? Color { get; }
-        public bool IsUserConfiguration { get; }
-        public List<TerrainGeneratorTerrainTypeGroup> TerrainTypeGroups { get; }
-        public List<TerrainGeneratorTileGroup> TileGroups { get; }
-        public List<TerrainGeneratorOverlayGroup> OverlayGroups { get; }
-        public List<TerrainGeneratorSmudgeGroup> SmudgeGroups { get; }
+        public string Name { get; } = name;
+        public string Theater { get; } = theater;
+        public Color? Color { get; } = color;
+        public bool IsUserConfiguration { get; } = isUserConfiguration;
+        public List<TerrainGeneratorTerrainTypeGroup> TerrainTypeGroups { get; } = terrainTypeGroups;
+        public List<TerrainGeneratorTileGroup> TileGroups { get; } = tileGroups;
+        public List<TerrainGeneratorOverlayGroup> OverlayGroups { get; } = overlayGroups;
+        public List<TerrainGeneratorSmudgeGroup> SmudgeGroups { get; } = smudgeGroups;
 
         public IniSection GetIniConfigSection(string sectionName)
         {
@@ -182,18 +170,11 @@ namespace TSMapEditor.Mutations.Classes
         }
     }
 
-    public class TerrainGeneratorTerrainTypeGroup
+    public class TerrainGeneratorTerrainTypeGroup(List<TerrainType> terrainTypes, double openChance, double overlapChance)
     {
-        public TerrainGeneratorTerrainTypeGroup(List<TerrainType> terrainTypes, double openChance, double overlapChance)
-        {
-            TerrainTypes = terrainTypes;
-            OpenChance = openChance;
-            OverlapChance = overlapChance;
-        }
-
-        public List<TerrainType> TerrainTypes { get; }
-        public double OpenChance { get; }
-        public double OverlapChance { get; }
+        public List<TerrainType> TerrainTypes { get; } = terrainTypes;
+        public double OpenChance { get; } = openChance;
+        public double OverlapChance { get; } = overlapChance;
 
         public string GetConfigString()
         {
@@ -202,7 +183,7 @@ namespace TSMapEditor.Mutations.Classes
 
         public static TerrainGeneratorTerrainTypeGroup FromConfigString(List<TerrainType> allTerrainTypes, string config)
         {
-            string[] parts = config.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = config.Split([','], StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length < 3)
                 return null;
 
@@ -223,22 +204,14 @@ namespace TSMapEditor.Mutations.Classes
         }
     }
 
-    public class TerrainGeneratorTileGroup
+    public class TerrainGeneratorTileGroup(TileSet tileSet, List<int> tileIndicesInSet, double openChance, double overlapChance)
     {
         private const string CommaReplacement = "{comma}";
 
-        public TerrainGeneratorTileGroup(TileSet tileSet, List<int> tileIndicesInSet, double openChance, double overlapChance)
-        {
-            TileSet = tileSet ?? throw new ArgumentNullException(nameof(tileSet));
-            TileIndicesInSet = tileIndicesInSet;
-            OpenChance = openChance;
-            OverlapChance = overlapChance;
-        }
-
-        public TileSet TileSet { get; }
-        public List<int> TileIndicesInSet { get; }
-        public double OpenChance { get; }
-        public double OverlapChance { get; }
+        public TileSet TileSet { get; } = tileSet ?? throw new ArgumentNullException(nameof(tileSet));
+        public List<int> TileIndicesInSet { get; } = tileIndicesInSet;
+        public double OpenChance { get; } = openChance;
+        public double OverlapChance { get; } = overlapChance;
 
         public string GetConfigString()
         {
@@ -253,7 +226,7 @@ namespace TSMapEditor.Mutations.Classes
 
         public static TerrainGeneratorTileGroup FromConfigString(List<TileSet> allTileSets, string config)
         {
-            string[] parts = config.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = config.Split([','], StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length < 3)
                 return null;
@@ -273,7 +246,7 @@ namespace TSMapEditor.Mutations.Classes
             List<int> tileIndices = null;
             if (parts.Length > 3)
             {
-                tileIndices = new List<int>();
+                tileIndices = [];
 
                 for (int i = 3; i < parts.Length; i++)
                 {
@@ -285,20 +258,12 @@ namespace TSMapEditor.Mutations.Classes
         }
     }
 
-    public class TerrainGeneratorOverlayGroup
+    public class TerrainGeneratorOverlayGroup(OverlayType overlayType, List<int> frameIndices, double openChance, double overlapChance)
     {
-        public TerrainGeneratorOverlayGroup(OverlayType overlayType, List<int> frameIndices, double openChance, double overlapChance)
-        {
-            OverlayType = overlayType;
-            FrameIndices = frameIndices;
-            OpenChance = openChance;
-            OverlapChance = overlapChance;
-        }
-
-        public OverlayType OverlayType { get; }
-        public List<int> FrameIndices { get; }
-        public double OpenChance { get; }
-        public double OverlapChance { get; }
+        public OverlayType OverlayType { get; } = overlayType;
+        public List<int> FrameIndices { get; } = frameIndices;
+        public double OpenChance { get; } = openChance;
+        public double OverlapChance { get; } = overlapChance;
 
         public string GetConfigString()
         {
@@ -313,7 +278,7 @@ namespace TSMapEditor.Mutations.Classes
 
         public static TerrainGeneratorOverlayGroup FromConfigString(List<OverlayType> allOverlayTypes, string config)
         {
-            string[] parts = config.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = config.Split([','], StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length < 3)
                 return null;
@@ -324,7 +289,7 @@ namespace TSMapEditor.Mutations.Classes
             List<int> frameIndices = null;
             if (parts.Length > 3)
             {
-                frameIndices = new List<int>();
+                frameIndices = [];
 
                 for (int i = 3; i < parts.Length; i++)
                 {
@@ -336,18 +301,11 @@ namespace TSMapEditor.Mutations.Classes
         }
     }
 
-    public class TerrainGeneratorSmudgeGroup
+    public class TerrainGeneratorSmudgeGroup(List<SmudgeType> smudgeTypes, double openChance, double overlapChance)
     {
-        public TerrainGeneratorSmudgeGroup(List<SmudgeType> smudgeTypes, double openChance, double overlapChance)
-        {
-            SmudgeTypes = smudgeTypes;
-            OpenChance = openChance;
-            OverlapChance = overlapChance;
-        }
-
-        public List<SmudgeType> SmudgeTypes { get; }
-        public double OpenChance { get; }
-        public double OverlapChance { get; }
+        public List<SmudgeType> SmudgeTypes { get; } = smudgeTypes;
+        public double OpenChance { get; } = openChance;
+        public double OverlapChance { get; } = overlapChance;
 
         public string GetConfigString()
         {
@@ -356,7 +314,7 @@ namespace TSMapEditor.Mutations.Classes
 
         public static TerrainGeneratorSmudgeGroup FromConfigString(List<SmudgeType> allSmudgeTypes, string config)
         {
-            string[] parts = config.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = config.Split([','], StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length < 3)
                 return null;
 
@@ -377,22 +335,14 @@ namespace TSMapEditor.Mutations.Classes
         }
     }
 
-    public class TerrainGenerationMutation : Mutation
+    public class TerrainGenerationMutation(IMutationTarget mutationTarget, List<Point2D> cells, TerrainGeneratorConfiguration configuration) : Mutation(mutationTarget)
     {
-        public TerrainGenerationMutation(IMutationTarget mutationTarget, List<Point2D> cells, TerrainGeneratorConfiguration configuration) : base(mutationTarget)
-        {
-            seed = DateTime.Now.Millisecond;
-            random = new Random();
-            this.cells = cells;
-            this.terrainGeneratorConfiguration = configuration;
-        }
+        private readonly int seed = DateTime.Now.Millisecond;
+        private readonly List<Point2D> cells = cells;
+        private readonly TerrainGeneratorConfiguration terrainGeneratorConfiguration = configuration;
 
-        private readonly int seed;
-        private readonly List<Point2D> cells;
-        private readonly TerrainGeneratorConfiguration terrainGeneratorConfiguration;
-
-        private HashSet<Point2D> occupiedCells = new HashSet<Point2D>();
-        private Random random;
+        private readonly HashSet<Point2D> occupiedCells = [];
+        private Random random = new Random();
 
         private List<OriginalTerrainData> undoData;
         private List<TerrainObject> placedTerrainObjects;
@@ -451,10 +401,10 @@ namespace TSMapEditor.Mutations.Classes
         {
             random = new Random(seed);
 
-            undoData = new List<OriginalTerrainData>();
-            placedTerrainObjects = new List<TerrainObject>();
-            placedOverlayCellCoords = new List<Point2D>();
-            placedSmudgeCellCoords = new List<Point2D>();
+            undoData = [];
+            placedTerrainObjects = [];
+            placedOverlayCellCoords = [];
+            placedSmudgeCellCoords = [];
 
             var terrainTypeGroups = terrainGeneratorConfiguration.TerrainTypeGroups;
             var tileGroups = terrainGeneratorConfiguration.TileGroups;
@@ -565,8 +515,7 @@ namespace TSMapEditor.Mutations.Classes
                         int index = random.Next(0, smudgeGroup.SmudgeTypes.Count);
                         var smudgeType = smudgeGroup.SmudgeTypes[index];
                         var mapCell = MutationTarget.Map.GetTile(cellCoords);
-                        if (mapCell.Smudge == null)
-                            mapCell.Smudge = new Smudge() { SmudgeType = smudgeType, Position = cellCoords };
+                        mapCell.Smudge ??= new Smudge() { SmudgeType = smudgeType, Position = cellCoords };
 
                         placedSmudgeCellCoords.Add(cellCoords);
                     }

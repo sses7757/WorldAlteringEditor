@@ -3,12 +3,8 @@ using TSMapEditor.Models.ArtConfig;
 
 namespace TSMapEditor.Models
 {
-    public class BuildingType : TechnoType, IArtConfigContainer
+    public class BuildingType(string iniName) : TechnoType(iniName), IArtConfigContainer
     {
-        public BuildingType(string iniName) : base(iniName)
-        {
-        }
-
         public int Power { get; set; }
         public int Upgrades { get; set; } = 1;
         public string PowersUpBuilding { get; set; }

@@ -16,16 +16,10 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
     /// A panel that allows the user to customize how the terrain 
     /// generator places terrain tiles on the map.
     /// </summary>
-    public class TerrainGeneratorTileGroupsPanel : EditorPanel
+    public class TerrainGeneratorTileGroupsPanel(WindowManager windowManager, Map map) : EditorPanel(windowManager)
     {
         private const int MaxTileGroupCount = 8;
-
-        public TerrainGeneratorTileGroupsPanel(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private EditorPopUpSelector[] tileSetSelectors;
         private EditorTextBox[] tileIndices;
@@ -75,11 +69,13 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 lblTileIndices.Text = $"Indexes of tiles to place (leave blank for all)";
                 AddChild(lblTileIndices);
 
-                var tbTileIndices = new EditorTextBox(WindowManager);
-                tbTileIndices.Name = nameof(selTileSet) + i;
-                tbTileIndices.X = lblTileIndices.X;
-                tbTileIndices.Y = lblTileIndices.Bottom + Constants.UIVerticalSpacing;
-                tbTileIndices.Width = 280;
+                var tbTileIndices = new EditorTextBox(WindowManager)
+                {
+                    Name = nameof(selTileSet) + i,
+                    X = lblTileIndices.X,
+                    Y = lblTileIndices.Bottom + Constants.UIVerticalSpacing,
+                    Width = 280
+                };
                 AddChild(tbTileIndices);
                 tileIndices[i] = tbTileIndices;
 
@@ -106,11 +102,13 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 lblOccupiedChance.Text = "Occupied cell chance:";
                 AddChild(lblOccupiedChance);
 
-                var tbOccupiedChance = new EditorNumberTextBox(WindowManager);
-                tbOccupiedChance.Name = nameof(tbOpenChance) + i;
-                tbOccupiedChance.X = lblOccupiedChance.X;
-                tbOccupiedChance.Y = selTileSet.Y;
-                tbOccupiedChance.AllowDecimals = true;
+                var tbOccupiedChance = new EditorNumberTextBox(WindowManager)
+                {
+                    Name = nameof(tbOpenChance) + i,
+                    X = lblOccupiedChance.X,
+                    Y = selTileSet.Y,
+                    AllowDecimals = true
+                };
                 tbOccupiedChance.Width = Width - tbOccupiedChance.X - Constants.UIEmptySideSpace;
                 AddChild(tbOccupiedChance);
                 tileGroupOccupiedChances[i] = tbOccupiedChance;
@@ -151,8 +149,8 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 string tileIndicesText = tileIndices[i].Text.Trim();
                 if (!string.IsNullOrEmpty(tileIndicesText))
                 {
-                    string[] parts = tileIndicesText.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    tileIndexesInSet = parts.Select(str => Conversions.IntFromString(str, -1)).ToList();
+                    string[] parts = tileIndicesText.Split([','], StringSplitOptions.RemoveEmptyEntries);
+                    tileIndexesInSet = [.. parts.Select(str => Conversions.IntFromString(str, -1))];
                     int invalidElement = tileIndexesInSet.Find(index => index <= -1 || index >= tileSet.LoadedTileCount);
 
                     if (invalidElement != 0) // this can never be 0 if an invalid element exists, because each valid tileset has at least 1 tile

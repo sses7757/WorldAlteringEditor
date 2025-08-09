@@ -4,12 +4,8 @@ using TSMapEditor.Mutations.Classes;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class PlaceCellTagCursorAction : CursorAction
+    public class PlaceCellTagCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public PlaceCellTagCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Place CellTag";
 
         private Tag _tag;
@@ -26,7 +22,7 @@ namespace TSMapEditor.UI.CursorActions
             }
         }
 
-        private CellTag cellTag = new CellTag();
+        private readonly CellTag cellTag = new();
 
         public override void PreMapDraw(Point2D cellCoords)
         {

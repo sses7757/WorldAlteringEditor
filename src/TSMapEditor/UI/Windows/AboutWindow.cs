@@ -5,12 +5,8 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class AboutWindow : INItializableWindow
+    public class AboutWindow(WindowManager windowManager) : INItializableWindow(windowManager)
     {
-        public AboutWindow(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         public override void Initialize()
         {
             Name = nameof(AboutWindow);

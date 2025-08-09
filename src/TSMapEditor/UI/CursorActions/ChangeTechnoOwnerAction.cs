@@ -9,12 +9,8 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows changing the owner of a techno object.
     /// </summary>
-    public class ChangeTechnoOwnerAction : CursorAction
+    public class ChangeTechnoOwnerAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public ChangeTechnoOwnerAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Change Object Owner";
 
         public override void DrawPreview(Point2D cellCoords, Point2D cameraTopLeftPoint)

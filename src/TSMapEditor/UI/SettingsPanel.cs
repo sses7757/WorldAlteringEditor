@@ -12,23 +12,18 @@ namespace TSMapEditor.UI
     /// <summary>
     /// A single screen resolution.
     /// </summary>
-    sealed class ScreenResolution : IComparable<ScreenResolution>
+    sealed class ScreenResolution(int width, int height) : IComparable<ScreenResolution>
     {
-        public ScreenResolution(int width, int height)
-        {
-            Width = width;
-            Height = height;
-        }
 
         /// <summary>
         /// The width of the resolution in pixels.
         /// </summary>
-        public int Width { get; set; }
+        public int Width { get; set; } = width;
 
         /// <summary>
         /// The height of the resolution in pixels.
         /// </summary>
-        public int Height { get; set; }
+        public int Height { get; set; } = height;
 
         public override string ToString()
         {
@@ -123,7 +118,7 @@ namespace TSMapEditor.UI
             var renderScales = new double[] { 4.0, 2.5, 3.0, 2.5, 2.0, 1.75, 1.5, 1.25, 1.0, 0.75, 0.5 };
             for (int i = 0; i < renderScales.Length; i++)
             {
-                Point2D screenSize = new Point2D((int)(MaxWidth / renderScales[i]), (int)(MaxHeight / renderScales[i]));
+                Point2D screenSize = new((int)(MaxWidth / renderScales[i]), (int)(MaxHeight / renderScales[i]));
                 if (screenSize.X > MinWidth && screenSize.Y > MinHeight)
                 {
                     ddRenderScale.AddItem(new XNADropDownItem() { Text = renderScales[i].ToString("F2", CultureInfo.InvariantCulture) + "x", Tag = renderScales[i] });

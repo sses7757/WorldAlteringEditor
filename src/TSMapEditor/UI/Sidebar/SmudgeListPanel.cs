@@ -11,25 +11,17 @@ using TSMapEditor.UI.CursorActions;
 
 namespace TSMapEditor.UI.Sidebar
 {
-    class SmudgeListPanel : XNAPanel, ISearchBoxContainer
+    class SmudgeListPanel(WindowManager windowManager, EditorState editorState,
+        Map map, TheaterGraphics theaterGraphics, ICursorActionTarget cursorActionTarget) : XNAPanel(windowManager), ISearchBoxContainer
     {
-        public SmudgeListPanel(WindowManager windowManager, EditorState editorState,
-            Map map, TheaterGraphics theaterGraphics, ICursorActionTarget cursorActionTarget) : base(windowManager)
-        {
-            EditorState = editorState;
-            Map = map;
-            TheaterGraphics = theaterGraphics;
-            this.cursorActionTarget = cursorActionTarget;
-        }
-
-        protected EditorState EditorState { get; }
-        protected Map Map { get; }
-        protected TheaterGraphics TheaterGraphics { get; }
+        protected EditorState EditorState { get; } = editorState;
+        protected Map Map { get; } = map;
+        protected TheaterGraphics TheaterGraphics { get; } = theaterGraphics;
 
         public XNASuggestionTextBox SearchBox { get; private set; }
         public TreeView ObjectTreeView { get; private set; }
 
-        private readonly ICursorActionTarget cursorActionTarget;
+        private readonly ICursorActionTarget cursorActionTarget = cursorActionTarget;
         private PlaceSmudgeCursorAction smudgePlacementAction;
         private PlaceSmudgeCollectionCursorAction smudgeCollectionPlacementAction;
 
@@ -163,13 +155,14 @@ namespace TSMapEditor.UI.Sidebar
         {
             var renderTarget = new RenderTarget2D(GraphicsDevice, ObjectTreeView.Width, ObjectTreeView.LineHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-            var categories = new List<TreeViewCategory>();
-
-            categories.Add(new TreeViewCategory()
+            var categories = new List<TreeViewCategory>
             {
-                Text = "Erase Smudges",
-                Tag = new object()
-            });
+                new TreeViewCategory()
+                {
+                    Text = "Erase Smudges",
+                    Tag = new object()
+                }
+            };
 
             if (Map.EditorConfig.SmudgeCollections.Count > 0)
             {
@@ -222,7 +215,7 @@ namespace TSMapEditor.UI.Sidebar
                     Tag = smudgeType
                 });
 
-                category.Nodes = category.Nodes.OrderBy(n => n.Text).ToList();
+                category.Nodes = [.. category.Nodes.OrderBy(n => n.Text)];
             }
 
             categories.ForEach(ObjectTreeView.AddCategory);

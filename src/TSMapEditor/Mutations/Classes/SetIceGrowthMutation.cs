@@ -8,16 +8,10 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation for toggling the "IceGrowth" bit of cells.
     /// </summary>
-    public class SetIceGrowthMutation : Mutation
+    public class SetIceGrowthMutation(IMutationTarget mutationTarget, Point2D cellCoords, bool enableIceGrowth) : Mutation(mutationTarget)
     {
-        public SetIceGrowthMutation(IMutationTarget mutationTarget, Point2D cellCoords, bool enableIceGrowth) : base(mutationTarget)
-        {
-            this.enableIceGrowth = enableIceGrowth;
-            this.cellCoords = cellCoords;
-        }
-
-        private readonly bool enableIceGrowth;
-        private readonly Point2D cellCoords;
+        private readonly bool enableIceGrowth = enableIceGrowth;
+        private readonly Point2D cellCoords = cellCoords;
         private BrushSize brushSize;
 
         private List<Point2D> undoData;

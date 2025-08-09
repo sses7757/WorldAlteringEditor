@@ -140,46 +140,44 @@ namespace CNCMaps.FileFormats.Encodings
         // Uses raw copy and RLE compression
         public static byte[] Encode(byte[] src)
         {
-            using (var ms = new MemoryStream())
+            using var ms = new MemoryStream();
+            var offset = 0;
+            var left = src.Length;
+            var blockStart = 0;
+
+            while (offset < left)
             {
-                var offset = 0;
-                var left = src.Length;
-                var blockStart = 0;
-
-                while (offset < left)
+                var repeatCount = CountSame(src, offset, 0xFFFF);
+                if (repeatCount >= 4)
                 {
-                    var repeatCount = CountSame(src, offset, 0xFFFF);
-                    if (repeatCount >= 4)
-                    {
-                        // Write what we haven't written up to now
-                        WriteCopyBlocks(src, blockStart, offset - blockStart, ms);
+                    // Write what we haven't written up to now
+                    WriteCopyBlocks(src, blockStart, offset - blockStart, ms);
 
-                        // Command 4: Repeat byte n times
-                        ms.WriteByte(0xFE);
-                        // Low byte
-                        ms.WriteByte((byte)(repeatCount & 0xFF));
-                        // High byte
-                        ms.WriteByte((byte)(repeatCount >> 8));
-                        // Value to repeat
-                        ms.WriteByte(src[offset]);
+                    // Command 4: Repeat byte n times
+                    ms.WriteByte(0xFE);
+                    // Low byte
+                    ms.WriteByte((byte)(repeatCount & 0xFF));
+                    // High byte
+                    ms.WriteByte((byte)(repeatCount >> 8));
+                    // Value to repeat
+                    ms.WriteByte(src[offset]);
 
-                        offset += repeatCount;
-                        blockStart = offset;
-                    }
-                    else
-                    {
-                        offset++;
-                    }
+                    offset += repeatCount;
+                    blockStart = offset;
                 }
-
-                // Write what we haven't written up to now
-                WriteCopyBlocks(src, blockStart, offset - blockStart, ms);
-
-                // Write terminator
-                ms.WriteByte(0x80);
-
-                return ms.ToArray();
+                else
+                {
+                    offset++;
+                }
             }
+
+            // Write what we haven't written up to now
+            WriteCopyBlocks(src, blockStart, offset - blockStart, ms);
+
+            // Write terminator
+            ms.WriteByte(0x80);
+
+            return ms.ToArray();
         }
 
     }

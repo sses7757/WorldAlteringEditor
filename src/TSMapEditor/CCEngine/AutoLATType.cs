@@ -1,15 +1,9 @@
 ﻿namespace TSMapEditor.CCEngine
 {
-    public struct AutoLATData
+    public struct AutoLATData(int transitionTypeTileSetIndex, int[] transitionMatchArray)
     {
-        public int TransitionTypeIndex;
-        public int[] TransitionMatchArray;
-
-        public AutoLATData(int transitionTypeTileSetIndex, int[] transitionMatchArray)
-        {
-            TransitionTypeIndex = transitionTypeTileSetIndex;
-            TransitionMatchArray = transitionMatchArray;
-        }
+        public int TransitionTypeIndex = transitionTypeTileSetIndex;
+        public int[] TransitionMatchArray = transitionMatchArray;
     }
 
     public static class AutoLATType
@@ -43,85 +37,85 @@
         // These are used to check which transition type a tile should use by checking the nearby tiles.
         // 1 means that the tile matches the ground type being placed, 0 means that the tile has something else.
         // If you "rotate" these 45 degrees clockwise, these match the isometric perspective.
-        public static readonly int[] A_SURROUNDS_TILE = new int[] 
-        { 1,
+        public static readonly int[] A_SURROUNDS_TILE =
+        [ 1,
         1,0,1,
-          1 };
+          1 ];
 
-        public static readonly int[] A_NE_TRANSITION = new int[]
-        { 0,
+        public static readonly int[] A_NE_TRANSITION =
+        [ 0,
         1,1,1,
-          1 };
+          1 ];
 
-        public static readonly int[] A_SE_TRANSITION = new int[]
-        { 1,
+        public static readonly int[] A_SE_TRANSITION =
+        [ 1,
         1,1,0,
-          1 };
+          1 ];
 
-        public static readonly int[] A_NE_SE_TRANSITION = new int[]
-        { 0,
+        public static readonly int[] A_NE_SE_TRANSITION =
+        [ 0,
         1,1,0,
-          1 };
+          1 ];
 
-        public static readonly int[] A_SW_TRANSITION = new int[]
-        { 1,
+        public static readonly int[] A_SW_TRANSITION =
+        [ 1,
         1,1,1,
-          0 };
+          0 ];
 
-        public static readonly int[] A_NE_SW_TRANSITION = new int[]
-        { 0,
+        public static readonly int[] A_NE_SW_TRANSITION =
+        [ 0,
         1,1,1,
-          0 };
+          0 ];
 
-        public static readonly int[] A_SE_SW_TRANSITION = new int[]
-        { 1,
+        public static readonly int[] A_SE_SW_TRANSITION =
+        [ 1,
         1,1,0,
-          0 };
+          0 ];
 
-        public static readonly int[] A_NE_SE_SW_TRANSITION = new int[]
-        { 0,
+        public static readonly int[] A_NE_SE_SW_TRANSITION =
+        [ 0,
         1,1,0,
-          0 };
+          0 ];
 
-        public static readonly int[] A_NW_TRANSITION = new int[]
-        { 1,
+        public static readonly int[] A_NW_TRANSITION =
+        [ 1,
         0,1,1,
-          1 };
+          1 ];
 
-        public static readonly int[] A_NE_NW_TRANSITION = new int[]
-        { 0,
+        public static readonly int[] A_NE_NW_TRANSITION =
+        [ 0,
         0,1,1,
-          1 };
+          1 ];
 
-        public static readonly int[] A_NW_SE_TRANSITION = new int[]
-        { 1,
+        public static readonly int[] A_NW_SE_TRANSITION =
+        [ 1,
         0,1,0,
-          1 };
+          1 ];
 
-        public static readonly int[] A_NE_NW_SE_TRANSITION = new int[]
-        { 0,
+        public static readonly int[] A_NE_NW_SE_TRANSITION =
+        [ 0,
         0,1,0,
-          1 };
+          1 ];
 
-        public static readonly int[] A_NW_SW_TRANSITION = new int[]
-        { 1,
+        public static readonly int[] A_NW_SW_TRANSITION =
+        [ 1,
         0,1,1,
-          0 };
+          0 ];
 
-        public static readonly int[] A_NE_NW_SW_TRANSITION = new int[]
-        { 0,
+        public static readonly int[] A_NE_NW_SW_TRANSITION =
+        [ 0,
         0,1,1,
-          0 };
+          0 ];
 
-        public static readonly int[] A_NW_SE_SW_TRANSITION = new int[]
-        { 1,
+        public static readonly int[] A_NW_SE_SW_TRANSITION =
+        [ 1,
         0,1,0,
-          0 };
+          0 ];
 
-        public static readonly int[] A_TRANSITION_TO_ALL_DIRECTIONS = new int[]
-        { 0,
+        public static readonly int[] A_TRANSITION_TO_ALL_DIRECTIONS =
+        [ 0,
         0,1,0,
-          0 };
+          0 ];
 
         /// <summary>
         /// Links transition indexes and related data arrays.
@@ -130,25 +124,25 @@
 
         public static void InitArray()
         {
-            AutoLATData = new AutoLATData[]
-            {
-                new AutoLATData(SURROUNDS_TILE, A_SURROUNDS_TILE),
-                new AutoLATData(NE_TRANSITION, A_NE_TRANSITION),
-                new AutoLATData(SE_TRANSITION, A_SE_TRANSITION),
-                new AutoLATData(NE_SE_TRANSITION, A_NE_SE_TRANSITION),
-                new AutoLATData(SW_TRANSITION, A_SW_TRANSITION),
-                new AutoLATData(NE_SW_TRANSITION, A_NE_SW_TRANSITION),
-                new AutoLATData(SE_SW_TRANSITION, A_SE_SW_TRANSITION),
-                new AutoLATData(NE_SE_SW_TRANSITION, A_NE_SE_SW_TRANSITION),
-                new AutoLATData(NW_TRANSITION, A_NW_TRANSITION),
-                new AutoLATData(NE_NW_TRANSITION, A_NE_NW_TRANSITION),
-                new AutoLATData(NW_SE_TRANSITION, A_NW_SE_TRANSITION),
-                new AutoLATData(NE_NW_SE_TRANSITION, A_NE_NW_SE_TRANSITION),
-                new AutoLATData(NW_SW_TRANSITION, A_NW_SW_TRANSITION),
-                new AutoLATData(NE_NW_SW_TRANSITION, A_NE_NW_SW_TRANSITION),
-                new AutoLATData(NW_SE_SW_TRANSITION, A_NW_SE_SW_TRANSITION),
-                new AutoLATData(TRANSITION_TO_ALL_DIRECTIONS, A_TRANSITION_TO_ALL_DIRECTIONS),
-            };
+            AutoLATData =
+            [
+                new(SURROUNDS_TILE, A_SURROUNDS_TILE),
+                new(NE_TRANSITION, A_NE_TRANSITION),
+                new(SE_TRANSITION, A_SE_TRANSITION),
+                new(NE_SE_TRANSITION, A_NE_SE_TRANSITION),
+                new(SW_TRANSITION, A_SW_TRANSITION),
+                new(NE_SW_TRANSITION, A_NE_SW_TRANSITION),
+                new(SE_SW_TRANSITION, A_SE_SW_TRANSITION),
+                new(NE_SE_SW_TRANSITION, A_NE_SE_SW_TRANSITION),
+                new(NW_TRANSITION, A_NW_TRANSITION),
+                new(NE_NW_TRANSITION, A_NE_NW_TRANSITION),
+                new(NW_SE_TRANSITION, A_NW_SE_TRANSITION),
+                new(NE_NW_SE_TRANSITION, A_NE_NW_SE_TRANSITION),
+                new(NW_SW_TRANSITION, A_NW_SW_TRANSITION),
+                new(NE_NW_SW_TRANSITION, A_NE_NW_SW_TRANSITION),
+                new(NW_SE_SW_TRANSITION, A_NW_SE_SW_TRANSITION),
+                new(TRANSITION_TO_ALL_DIRECTIONS, A_TRANSITION_TO_ALL_DIRECTIONS),
+            ];
         }
     }
 }

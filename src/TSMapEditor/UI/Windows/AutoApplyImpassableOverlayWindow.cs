@@ -8,16 +8,10 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class AutoApplyImpassableOverlayWindow : INItializableWindow
+    public class AutoApplyImpassableOverlayWindow(WindowManager windowManager, Map map, IMutationTarget mutationTarget) : INItializableWindow(windowManager)
     {
-        public AutoApplyImpassableOverlayWindow(WindowManager windowManager, Map map, IMutationTarget mutationTarget) : base(windowManager)
-        {
-            this.map = map;
-            this.mutationTarget = mutationTarget;
-        }
-
-        private readonly Map map;
-        private readonly IMutationTarget mutationTarget;
+        private readonly Map map = map;
+        private readonly IMutationTarget mutationTarget = mutationTarget;
 
         private XNACheckBox chkRemoveExistingImpassableOverlay;
         private XNACheckBox chkOverrideExistingOverlay;

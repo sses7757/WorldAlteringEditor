@@ -9,12 +9,8 @@ using TSMapEditor.Rendering;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class PlaceTerrainCursorAction : CursorAction
+    public class PlaceTerrainCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public PlaceTerrainCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Place Terrain Tiles";
 
         public override bool HandlesKeyboardInput => true;
@@ -32,7 +28,7 @@ namespace TSMapEditor.UI.CursorActions
 
         private int heightOffset;
 
-        private HashSet<MapTile> previewTiles = new HashSet<MapTile>();
+        private readonly HashSet<MapTile> previewTiles = [];
 
         public override void OnActionEnter()
         {

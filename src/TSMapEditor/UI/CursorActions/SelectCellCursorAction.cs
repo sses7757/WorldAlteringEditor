@@ -6,12 +6,8 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows the user to select a cell.
     /// </summary>
-    public class SelectCellCursorAction : CursorAction
+    public class SelectCellCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public SelectCellCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Select Cell";
 
         public override bool DrawCellCursor => true;

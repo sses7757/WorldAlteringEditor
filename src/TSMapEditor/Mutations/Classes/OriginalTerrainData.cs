@@ -2,19 +2,11 @@
 
 namespace TSMapEditor.Mutations.Classes
 {
-    public struct OriginalTerrainData
+    public struct OriginalTerrainData(int tileIndex, byte subTileIndex, byte level, Point2D cellCoords)
     {
-        public OriginalTerrainData(int tileIndex, byte subTileIndex, byte level, Point2D cellCoords)
-        {
-            TileIndex = tileIndex;
-            SubTileIndex = subTileIndex;
-            Level = level;
-            CellCoords = cellCoords;
-        }
-
-        public int TileIndex;
-        public byte SubTileIndex;
-        public byte Level;
-        public Point2D CellCoords;
+        public int TileIndex = tileIndex;
+        public byte SubTileIndex = subTileIndex;
+        public byte Level = level;
+        public Point2D CellCoords = cellCoords;
     }
 }

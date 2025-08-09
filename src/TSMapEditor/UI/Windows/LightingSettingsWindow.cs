@@ -7,16 +7,10 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class LightingSettingsWindow : INItializableWindow
+    public class LightingSettingsWindow(WindowManager windowManager, Map map, EditorState state) : INItializableWindow(windowManager)
     {
-        public LightingSettingsWindow(WindowManager windowManager, Map map, EditorState state) : base(windowManager)
-        {
-            this.map = map;
-            this.state = state;
-        }
-
-        private readonly Map map;
-        private readonly EditorState state;
+        private readonly Map map = map;
+        private readonly EditorState state = state;
 
         private EditorNumberTextBox tbAmbientNormal;
         private EditorNumberTextBox tbLevelNormal;

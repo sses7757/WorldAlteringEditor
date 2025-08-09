@@ -13,14 +13,9 @@ namespace TSMapEditor.Rendering.ObjectRenderers
     /// Base class for all object renderers.
     /// </summary>
     /// <typeparam name="T">The type of game object to render.</typeparam>
-    public abstract class ObjectRenderer<T> where T : GameObject
+    public abstract class ObjectRenderer<T>(RenderDependencies renderDependencies) where T : GameObject
     {
-        protected ObjectRenderer(RenderDependencies renderDependencies)
-        {
-            RenderDependencies = renderDependencies;
-        }
-
-        protected RenderDependencies RenderDependencies;
+        protected RenderDependencies RenderDependencies = renderDependencies;
 
         protected Map Map => RenderDependencies.Map;
         protected TheaterGraphics TheaterGraphics => RenderDependencies.TheaterGraphics;
@@ -70,7 +65,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
 
             var mapCell = Map.GetTile(gameObject.Position);
             int heightOffset = RenderDependencies.EditorState.Is2DMode ? 0 : mapCell.Level * Constants.CellHeight;
-            Point2D drawPoint = new Point2D(drawPointWithoutCellHeight.X, drawPointWithoutCellHeight.Y - heightOffset);
+            Point2D drawPoint = new(drawPointWithoutCellHeight.X, drawPointWithoutCellHeight.Y - heightOffset);
 
             CommonDrawParams drawParams = GetDrawParams(gameObject);
 
@@ -100,7 +95,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                     heightOffset += Constants.CellHeight * Constants.HighBridgeHeight;
             }
 
-            Point2D drawPoint = new Point2D(drawPointWithoutCellHeight.X, drawPointWithoutCellHeight.Y - heightOffset);
+            Point2D drawPoint = new(drawPointWithoutCellHeight.X, drawPointWithoutCellHeight.Y - heightOffset);
 
             return drawPoint;
         }
@@ -130,11 +125,11 @@ namespace TSMapEditor.Rendering.ObjectRenderers
 
                 var mapCell = Map.GetTile(gameObject.Position);
                 int heightOffset = RenderDependencies.EditorState.Is2DMode ? 0 : mapCell.Level * Constants.CellHeight;
-                Point2D drawPoint = new Point2D(drawPointWithoutCellHeight.X, drawPointWithoutCellHeight.Y - heightOffset);
+                Point2D drawPoint = new(drawPointWithoutCellHeight.X, drawPointWithoutCellHeight.Y - heightOffset);
 
                 if (checkInCamera)
                 {
-                    Rectangle drawingBounds = new Rectangle(drawPoint.X, drawPoint.Y, 1, 1);
+                    Rectangle drawingBounds = new(drawPoint.X, drawPoint.Y, 1, 1);
                     if (!IsObjectInCamera(drawingBounds))
                         return;
                 }
@@ -350,8 +345,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 var structure = gameObject as Structure;
                 Point2D southernmostCellCoords = structure.GetSouthernmostFoundationCell();
                 tile = Map.GetTile(southernmostCellCoords);
-                if (tile == null)
-                    tile = Map.GetTile(structure.Position);
+                tile ??= Map.GetTile(structure.Position);
             }
             else if (gameObject.WhatAmI() == RTTIType.Terrain)
             {
@@ -377,8 +371,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                     tile = Map.GetTile(southernmostCellCoords);
                 }
 
-                if (tile == null)
-                    tile = Map.GetTile(terrainObject.Position);
+                tile ??= Map.GetTile(terrainObject.Position);
             }
             else
             {

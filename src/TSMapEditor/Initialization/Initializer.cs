@@ -8,11 +8,8 @@ using TSMapEditor.Models.Enums;
 
 namespace TSMapEditor.Initialization
 {
-    public class MapLoadException : Exception
+    public class MapLoadException(string message) : Exception(message)
     {
-        public MapLoadException(string message) : base(message)
-        {
-        }
     }
 
     /// <summary>
@@ -39,10 +36,10 @@ namespace TSMapEditor.Initialization
 
         private readonly IMap map;
 
-        private Dictionary<Type, Action<INIDefineable, IniFile, IniSection>> objectTypeInitializers;
+        private readonly Dictionary<Type, Action<INIDefineable, IniFile, IniSection>> objectTypeInitializers;
 
-        private Dictionary<Type, Action<IMap, AbstractObject, IniFile, IniSection>> objectTypeArtInitializers
-            = new Dictionary<Type, Action<IMap, AbstractObject, IniFile, IniSection>>()
+        private readonly Dictionary<Type, Action<IMap, AbstractObject, IniFile, IniSection>> objectTypeArtInitializers
+            = new()
             {
                 { typeof(TerrainType), InitArtConfigGeneric },
                 { typeof(SmudgeType), InitSmudgeTypeArt },
@@ -98,10 +95,7 @@ namespace TSMapEditor.Initialization
             if (weapon == null)
             {
                 weapon = new Weapon(weaponName);
-                var section = rulesIni.GetSection(weaponName);
-                if (section == null)
-                    throw new INIConfigException($"No section found for weapon {weaponName} while parsing Rules!");
-
+                var section = rulesIni.GetSection(weaponName) ?? throw new INIConfigException($"No section found for weapon {weaponName} while parsing Rules!");
                 weapon.ReadPropertiesFromIniSection(section);
                 map.Rules.Weapons.Add(weapon);
             }
@@ -126,20 +120,15 @@ namespace TSMapEditor.Initialization
 
         private void CommonTechnoInit(TechnoType technoType, IniFile rulesIni, IniSection section)
         {
-            if (technoType.Primary == null)
-                technoType.Primary = FetchWeapon(rulesIni, section, "Primary");
+            technoType.Primary ??= FetchWeapon(rulesIni, section, "Primary");
 
-            if (technoType.Secondary == null)
-                technoType.Secondary = FetchWeapon(rulesIni, section, "Secondary");
+            technoType.Secondary ??= FetchWeapon(rulesIni, section, "Secondary");
 
-            if (technoType.ElitePrimary == null)
-                technoType.ElitePrimary = FetchWeapon(rulesIni, section, "Elite");
+            technoType.ElitePrimary ??= FetchWeapon(rulesIni, section, "Elite");
 
-            if (technoType.ElitePrimary == null)
-                technoType.ElitePrimary = FetchWeapon(rulesIni, section, "ElitePrimary");
+            technoType.ElitePrimary ??= FetchWeapon(rulesIni, section, "ElitePrimary");
 
-            if (technoType.EliteSecondary == null)
-                technoType.EliteSecondary = FetchWeapon(rulesIni, section, "EliteSecondary");
+            technoType.EliteSecondary ??= FetchWeapon(rulesIni, section, "EliteSecondary");
 
             // RA2/YR IFV weapon logic
             for (int i = 1; i <= technoType.WeaponCount; i++)

@@ -4,13 +4,8 @@ using TSMapEditor.Mutations.Classes;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class PlaceSmudgeCursorAction : CursorAction
+    public class PlaceSmudgeCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public PlaceSmudgeCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-            previewSmudge = new Smudge();
-        }
-
         public override string GetName() => "Place Smudge";
 
         private SmudgeType _smudgeType;
@@ -28,7 +23,7 @@ namespace TSMapEditor.UI.CursorActions
         }
 
         private Smudge cachedSmudge;
-        private Smudge previewSmudge;
+        private readonly Smudge previewSmudge = new Smudge();
 
         public override void PreMapDraw(Point2D cellCoords)
         {

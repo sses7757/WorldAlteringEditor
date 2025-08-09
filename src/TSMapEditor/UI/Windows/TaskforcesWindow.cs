@@ -23,14 +23,9 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to edit the map's TaskForces.
     /// </summary>
-    public class TaskforcesWindow : INItializableWindow
+    public class TaskforcesWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public TaskforcesWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private EditorSuggestionTextBox tbFilter;
         private EditorListBox lbTaskForces;
@@ -359,10 +354,7 @@ namespace TSMapEditor.UI.Windows
                 return;
 
             editedTaskForce.Name = tbTaskForceName.Text;
-            if (lbTaskForces.SelectedItem != null)
-            {
-                lbTaskForces.SelectedItem.Text = editedTaskForce.Name;
-            }
+            lbTaskForces.SelectedItem?.Text = editedTaskForce.Name;
         }
 
         private void LbUnitType_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -471,7 +463,7 @@ namespace TSMapEditor.UI.Windows
             gameObjectTypeList.AddRange(map.Rules.AircraftTypes);
             gameObjectTypeList.AddRange(map.Rules.InfantryTypes);
             gameObjectTypeList.AddRange(map.Rules.UnitTypes);
-            gameObjectTypeList = gameObjectTypeList.OrderBy(g => g.ININame).ToList();
+            gameObjectTypeList = [.. gameObjectTypeList.OrderBy(g => g.ININame)];
 
             foreach (GameObjectType objectType in gameObjectTypeList)
             {
@@ -518,23 +510,13 @@ namespace TSMapEditor.UI.Windows
                 shouldViewTop = true;
             }
 
-            switch (TaskForceSortMode)
+            sortedTaskForces = TaskForceSortMode switch
             {
-                case TaskForceSortMode.Color:
-                    sortedTaskForces = sortedTaskForces.OrderBy(taskForce => GetTaskForceColor(taskForce).ToString()).ThenBy(taskForce => taskForce.ININame);
-                    break;
-                case TaskForceSortMode.Name:
-                    sortedTaskForces = sortedTaskForces.OrderBy(taskForce => taskForce.Name).ThenBy(taskForce => taskForce.ININame);
-                    break;
-                case TaskForceSortMode.ColorThenName:
-                    sortedTaskForces = sortedTaskForces.OrderBy(taskForce => GetTaskForceColor(taskForce).ToString()).ThenBy(taskForce => taskForce.Name);
-                    break;
-                case TaskForceSortMode.ID:
-                default:
-                    sortedTaskForces = sortedTaskForces.OrderBy(taskForce => taskForce.ININame);
-                    break;
-            }
-
+                TaskForceSortMode.Color => sortedTaskForces.OrderBy(taskForce => GetTaskForceColor(taskForce).ToString()).ThenBy(taskForce => taskForce.ININame),
+                TaskForceSortMode.Name => sortedTaskForces.OrderBy(taskForce => taskForce.Name).ThenBy(taskForce => taskForce.ININame),
+                TaskForceSortMode.ColorThenName => sortedTaskForces.OrderBy(taskForce => GetTaskForceColor(taskForce).ToString()).ThenBy(taskForce => taskForce.Name),
+                _ => sortedTaskForces.OrderBy(taskForce => taskForce.ININame),
+            };
             foreach (var taskForce in sortedTaskForces)
             {
                 lbTaskForces.AddItem(new XNAListBoxItem()

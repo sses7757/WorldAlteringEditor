@@ -12,22 +12,14 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to edit the properties of a vehicle.
     /// </summary>
-    public class VehicleOptionsWindow : INItializableWindow
+    public class VehicleOptionsWindow(WindowManager windowManager, Map map, EditorState editorState, ICursorActionTarget cursorActionTarget) : INItializableWindow(windowManager)
     {
-        public VehicleOptionsWindow(WindowManager windowManager, Map map, EditorState editorState, ICursorActionTarget cursorActionTarget) : base(windowManager)
-        {
-            this.map = map;
-            this.editorState = editorState;
-            this.setFollowerCursorAction = new SetFollowerCursorAction(cursorActionTarget);
-            this.cursorActionTarget = cursorActionTarget;
-        }
-
         public event EventHandler<TagEventArgs> TagOpened;
 
-        private readonly Map map;
-        private readonly EditorState editorState;
-        private readonly SetFollowerCursorAction setFollowerCursorAction;
-        private readonly ICursorActionTarget cursorActionTarget;
+        private readonly Map map = map;
+        private readonly EditorState editorState = editorState;
+        private readonly SetFollowerCursorAction setFollowerCursorAction = new SetFollowerCursorAction(cursorActionTarget);
+        private readonly ICursorActionTarget cursorActionTarget = cursorActionTarget;
 
         private XNATrackbar trbStrength;
         private XNALabel lblStrengthValue;
@@ -71,7 +63,7 @@ namespace TSMapEditor.UI.Windows
 
             try
             {
-                ddVeterancy.Items.ForEach(ddItem => ddItem.Tag = int.Parse(ddItem.Text.Substring(0, ddItem.Text.IndexOf(' ')), CultureInfo.InvariantCulture));
+                ddVeterancy.Items.ForEach(ddItem => ddItem.Tag = int.Parse(ddItem.Text[..ddItem.Text.IndexOf(' ')], CultureInfo.InvariantCulture));
             }
             catch (FormatException)
             {

@@ -10,12 +10,8 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows the user to delete anything.
     /// </summary>
-    public class DeletionModeCursorAction : CursorAction
+    public class DeletionModeCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public DeletionModeCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Delete Object";
 
         public override bool DrawCellCursor => false;

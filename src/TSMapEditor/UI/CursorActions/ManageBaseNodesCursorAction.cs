@@ -12,12 +12,8 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows adding and removing base nodes.
     /// </summary>
-    public class ManageBaseNodesCursorAction : CursorAction
+    public class ManageBaseNodesCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public ManageBaseNodesCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         private BaseNode draggedBaseNode = null;
         private bool isDragging = false;
 

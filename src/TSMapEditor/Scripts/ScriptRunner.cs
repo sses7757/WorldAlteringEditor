@@ -12,22 +12,13 @@ using Westwind.Scripting;
 namespace TSMapEditor.Scripts
 {
     // Has to be a class, Westwind.Scripting does not appear to recognize this if it is a struct.
-    public class ScriptDependencies
+    public class ScriptDependencies(Map map, ICursorActionTarget cursorActionTarget, EditorState editorState, WindowManager windowManager, WindowController windowController)
     {
-        public Map Map;
-        public ICursorActionTarget CursorActionTarget;
-        public EditorState EditorState;
-        public WindowManager WindowManager;
-        public WindowController WindowController;
-
-        public ScriptDependencies(Map map, ICursorActionTarget cursorActionTarget, EditorState editorState, WindowManager windowManager, WindowController windowController)
-        {
-            Map = map;
-            CursorActionTarget = cursorActionTarget;
-            EditorState = editorState;
-            WindowManager = windowManager;
-            WindowController = windowController;
-        }
+        public Map Map = map;
+        public ICursorActionTarget CursorActionTarget = cursorActionTarget;
+        public EditorState EditorState = editorState;
+        public WindowManager WindowManager = windowManager;
+        public WindowController WindowController = windowController;
     }
 
     public static class ScriptRunner
@@ -67,7 +58,7 @@ namespace TSMapEditor.Scripts
 
             try
             {
-                performMethod.Invoke(scriptClassInstance, new object[] { map });
+                performMethod.Invoke(scriptClassInstance, [map]);
                 return (string)getSuccessMessageMethod.Invoke(scriptClassInstance, null);
             }
             catch (Exception ex) // catching Exception is OK, we cannot know what the script can throw

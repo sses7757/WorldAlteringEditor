@@ -4,12 +4,8 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering.ObjectRenderers
 {
-    public sealed class AnimRenderer : ObjectRenderer<Animation>
+    public sealed class AnimRenderer(RenderDependencies renderDependencies) : ObjectRenderer<Animation>(renderDependencies)
     {
-        public AnimRenderer(RenderDependencies renderDependencies) : base(renderDependencies)
-        {
-        }
-
         public float BuildingAnimDepthAddition { get; set; }
 
         protected override Color ReplacementColor => Color.Orange;
@@ -42,7 +38,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
 
             var mapCell = Map.GetTile(position);
             int heightOffset = RenderDependencies.EditorState.Is2DMode ? 0 : mapCell.Level * Constants.CellHeight;
-            Point2D drawPoint = new Point2D(drawPointWithoutCellHeight.X, drawPointWithoutCellHeight.Y - heightOffset);
+            Point2D drawPoint = new(drawPointWithoutCellHeight.X, drawPointWithoutCellHeight.Y - heightOffset);
 
             return drawPoint;
         }

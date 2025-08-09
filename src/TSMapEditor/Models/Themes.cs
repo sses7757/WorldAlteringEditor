@@ -6,19 +6,13 @@ using TSMapEditor.Misc;
 
 namespace TSMapEditor.Models
 {
-    public class Theme : INIDefineable
+    public class Theme(string iniName, int index) : INIDefineable
     {
-        public Theme(string iniName, int index)
-        {
-            ININame = iniName;
-            Index = index;
-        }
+        [INI(false)]
+        public string ININame { get; } = iniName;
 
         [INI(false)]
-        public string ININame { get; }
-
-        [INI(false)]
-        public int Index { get; }
+        public int Index { get; } = index;
 
         public string Name { get; set; } = string.Empty;
         public double Length { get; set; }

@@ -18,34 +18,19 @@ namespace TSMapEditor.UI.Windows
         ColorThenName,
     }
 
-    public class TaskForceEventArgs : EventArgs
+    public class TaskForceEventArgs(TaskForce taskForce) : EventArgs
     {
-        public TaskForceEventArgs(TaskForce taskForce)
-        {
-            TaskForce = taskForce;
-        }
-
-        public TaskForce TaskForce { get; }
+        public TaskForce TaskForce { get; } = taskForce;
     }
 
-    public class ScriptEventArgs : EventArgs
+    public class ScriptEventArgs(Script script) : EventArgs
     {
-        public ScriptEventArgs(Script script)
-        {
-            Script = script;
-        }
-
-        public Script Script { get; }
+        public Script Script { get; } = script;
     }
 
-    public class TeamTypesWindow : INItializableWindow
+    public class TeamTypesWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public TeamTypesWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public event EventHandler<TaskForceEventArgs> TaskForceOpened;
         public event EventHandler<ScriptEventArgs> ScriptOpened;
@@ -69,7 +54,7 @@ namespace TSMapEditor.UI.Windows
         private EditorPopUpSelector selTag;
 
         private TeamType editedTeamType;
-        private List<XNACheckBox> checkBoxes = new List<XNACheckBox>();
+        private readonly List<XNACheckBox> checkBoxes = [];
 
         private SelectTaskForceWindow selectTaskForceWindow;
         private SelectScriptWindow selectScriptWindow;
@@ -434,9 +419,11 @@ namespace TSMapEditor.UI.Windows
 
             foreach (var teamTypeFlag in map.EditorConfig.TeamTypeFlags)
             {
-                var checkBox = new XNACheckBox(WindowManager);
-                checkBox.Tag = teamTypeFlag.Name;
-                checkBox.Text = teamTypeFlag.Name;
+                var checkBox = new XNACheckBox(WindowManager)
+                {
+                    Tag = teamTypeFlag.Name,
+                    Text = teamTypeFlag.Name
+                };
                 panelBooleans.AddChild(checkBox);
                 checkBoxes.Add(checkBox);
 
@@ -493,23 +480,13 @@ namespace TSMapEditor.UI.Windows
                 shouldViewTop = true;
             }
 
-            switch (TeamTypeSortMode)
+            sortedTeamTypes = TeamTypeSortMode switch
             {
-                case TeamTypeSortMode.Color:
-                    sortedTeamTypes = sortedTeamTypes.OrderBy(teamType => teamType.GetXNAColor().ToString()).ThenBy(teamType => teamType.ININame);
-                    break;
-                case TeamTypeSortMode.Name:
-                    sortedTeamTypes = sortedTeamTypes.OrderBy(teamType => teamType.Name).ThenBy(teamType => teamType.ININame);
-                    break;
-                case TeamTypeSortMode.ColorThenName:
-                    sortedTeamTypes = sortedTeamTypes.OrderBy(teamType => teamType.GetXNAColor().ToString()).ThenBy(teamType => teamType.Name);
-                    break;
-                case TeamTypeSortMode.ID:
-                default:
-                    sortedTeamTypes = sortedTeamTypes.OrderBy(teamType => teamType.ININame);
-                    break;
-            }
-
+                TeamTypeSortMode.Color => sortedTeamTypes.OrderBy(teamType => teamType.GetXNAColor().ToString()).ThenBy(teamType => teamType.ININame),
+                TeamTypeSortMode.Name => sortedTeamTypes.OrderBy(teamType => teamType.Name).ThenBy(teamType => teamType.ININame),
+                TeamTypeSortMode.ColorThenName => sortedTeamTypes.OrderBy(teamType => teamType.GetXNAColor().ToString()).ThenBy(teamType => teamType.Name),
+                _ => sortedTeamTypes.OrderBy(teamType => teamType.ININame),
+            };
             foreach (var teamType in sortedTeamTypes)
             {
                 lbTeamTypes.AddItem(new XNAListBoxItem() 

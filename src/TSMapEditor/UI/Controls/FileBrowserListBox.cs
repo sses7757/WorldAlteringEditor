@@ -6,14 +6,9 @@ using System.IO;
 
 namespace TSMapEditor.UI.Controls
 {
-    public class FileSelectionEventArgs
+    public class FileSelectionEventArgs(string filePath)
     {
-        public FileSelectionEventArgs(string filePath)
-        {
-            FilePath = filePath;
-        }
-
-        public string FilePath { get; }
+        public string FilePath { get; } = filePath;
     }
 
     public class FileBrowserListBox : EditorListBox
@@ -87,7 +82,7 @@ namespace TSMapEditor.UI.Controls
             if (SelectedItem.Tag != null)
             {
                 // Browse to next directory
-                DirectoryPath = DirectoryPath + SelectedItem.Text.Substring(DirectoryPrefix.Length) + Path.DirectorySeparatorChar;
+                DirectoryPath = DirectoryPath + SelectedItem.Text[DirectoryPrefix.Length..] + Path.DirectorySeparatorChar;
                 return;
             }
 
@@ -121,8 +116,8 @@ namespace TSMapEditor.UI.Controls
             foreach (string dir in directories)
             {
                 string dirName = dir;
-                dirName = dirName.Substring(dirName.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                dirName = dirName.Substring(dirName.LastIndexOf(Path.AltDirectorySeparatorChar) + 1);
+                dirName = dirName[(dirName.LastIndexOf(Path.DirectorySeparatorChar) + 1)..];
+                dirName = dirName[(dirName.LastIndexOf(Path.AltDirectorySeparatorChar) + 1)..];
                 AddItem(new XNAListBoxItem(DirectoryPrefix + dirName, Color.LightGray) { Tag = new object() }); // Yay for wasting memory
             }
 

@@ -10,25 +10,21 @@ namespace TSMapEditor.UI
     /// </summary>
     public class OverlayCollection : ObjectTypeCollection
     {
-        public struct OverlayCollectionEntry
+        public struct OverlayCollectionEntry(OverlayType overlayType, int frame)
         {
-            public OverlayType OverlayType;
-            public int Frame;
-
-            public OverlayCollectionEntry(OverlayType overlayType, int frame)
-            {
-                OverlayType = overlayType;
-                Frame = frame;
-            }
+            public OverlayType OverlayType = overlayType;
+            public int Frame = frame;
         }
 
         public OverlayCollectionEntry[] Entries;
 
         public static OverlayCollection InitFromIniSection(IniSection iniSection, List<OverlayType> overlayTypes)
         {
-            var overlayCollection = new OverlayCollection();
-            overlayCollection.Name = iniSection.GetStringValue("Name", "Unnamed Collection");
-            overlayCollection.AllowedTheaters = iniSection.GetListValue("AllowedTheaters", ',', s => s);
+            var overlayCollection = new OverlayCollection
+            {
+                Name = iniSection.GetStringValue("Name", "Unnamed Collection"),
+                AllowedTheaters = iniSection.GetListValue("AllowedTheaters", ',', s => s)
+            };
 
             var entryList = new List<OverlayCollectionEntry>();
 
@@ -39,7 +35,7 @@ namespace TSMapEditor.UI
                 if (string.IsNullOrWhiteSpace(value))
                     break;
 
-                string[] parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = value.Split([','], StringSplitOptions.RemoveEmptyEntries);
                 string overlayTypeName;
                 int frame = 0;
                 if (parts.Length == 1)
@@ -52,12 +48,7 @@ namespace TSMapEditor.UI
                     frame = Conversions.IntFromString(parts[1], -1);
                 }
 
-                var overlayType = overlayTypes.Find(o => o.ININame == overlayTypeName);
-                if (overlayType == null)
-                {
-                    throw new INIConfigException($"Overlay type \"{overlayTypeName}\" not found while initializing overlay collection \"{overlayCollection.Name}\"!");
-                }
-
+                var overlayType = overlayTypes.Find(o => o.ININame == overlayTypeName) ?? throw new INIConfigException($"Overlay type \"{overlayTypeName}\" not found while initializing overlay collection \"{overlayCollection.Name}\"!");
                 if (frame < 0)
                 {
                     throw new INIConfigException($"Frame below zero defined in entry #{i} in overlay collection \"{overlayCollection.Name}\"!");
@@ -68,7 +59,7 @@ namespace TSMapEditor.UI
                 i++;
             }
 
-            overlayCollection.Entries = entryList.ToArray();
+            overlayCollection.Entries = [.. entryList];
             return overlayCollection;
         }
     }

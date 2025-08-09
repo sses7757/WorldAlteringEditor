@@ -31,7 +31,7 @@ namespace TSMapEditor.Models
                 return null;
             }
                 
-            string[] parts = iniString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = iniString.Split([','], StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length != 3)
             {
                 Logger.Log($"{nameof(BaseNode)}.{nameof(FromIniString)}: invalid string " + iniString);
@@ -50,16 +50,11 @@ namespace TSMapEditor.Models
         }
     }
 
-    public class House : AbstractObject
+    public class House(string iniName) : AbstractObject
     {
         private const int MaxBaseNodeCount = 1000;
 
         public override RTTIType WhatAmI() => RTTIType.House;
-
-        public House(string iniName)
-        {
-            ININame = iniName;
-        }
 
         public House(string iniName, HouseType houseType) : this(iniName)
         {
@@ -67,7 +62,7 @@ namespace TSMapEditor.Models
         }
 
         [INI(false)]
-        public string ININame { get; set; }
+        public string ININame { get; set; } = iniName;
         public HouseType HouseType { get; set; }
 
         public int IQ { get; set; }
@@ -98,7 +93,7 @@ namespace TSMapEditor.Models
         [INI(false)]
         public Color XNAColor { get; set; } = Microsoft.Xna.Framework.Color.White;
 
-        public List<BaseNode> BaseNodes { get; } = new List<BaseNode>();
+        public List<BaseNode> BaseNodes { get; } = [];
 
         public void ReadFromIniSection(IniSection iniSection)
         {

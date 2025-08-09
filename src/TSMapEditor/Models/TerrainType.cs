@@ -5,12 +5,8 @@ using TSMapEditor.Models.Enums;
 
 namespace TSMapEditor.Models
 {
-    public class TerrainType : GameObjectType, IArtConfigContainer
+    public class TerrainType(string iniName) : GameObjectType(iniName), IArtConfigContainer
     {
-        public TerrainType(string iniName) : base(iniName)
-        {
-        }
-
         public override RTTIType WhatAmI() => RTTIType.TerrainType;
 
         public IArtConfig GetArtConfig() => ArtConfig;

@@ -28,7 +28,7 @@ namespace TSMapEditor.Initialization
         private const int AIRCRAFT_PROPERTY_FIELD_COUNT = 12;
         private const int AI_TRIGGER_PROPERTY_FIELD_COUNT = 18;
 
-        public static List<string> MapLoadErrors = new List<string>();
+        public static List<string> MapLoadErrors = [];
 
         private static void AddMapLoadError(string error)
         {
@@ -40,13 +40,8 @@ namespace TSMapEditor.Initialization
         {
             Logger.Log("Performing pre-load map checkup.");
 
-            var section = mapIni.GetSection("Map");
-            if (section == null)
-                throw new MapLoadException("[Map] does not exist in the loaded file!");
-
-            string size = section.GetStringValue("Size", null);
-            if (size == null)
-                throw new MapLoadException("Invalid [Map] Size=");
+            var section = mapIni.GetSection("Map") ?? throw new MapLoadException("[Map] does not exist in the loaded file!");
+            string size = section.GetStringValue("Size", null) ?? throw new MapLoadException("Invalid [Map] Size=");
             string[] parts = size.Split(',');
             if (parts.Length != 4)
                 throw new MapLoadException("Invalid [Map] Size=");
@@ -118,10 +113,7 @@ namespace TSMapEditor.Initialization
         {
             Logger.Log("Reading [Map] section.");
 
-            var section = mapIni.GetSection("Map");
-            if (section == null)
-                throw new MapLoadException("[Map] does not exist in the loaded file!");
-
+            var section = mapIni.GetSection("Map") ?? throw new MapLoadException("[Map] does not exist in the loaded file!");
             string size = section.GetStringValue("Size", null);
             string[] parts = size.Split(',');
 
@@ -129,9 +121,7 @@ namespace TSMapEditor.Initialization
             int height = int.Parse(parts[3], CultureInfo.InvariantCulture);
             map.Size = new Point2D(width, height);
 
-            string localSize = section.GetStringValue("LocalSize", null);
-            if (localSize == null)
-                throw new MapLoadException("Invalid [Map] LocalSize=");
+            string localSize = section.GetStringValue("LocalSize", null) ?? throw new MapLoadException("Invalid [Map] LocalSize=");
             parts = localSize.Split(',');
             if (parts.Length != 4)
                 throw new MapLoadException("Invalid [Map] LocalSize=");
@@ -154,27 +144,33 @@ namespace TSMapEditor.Initialization
             var section = mapIni.GetSection("IsoMapPack5");
             if (section == null)
             {
-                map.SetTileData(new List<MapTile>(0));
+                map.SetTileData([]);
                 return;
             }
 
             if (section.Keys.Count == 0)
             {
                 Logger.Log("[IsoMapPack5] has no data!");
-                map.SetTileData(new List<MapTile>(0));
+                map.SetTileData([]);
                 return;
             }
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             section.Keys.ForEach(kvp => sb.Append(kvp.Value));
 
-            byte[] compressedData = Convert.FromBase64String(sb.ToString());
+            var allStr = sb.ToString().TrimEnd('=');
+            if (allStr.Length % 4 != 0)
+            {
+                Logger.Log("Warning: IsoMapPack5 Base64 length " + allStr.Length + " is not a multiple of 4, adding trailing zero bytes");
+                allStr += new string('A', 4 - (allStr.Length % 4));
+            }
+            byte[] compressedData = Convert.FromBase64String(allStr);
             if (compressedData.Length < 4)
                 throw new InvalidOperationException("Invalid IsoMapPack5 format");
 
             Logger.Log("IsoMapPack5 CompressedData length: " + compressedData.Length);
 
-            List<byte> uncompressedData = new List<byte>();
+            List<byte> uncompressedData = [];
 
             int position = 0;
 
@@ -186,7 +182,11 @@ namespace TSMapEditor.Initialization
                 Logger.Log("Decoding IsoMapPack5 block: pos: " + position + ", inSize: " + inputSize + ", outSize: " + outputSize);
 
                 if (position + inputSize + 4 > compressedData.Length)
-                    throw new InvalidOperationException("Error decoding IsoMapPack5");
+                {
+                    Logger.Log("                   Warning: this block is too large, ignored");
+                    break;
+                    //throw new InvalidOperationException("Error decoding IsoMapPack5");
+                }
 
                 byte[] inData = new byte[inputSize];
                 Array.Copy(compressedData, position + 4, inData, 0, inputSize);
@@ -204,7 +204,7 @@ namespace TSMapEditor.Initialization
             position = 0;
             while (position < uncompressedData.Count - IsoMapPack5Tile.Size)
             {
-                var mapTile = new MapTile(uncompressedData.GetRange(position, IsoMapPack5Tile.Size).ToArray());
+                var mapTile = new MapTile([.. uncompressedData.GetRange(position, IsoMapPack5Tile.Size)]);
                 if (mapTile.TileIndex == ushort.MaxValue)
                 {
                     mapTile.TileIndex = 0;
@@ -243,8 +243,8 @@ namespace TSMapEditor.Initialization
             {
                 string coords = kvp.Key;
                 int yLength = coords.Length - 3;
-                int y = Conversions.IntFromString(coords.Substring(0, yLength), -1);
-                int x = Conversions.IntFromString(coords.Substring(yLength), -1);
+                int y = Conversions.IntFromString(coords[..yLength], -1);
+                int x = Conversions.IntFromString(coords[yLength..], -1);
                 if (y < 0 || x < 0)
                     continue;
 
@@ -298,7 +298,7 @@ namespace TSMapEditor.Initialization
 
             foreach (var kvp in section.Keys)
             {
-                string[] values = kvp.Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] values = kvp.Value.Split([','], StringSplitOptions.RemoveEmptyEntries);
                 if (values.Length < BUILDING_PROPERTY_FIELD_COUNT)
                     continue;
 
@@ -314,7 +314,7 @@ namespace TSMapEditor.Initialization
                 bool powered = Conversions.BooleanFromString(values[9], true);
                 int upgradeCount = Conversions.IntFromString(values[10], 0);
                 int spotlight = Conversions.IntFromString(values[11], 0);
-                string[] upgradeIds = new string[] { values[12], values[13], values[14] };
+                string[] upgradeIds = [values[12], values[13], values[14]];
                 bool aiRepairable = Conversions.BooleanFromString(values[15], false);
                 bool nominal = Conversions.BooleanFromString(values[16], false);
 
@@ -430,7 +430,7 @@ namespace TSMapEditor.Initialization
 
             foreach (var kvp in section.Keys)
             {
-                string[] values = kvp.Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] values = kvp.Value.Split([','], StringSplitOptions.RemoveEmptyEntries);
                 if (values.Length < AIRCRAFT_PROPERTY_FIELD_COUNT)
                     continue;
 
@@ -471,8 +471,7 @@ namespace TSMapEditor.Initialization
 
                 map.Aircraft.Add(aircraft);
                 var tile = map.GetTile(x, y);
-                if (tile != null)
-                    tile.Aircraft.Add(aircraft);
+                tile?.Aircraft.Add(aircraft);
             }
 
             Logger.Log("Aircraft read successfully.");
@@ -491,7 +490,7 @@ namespace TSMapEditor.Initialization
 
             foreach (var kvp in section.Keys)
             {
-                string[] values = kvp.Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] values = kvp.Value.Split([','], StringSplitOptions.RemoveEmptyEntries);
                 if (values.Length < UNIT_PROPERTY_FIELD_COUNT)
                     continue;
 
@@ -536,8 +535,7 @@ namespace TSMapEditor.Initialization
 
                 map.Units.Add(unit);
                 var tile = map.GetTile(x, y);
-                if (tile != null)
-                    tile.Vehicles.Add(unit);
+                tile?.Vehicles.Add(unit);
             }
 
             // Process follow IDs
@@ -565,7 +563,7 @@ namespace TSMapEditor.Initialization
 
             foreach (var kvp in section.Keys)
             {
-                string[] values = kvp.Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] values = kvp.Value.Split([','], StringSplitOptions.RemoveEmptyEntries);
                 if (values.Length < INFANTRY_PROPERTY_FIELD_COUNT)
                     continue;
 
@@ -610,8 +608,7 @@ namespace TSMapEditor.Initialization
 
                 map.Infantry.Add(infantry);
                 var tile = map.GetTile(x, y);
-                if (tile != null)
-                    tile.Infantry[(int)subCell] = infantry;
+                tile?.Infantry[(int)subCell] = infantry;
             }
 
             Logger.Log("Infantry read successfully.");
@@ -627,7 +624,7 @@ namespace TSMapEditor.Initialization
 
             foreach (var kvp in smudgesSection.Keys)
             {
-                string[] values = kvp.Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] values = kvp.Value.Split([','], StringSplitOptions.RemoveEmptyEntries);
 
                 if (values.Length < 3)
                 {
@@ -677,13 +674,25 @@ namespace TSMapEditor.Initialization
 
             var stringBuilder = new StringBuilder();
             overlayPackSection.Keys.ForEach(kvp => stringBuilder.Append(kvp.Value));
-            byte[] compressedData = Convert.FromBase64String(stringBuilder.ToString());
+            var allStr = stringBuilder.ToString().TrimEnd('=');
+            if (allStr.Length % 4 != 0)
+            {
+                Logger.Log("Warning: OverlayPack Base64 length " + allStr.Length + " is not a multiple of 4, adding trailing zero bytes");
+                allStr += new string('A', 4 - (allStr.Length % 4));
+            }
+            byte[] compressedData = Convert.FromBase64String(allStr);
             byte[] uncompressedOverlayPack = new byte[Constants.MAX_MAP_LENGTH_IN_DIMENSION * Constants.MAX_MAP_LENGTH_IN_DIMENSION * (needsExtendedOverlayPack ? 2 : 1)];
             Format5.DecodeInto(compressedData, uncompressedOverlayPack, Constants.OverlayPackFormat);
 
             stringBuilder.Clear();
             overlayDataPackSection.Keys.ForEach(kvp => stringBuilder.Append(kvp.Value));
-            compressedData = Convert.FromBase64String(stringBuilder.ToString());
+            allStr = stringBuilder.ToString().TrimEnd('=');
+            if (allStr.Length % 4 != 0)
+            {
+                Logger.Log("Warning: OverlayDataPack Base64 length " + allStr.Length + " is not a multiple of 4, adding trailing zero bytes");
+                allStr += new string('A', 4 - (allStr.Length % 4));
+            }
+            compressedData = Convert.FromBase64String(allStr);
             byte[] uncompressedOverlayDataPack = new byte[Constants.MAX_MAP_LENGTH_IN_DIMENSION * Constants.MAX_MAP_LENGTH_IN_DIMENSION];
             Format5.DecodeInto(compressedData, uncompressedOverlayDataPack, Constants.OverlayPackFormat);
 
@@ -974,10 +983,11 @@ namespace TSMapEditor.Initialization
                     continue;
                 }
 
-                var aiTriggerType = new AITriggerType(kvp.Key);
-
-                aiTriggerType.Name = parts[0];
-                aiTriggerType.PrimaryTeam = map.TeamTypes.Concat(map.Rules.TeamTypes).FirstOrDefault(tt => tt.ININame == parts[1]);
+                var aiTriggerType = new AITriggerType(kvp.Key)
+                {
+                    Name = parts[0],
+                    PrimaryTeam = map.TeamTypes.Concat(map.Rules.TeamTypes).FirstOrDefault(tt => tt.ININame == parts[1])
+                };
 
                 if (aiTriggerType.PrimaryTeam == null)
                 {
@@ -1088,8 +1098,10 @@ namespace TSMapEditor.Initialization
                         continue;
                 }
 
-                var houseType = new HouseType(kvp.Value);
-                houseType.Index = id + (Constants.IsRA2YR ? map.Rules.RulesHouseTypes.Count : 0);
+                var houseType = new HouseType(kvp.Value)
+                {
+                    Index = id + (Constants.IsRA2YR ? map.Rules.RulesHouseTypes.Count : 0)
+                };
                 id++;
 
                 if (houseTypeSection != null)
@@ -1129,8 +1141,10 @@ namespace TSMapEditor.Initialization
                 string houseName = kvp.Value;
                 HouseType houseType = null;
 
-                var house = new House(houseName);
-                house.ID = id;
+                var house = new House(houseName)
+                {
+                    ID = id
+                };
                 id++;
 
                 map.Houses.Add(house);
@@ -1234,7 +1248,7 @@ namespace TSMapEditor.Initialization
                     continue;
                 }
 
-                string[] parts = kvp.Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = kvp.Value.Split([','], StringSplitOptions.RemoveEmptyEntries);
 
                 if (parts.Length != 2)
                 {
@@ -1242,9 +1256,11 @@ namespace TSMapEditor.Initialization
                     continue;
                 }
 
-                var localVariable = new LocalVariable(variableIndex);
-                localVariable.Name = parts[0];
-                localVariable.InitialState = int.Parse(parts[1], CultureInfo.InvariantCulture);
+                var localVariable = new LocalVariable(variableIndex)
+                {
+                    Name = parts[0],
+                    InitialState = int.Parse(parts[1], CultureInfo.InvariantCulture)
+                };
 
                 map.LocalVariables.Add(localVariable);
             }
@@ -1264,7 +1280,7 @@ namespace TSMapEditor.Initialization
             {
                 // Index=ENTER_X,ENTER_Y,FACING,EXIT_X,EXIT_Y,DIRECTIONS
 
-                string[] parts = kvp.Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = kvp.Value.Split([','], StringSplitOptions.RemoveEmptyEntries);
 
                 if (parts.Length < 6)
                     return;

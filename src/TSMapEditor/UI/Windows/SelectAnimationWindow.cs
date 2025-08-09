@@ -5,14 +5,9 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectAnimationWindow : SelectObjectWindow<AnimType>
+    public class SelectAnimationWindow(WindowManager windowManager, Map map) : SelectObjectWindow<AnimType>(windowManager)
     {
-        public SelectAnimationWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public bool IncludeNone { get; set; } = true;
 

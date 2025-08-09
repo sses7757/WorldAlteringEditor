@@ -22,6 +22,6 @@ namespace TSMapEditor.CCEngine
         public byte G;
         public byte B;
 
-        public Color ToXnaColor() => new Color(R, G, B);
+        public readonly Color ToXnaColor() => new(R, G, B);
     }
 }

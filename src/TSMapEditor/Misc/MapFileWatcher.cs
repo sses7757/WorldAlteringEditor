@@ -27,10 +27,7 @@ namespace TSMapEditor.Misc
         /// </summary>
         private void Map_PreSave(object sender, EventArgs e)
         {
-            if (watcher != null)
-            {
-                watcher.EnableRaisingEvents = false;
-            }
+            watcher?.EnableRaisingEvents = false;
         }
 
         /// <summary>
@@ -38,10 +35,7 @@ namespace TSMapEditor.Misc
         /// </summary>
         private void Map_PostSave(object sender, EventArgs e)
         {
-            if (watcher != null)
-            {
-                watcher.EnableRaisingEvents = true;
-            }
+            watcher?.EnableRaisingEvents = true;
         }
 
         private void Map_MapManuallySaved(object sender, EventArgs e)
@@ -65,8 +59,10 @@ namespace TSMapEditor.Misc
             DisposeWatcher();
 
             FilePath = filePath;
-            watcher = new FileSystemWatcher(Path.GetDirectoryName(filePath), Path.GetFileName(filePath));
-            watcher.EnableRaisingEvents = true;
+            watcher = new FileSystemWatcher(Path.GetDirectoryName(filePath), Path.GetFileName(filePath))
+            {
+                EnableRaisingEvents = true
+            };
             watcher.Created += Watcher_Created;
             watcher.Changed += Watcher_Changed;
         }

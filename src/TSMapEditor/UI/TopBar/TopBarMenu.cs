@@ -20,24 +20,16 @@ using System.Windows.Forms;
 
 namespace TSMapEditor.UI.TopBar
 {
-    class TopBarMenu : EditorPanel
+    class TopBarMenu(WindowManager windowManager, MutationManager mutationManager, MapUI mapUI, Map map, WindowController windowController) : EditorPanel(windowManager)
     {
-        public TopBarMenu(WindowManager windowManager, MutationManager mutationManager, MapUI mapUI, Map map, WindowController windowController) : base(windowManager)
-        {
-            this.mutationManager = mutationManager;
-            this.mapUI = mapUI;
-            this.map = map;
-            this.windowController = windowController;
-        }
-
         public event EventHandler<FileSelectedEventArgs> OnFileSelected;
         public event EventHandler InputFileReloadRequested;
         public event EventHandler MapWideOverlayLoadRequested;
 
-        private readonly MutationManager mutationManager;
-        private readonly MapUI mapUI;
-        private readonly Map map;
-        private readonly WindowController windowController;
+        private readonly MutationManager mutationManager = mutationManager;
+        private readonly MapUI mapUI = mapUI;
+        private readonly Map map = map;
+        private readonly WindowController windowController = windowController;
 
         private MenuButton[] menuButtons;
 
@@ -252,7 +244,7 @@ namespace TSMapEditor.UI.TopBar
 
             Height = fileButton.Height;
 
-            menuButtons = new MenuButton[] { fileButton, editButton, viewButton, toolsButton, scriptingButton };
+            menuButtons = [fileButton, editButton, viewButton, toolsButton, scriptingButton];
             Array.ForEach(menuButtons, b => b.MouseEnter += MenuButton_MouseEnter);
 
             KeyboardCommands.Instance.ConfigureCopiedObjects.Triggered += (s, e) => windowController.CopiedEntryTypesWindow.Open();
@@ -411,8 +403,10 @@ namespace TSMapEditor.UI.TopBar
                 return;
             }
 
-            var generateTerrainCursorAction = new GenerateTerrainCursorAction(mapUI);
-            generateTerrainCursorAction.TerrainGeneratorConfiguration = windowController.TerrainGeneratorConfigWindow.TerrainGeneratorConfig;
+            var generateTerrainCursorAction = new GenerateTerrainCursorAction(mapUI)
+            {
+                TerrainGeneratorConfiguration = windowController.TerrainGeneratorConfigWindow.TerrainGeneratorConfig
+            };
             mapUI.CursorAction = generateTerrainCursorAction;
         }
 
@@ -437,16 +431,14 @@ namespace TSMapEditor.UI.TopBar
 #if WINDOWS
             string initialPath = string.IsNullOrWhiteSpace(UserSettings.Instance.LastScenarioPath.GetValue()) ? UserSettings.Instance.GameDirectory : Path.GetDirectoryName(UserSettings.Instance.LastScenarioPath.GetValue());
 
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.InitialDirectory = initialPath;
-                openFileDialog.Filter = Constants.OpenFileDialogFilter.Replace(':', ';');
-                openFileDialog.RestoreDirectory = true;
+            using OpenFileDialog openFileDialog = new();
+            openFileDialog.InitialDirectory = initialPath;
+            openFileDialog.Filter = Constants.OpenFileDialogFilter.Replace(':', ';');
+            openFileDialog.RestoreDirectory = true;
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    OnFileSelected?.Invoke(this, new FileSelectedEventArgs(openFileDialog.FileName));
-                }
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                OnFileSelected?.Invoke(this, new FileSelectedEventArgs(openFileDialog.FileName));
             }
 #else
             windowController.OpenMapWindow.Open();
@@ -458,24 +450,22 @@ namespace TSMapEditor.UI.TopBar
 #if WINDOWS
             string initialPath = string.IsNullOrWhiteSpace(UserSettings.Instance.LastScenarioPath.GetValue()) ? UserSettings.Instance.GameDirectory : UserSettings.Instance.LastScenarioPath.GetValue();
 
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            using SaveFileDialog saveFileDialog = new();
+            saveFileDialog.InitialDirectory = Path.GetDirectoryName(initialPath);
+            saveFileDialog.FileName = Path.GetFileName(initialPath);
+            saveFileDialog.Filter = Constants.OpenFileDialogFilter.Replace(':', ';');
+            saveFileDialog.RestoreDirectory = true;
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                saveFileDialog.InitialDirectory = Path.GetDirectoryName(initialPath);
-                saveFileDialog.FileName = Path.GetFileName(initialPath);
-                saveFileDialog.Filter = Constants.OpenFileDialogFilter.Replace(':', ';');
-                saveFileDialog.RestoreDirectory = true;
+                map.LoadedINI.FileName = saveFileDialog.FileName;
+                TrySaveMap();
 
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                if (UserSettings.Instance.LastScenarioPath.GetValue() != saveFileDialog.FileName)
                 {
-                    map.LoadedINI.FileName = saveFileDialog.FileName;
-                    TrySaveMap();
-
-                    if (UserSettings.Instance.LastScenarioPath.GetValue() != saveFileDialog.FileName)
-                    {
-                        UserSettings.Instance.RecentFiles.PutEntry(saveFileDialog.FileName);
-                        UserSettings.Instance.LastScenarioPath.UserDefinedValue = saveFileDialog.FileName;
-                        _ = UserSettings.Instance.SaveSettingsAsync();
-                    }
+                    UserSettings.Instance.RecentFiles.PutEntry(saveFileDialog.FileName);
+                    UserSettings.Instance.LastScenarioPath.UserDefinedValue = saveFileDialog.FileName;
+                    _ = UserSettings.Instance.SaveSettingsAsync();
                 }
             }
 #else

@@ -5,12 +5,8 @@ using TSMapEditor.Mutations.Classes;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class PlaceSmudgeCollectionCursorAction : CursorAction
+    public class PlaceSmudgeCollectionCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public PlaceSmudgeCollectionCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Place Smudge Collection";
 
         private Smudge oldSmudge;

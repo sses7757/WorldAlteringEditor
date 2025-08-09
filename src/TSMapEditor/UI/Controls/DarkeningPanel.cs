@@ -6,13 +6,9 @@ using TSMapEditor.UI.Windows;
 
 namespace TSMapEditor.UI.Controls
 {
-    public class DarkeningPanel : XNAPanel
+    public class DarkeningPanel(WindowManager windowManager) : XNAPanel(windowManager)
     {
         private const float ALPHA_RATE = 0.6f;
-
-        public DarkeningPanel(WindowManager windowManager) : base(windowManager)
-        {
-        }
 
         public event EventHandler Hidden;
 
@@ -121,9 +117,11 @@ namespace TSMapEditor.UI.Controls
 
         public static void AddAndInitializeWithControl(WindowManager wm, XNAControl control, bool display)
         {
-            var dp = new DarkeningPanel(wm);
-            dp.DrawOrder = int.MaxValue;
-            dp.UpdateOrder = int.MaxValue;
+            var dp = new DarkeningPanel(wm)
+            {
+                DrawOrder = int.MaxValue,
+                UpdateOrder = int.MaxValue
+            };
             wm.AddAndInitializeControl(dp);
             dp.AddChild(control);
 
@@ -140,9 +138,11 @@ namespace TSMapEditor.UI.Controls
 
         public static DarkeningPanel InitializeAndAddToParentControlWithChild(WindowManager windowManager, XNAControl parent, XNAControl child)
         {
-            var darkeningPanel = new DarkeningPanel(windowManager);
-            darkeningPanel.DrawOrder = 1;
-            darkeningPanel.UpdateOrder = 1;
+            var darkeningPanel = new DarkeningPanel(windowManager)
+            {
+                DrawOrder = 1,
+                UpdateOrder = 1
+            };
             parent.AddChild(darkeningPanel);
             darkeningPanel.AddChild(child);
             darkeningPanel.Hide();

@@ -7,16 +7,10 @@ using TSMapEditor.Extensions;
 
 namespace TSMapEditor.Models
 {
-    public struct TutorialLine
+    public struct TutorialLine(int id, string text)
     {
-        public TutorialLine(int id, string text)
-        {
-            ID = id;
-            Text = text;
-        }
-
-        public int ID;
-        public string Text;
+        public int ID = id;
+        public string Text = text;
     }
 
     public class TutorialLines
@@ -32,7 +26,7 @@ namespace TSMapEditor.Models
         private readonly string iniPath;
         private readonly Action<Action> modifyEventCallback;
 
-        private readonly object locker = new object();
+        private readonly object locker = new();
 
         private bool callbackAdded = false;
 
@@ -77,9 +71,11 @@ namespace TSMapEditor.Models
                 return;
             }
 
-            fsw = new FileSystemWatcher(Path.GetDirectoryName(iniPath));
-            fsw.Filter = Path.GetFileName(iniPath);
-            fsw.EnableRaisingEvents = true;
+            fsw = new FileSystemWatcher(Path.GetDirectoryName(iniPath))
+            {
+                Filter = Path.GetFileName(iniPath),
+                EnableRaisingEvents = true
+            };
             fsw.Changed += Fsw_Changed;
         }
 
@@ -94,9 +90,9 @@ namespace TSMapEditor.Models
             fsw = null;
         }
 
-        private Dictionary<int, string> tutorialLines = new Dictionary<int, string>();
+        private readonly Dictionary<int, string> tutorialLines = [];
 
-        public List<TutorialLine> GetLines() => tutorialLines.Select(tl => new TutorialLine(tl.Key, tl.Value)).OrderBy(tl => tl.ID).ToList();
+        public List<TutorialLine> GetLines() => [.. tutorialLines.Select(tl => new TutorialLine(tl.Key, tl.Value)).OrderBy(tl => tl.ID)];
 
         /// <summary>
         /// Fetches a tutorial text line with the given ID.

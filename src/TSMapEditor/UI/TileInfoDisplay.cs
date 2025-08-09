@@ -145,7 +145,7 @@ namespace TSMapEditor.UI
         private void AddWaypointInfo(Waypoint waypoint)
         {
             // Find all usages for this waypoint
-            List<string> usages = new List<string>(0);
+            List<string> usages = [];
 
             foreach (Trigger trigger in map.Triggers)
             {
@@ -240,7 +240,7 @@ namespace TSMapEditor.UI
             if (usages.Count > 0)
             {
                 string lastUsage = usages[usages.Count - 1];
-                usages[usages.Count - 1] = lastUsage.Substring(0, lastUsage.Length - 2);
+                usages[usages.Count - 1] = lastUsage[..^2];
 
                 textRenderer.AddTextLine(new XNATextPart("Usages of waypoint " + waypoint.Identifier + ":", Constants.UIDefaultFont, Color.Gray));
 

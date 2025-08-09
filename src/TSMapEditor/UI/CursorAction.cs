@@ -8,12 +8,8 @@ using TSMapEditor.Mutations;
 
 namespace TSMapEditor.UI
 {
-    public abstract class CursorAction
+    public abstract class CursorAction(ICursorActionTarget cursorActionTarget)
     {
-        public CursorAction(ICursorActionTarget cursorActionTarget)
-        {
-            CursorActionTarget = cursorActionTarget;
-        }
 
         /// <summary>
         /// Raised when the cursor action is exited. 
@@ -70,7 +66,7 @@ namespace TSMapEditor.UI
 
         protected Map Map => CursorActionTarget.Map;
 
-        protected ICursorActionTarget CursorActionTarget { get; }
+        protected ICursorActionTarget CursorActionTarget { get; } = cursorActionTarget;
 
         protected IMutationTarget MutationTarget => CursorActionTarget.MutationTarget;
 
@@ -144,8 +140,8 @@ namespace TSMapEditor.UI
             var textDimensions = Renderer.GetTextDimensions(text, Constants.UIBoldFont);
             int x = cellTopLeftPoint.X - (int)(textDimensions.X - Constants.CellSizeX) / 2;
 
-            Vector2 textPosition = new Vector2(x + xOffset, cellTopLeftPoint.Y + yOffset);
-            Rectangle textBackgroundRectangle = new Rectangle((int)textPosition.X - Constants.UIEmptySideSpace,
+            Vector2 textPosition = new(x + xOffset, cellTopLeftPoint.Y + yOffset);
+            Rectangle textBackgroundRectangle = new((int)textPosition.X - Constants.UIEmptySideSpace,
                 (int)textPosition.Y - Constants.UIEmptyTopSpace,
                 (int)textDimensions.X + Constants.UIEmptySideSpace * 2,
                 (int)textDimensions.Y + Constants.UIEmptyBottomSpace + Constants.UIEmptyTopSpace);

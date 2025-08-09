@@ -6,12 +6,8 @@ using TSMapEditor.Mutations.Classes;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class ChangeAttachedTagCursorAction : CursorAction
+    public class ChangeAttachedTagCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public ChangeAttachedTagCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Change Attached Tag";
 
         public Tag TagToAttach { get; set; }

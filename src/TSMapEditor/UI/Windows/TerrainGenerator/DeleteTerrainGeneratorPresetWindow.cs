@@ -6,14 +6,9 @@ using TSMapEditor.Settings;
 
 namespace TSMapEditor.UI.Windows.TerrainGenerator
 {
-    internal class DeleteTerrainGeneratorPresetWindow : SelectObjectWindow<TerrainGeneratorConfiguration>
+    internal class DeleteTerrainGeneratorPresetWindow(WindowManager windowManager, TerrainGeneratorUserPresets userPresets) : SelectObjectWindow<TerrainGeneratorConfiguration>(windowManager)
     {
-        public DeleteTerrainGeneratorPresetWindow(WindowManager windowManager, TerrainGeneratorUserPresets userPresets) : base(windowManager)
-        {
-            this.userPresets = userPresets;
-        }
-
-        private readonly TerrainGeneratorUserPresets userPresets;
+        private readonly TerrainGeneratorUserPresets userPresets = userPresets;
 
         public override void Initialize()
         {

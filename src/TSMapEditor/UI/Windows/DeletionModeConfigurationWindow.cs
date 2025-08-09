@@ -7,14 +7,9 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class DeletionModeConfigurationWindow : INItializableWindow
+    public class DeletionModeConfigurationWindow(WindowManager windowManager, EditorState editorState) : INItializableWindow(windowManager)
     {
-        public DeletionModeConfigurationWindow(WindowManager windowManager, EditorState editorState) : base(windowManager)
-        {
-            this.editorState = editorState;
-        }
-
-        private readonly EditorState editorState;
+        private readonly EditorState editorState = editorState;
 
         private XNACheckBox chkCellTags;
         private XNACheckBox chkWaypoints;

@@ -5,14 +5,9 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectTeamTypeWindow : SelectObjectWindow<TeamType>
+    public class SelectTeamTypeWindow(WindowManager windowManager, Map map) : SelectObjectWindow<TeamType>(windowManager)
     {
-        public SelectTeamTypeWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public bool IncludeNone { get; set; }
 

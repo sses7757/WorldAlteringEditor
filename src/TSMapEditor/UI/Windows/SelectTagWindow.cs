@@ -6,14 +6,9 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectTagWindow : SelectObjectWindow<Tag>
+    public class SelectTagWindow(WindowManager windowManager, Map map) : SelectObjectWindow<Tag>(windowManager)
     {
-        public SelectTagWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public override void Initialize()
         {

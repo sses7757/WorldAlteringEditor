@@ -20,13 +20,13 @@ namespace TSMapEditor.Mutations.Classes.HeightMutations
         protected readonly BrushSize BrushSize;
         protected readonly TileSet RampTileSet;
 
-        protected List<Point2D> cellsToProcess = new List<Point2D>();
-        protected List<Point2D> processedCellsThisIteration = new List<Point2D>();
-        protected List<Point2D> totalProcessedCells = new List<Point2D>();
-        protected List<AlterGroundElevationUndoData> undoData = new List<AlterGroundElevationUndoData>();
+        protected List<Point2D> cellsToProcess = [];
+        protected List<Point2D> processedCellsThisIteration = [];
+        protected List<Point2D> totalProcessedCells = [];
+        protected List<AlterGroundElevationUndoData> undoData = [];
 
-        protected static readonly Point2D[] SurroundingTiles = new Point2D[] { new Point2D(-1, 0), new Point2D(1, 0), new Point2D(0, -1), new Point2D(0, 1),
-                                                                             new Point2D(-1, -1), new Point2D(-1, 1), new Point2D(1, -1), new Point2D(1, 1) };
+        protected static readonly Point2D[] SurroundingTiles = [ new(-1, 0), new(1, 0), new(0, -1), new(0, 1),
+                                                                             new(-1, -1), new(-1, 1), new(1, -1), new(1, 1) ];
 
         protected bool IsCellMorphable(MapTile cell)
         {

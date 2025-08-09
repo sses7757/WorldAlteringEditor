@@ -10,14 +10,9 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to expand the map.
     /// </summary>
-    public class ExpandMapWindow : INItializableWindow
+    public class ExpandMapWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public ExpandMapWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private XNALabel lblCurrentMapSize;
         private EditorNumberTextBox tbExpandNorth;

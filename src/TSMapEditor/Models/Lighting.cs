@@ -12,18 +12,11 @@ namespace TSMapEditor.Models
         public List<MapTile> AffectedTiles { get; set; }
     }
 
-    public struct MapColor
+    public struct MapColor(double red, double green, double blue)
     {
-        public MapColor(double red, double green, double blue)
-        {
-            R = red;
-            G = green;
-            B = blue;
-        }
-
-        public double R;
-        public double G;
-        public double B;
+        public double R = red;
+        public double G = green;
+        public double B = blue;
 
         public static MapColor operator *(MapColor value, double multiplier)
         {
@@ -51,21 +44,21 @@ namespace TSMapEditor.Models
             );
         }
 
-        public Vector4 ToXNAVector4(double extraLight) => new Vector4(
+        public readonly Vector4 ToXNAVector4(double extraLight) => new(
             (float)(R + extraLight),
             (float)(G + extraLight),
             (float)(B + extraLight),
             1.0f);
 
-        public Vector4 ToXNAVector4() => new Vector4((float)R, (float)G, (float)B, 1.0f);
+        public readonly Vector4 ToXNAVector4() => new((float)R, (float)G, (float)B, 1.0f);
 
-        public Vector4 ToXNAVector4Ambient(double extraLight)
+        public readonly Vector4 ToXNAVector4Ambient(double extraLight)
         {
             double average = ((R + G + B) / 3.0) + extraLight;
             return new Vector4((float)average, (float)average, (float)average, 1.0f);
         }
 
-        public Vector4 ToXNAVector4Ambient()
+        public readonly Vector4 ToXNAVector4Ambient()
         {
             // double highestComponent = Math.Max(R, Math.Max(G, B));
             // return new Vector4((float)highestComponent, (float)highestComponent, (float)highestComponent, 1.0f);

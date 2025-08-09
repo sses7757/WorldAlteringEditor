@@ -9,8 +9,8 @@ namespace TSMapEditor.UI
     {
         public KeyboardCommands()
         {
-            Commands = new List<KeyboardCommand>()
-            {
+            Commands =
+            [
                 Undo,
                 Redo,
                 Save,
@@ -61,7 +61,7 @@ namespace TSMapEditor.UI
                 TerrainObjectMenu,
                 OverlayMenu,
                 SmudgeMenu
-            };
+            ];
 
             // Theoretically not optimal for performance, but
             // cleaner this way

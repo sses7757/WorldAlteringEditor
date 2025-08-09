@@ -13,8 +13,10 @@ namespace TSMapEditor.UI
             lblSearchTips.X = control.Width - Constants.UIEmptySideSpace - lblSearchTips.Width;
             lblSearchTips.Y = (control.Height - lblSearchTips.Height) / 2;
             control.AddChild(lblSearchTips);
-            var tooltip = new ToolTip(control.WindowManager, lblSearchTips);
-            tooltip.Text = "Search Tips\r\n\r\nWith the text box activated:\r\n- Press ENTER to move to next match in list\r\n- Press ESC to clear search query";
+            var tooltip = new ToolTip(control.WindowManager, lblSearchTips)
+            {
+                Text = "Search Tips\r\n\r\nWith the text box activated:\r\n- Press ENTER to move to next match in list\r\n- Press ESC to clear search query"
+            };
         }
     }
 }

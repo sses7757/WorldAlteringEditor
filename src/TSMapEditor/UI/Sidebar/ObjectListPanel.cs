@@ -15,34 +15,21 @@ namespace TSMapEditor.UI.Sidebar
     /// <summary>
     /// A base class for all object type list panels.
     /// </summary>
-    public abstract class ObjectListPanel : XNAPanel, ISearchBoxContainer
+    public abstract class ObjectListPanel(WindowManager windowManager, EditorState editorState, Map map, TheaterGraphics theaterGraphics) : XNAPanel(windowManager), ISearchBoxContainer
     {
         /// <summary>
         /// Helper structure used for building sidebar object categories.
         /// Not used after the sidebar has been initialized.
         /// </summary>
-        struct ObjectCategory
+        struct ObjectCategory(string name, Color remapColor)
         {
-            public string Name;
-            public Color RemapColor;
-
-            public ObjectCategory(string name, Color remapColor)
-            {
-                Name = name;
-                RemapColor = remapColor;
-            }
+            public string Name = name;
+            public Color RemapColor = remapColor;
         }
 
-        public ObjectListPanel(WindowManager windowManager, EditorState editorState, Map map, TheaterGraphics theaterGraphics) : base(windowManager)
-        {
-            EditorState = editorState;
-            Map = map;
-            TheaterGraphics = theaterGraphics;
-        }
-
-        protected EditorState EditorState { get; }
-        protected Map Map { get; }
-        protected TheaterGraphics TheaterGraphics { get; }
+        protected EditorState EditorState { get; } = editorState;
+        protected Map Map { get; } = map;
+        protected TheaterGraphics TheaterGraphics { get; } = theaterGraphics;
 
         public XNASuggestionTextBox SearchBox { get; private set; }
         public TreeView ObjectTreeView { get; private set; }
@@ -216,13 +203,9 @@ namespace TSMapEditor.UI.Sidebar
                 if (filter != null && !filter(objectType))
                     continue;
 
-                List<ObjectCategory> categories = new List<ObjectCategory>(1);
+                List<ObjectCategory> categories = new(1);
 
-                string categoriesString = objectType.EditorCategory;
-
-                if (categoriesString == null)
-                    categoriesString = objectType.Owner;
-
+                string categoriesString = objectType.EditorCategory ?? objectType.Owner;
                 if (string.IsNullOrWhiteSpace(categoriesString))
                 {
                     categories.Add(new ObjectCategory("Uncategorized", Color.White));
@@ -275,7 +258,7 @@ namespace TSMapEditor.UI.Sidebar
 
                 var extractedTextures = GetObjectTextures(objectType, textures);
 
-                categories = categories.OrderBy(c => Map.EditorConfig.EditorRulesIni.GetIntValue("ObjectCategoryPriorities", c.Name, 0)).ToList();
+                categories = [.. categories.OrderBy(c => Map.EditorConfig.EditorRulesIni.GetIntValue("ObjectCategoryPriorities", c.Name, 0))];
 
                 for (int categoryIndex = 0; categoryIndex < categories.Count; categoryIndex++)
                 {
@@ -293,9 +276,9 @@ namespace TSMapEditor.UI.Sidebar
             }
 
             for (int i = 0; i < sideCategories.Count; i++)
-                sideCategories[i].Nodes = sideCategories[i].Nodes.OrderBy(n => n.Text).ToList();
+                sideCategories[i].Nodes = [.. sideCategories[i].Nodes.OrderBy(n => n.Text)];
 
-            sideCategories = sideCategories.OrderBy(c => Map.EditorConfig.EditorRulesIni.GetIntValue("ObjectCategoryPriorities", c.Text, int.MaxValue)).ToList();
+            sideCategories = [.. sideCategories.OrderBy(c => Map.EditorConfig.EditorRulesIni.GetIntValue("ObjectCategoryPriorities", c.Text, int.MaxValue))];
             sideCategories.ForEach(c => ObjectTreeView.AddCategory(c));
         }
 

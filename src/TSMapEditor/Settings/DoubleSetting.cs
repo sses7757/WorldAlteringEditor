@@ -3,12 +3,8 @@ using System.Globalization;
 
 namespace TSMapEditor.Settings
 {
-    public class DoubleSetting : SettingBase<double>
+    public class DoubleSetting(string section, string key, double defaultValue) : SettingBase<double>(section, key, defaultValue)
     {
-        public DoubleSetting(string section, string key, double defaultValue) : base(section, key, defaultValue)
-        {
-        }
-
         protected override double GetValueFromString(string iniValue)
         {
             return Conversions.DoubleFromString(iniValue, DefaultValue);

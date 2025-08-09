@@ -9,14 +9,9 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to select a tile set.
     /// </summary>
-    public class SelectTileSetWindow : SelectObjectWindow<TileSet>
+    public class SelectTileSetWindow(WindowManager windowManager, Map map) : SelectObjectWindow<TileSet>(windowManager)
     {
-        public SelectTileSetWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public override void Initialize()
         {

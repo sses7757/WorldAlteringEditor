@@ -4,11 +4,8 @@ using System.IO;
 
 namespace TSMapEditor.CCEngine
 {
-    public class ShpLoadException : Exception
+    public class ShpLoadException(string message) : Exception(message)
     {
-        public ShpLoadException(string message) : base(message)
-        {
-        }
     }
 
     [Flags]
@@ -74,17 +71,17 @@ namespace TSMapEditor.CCEngine
 
         private ushort ReadUShortFromStream(Stream stream)
         {
-            stream.Read(buffer, 0, 2);
+            stream.ReadExactly(buffer, 0, 2);
             return BitConverter.ToUInt16(buffer, 0);
         }
 
         private uint ReadUIntFromStream(Stream stream)
         {
-            stream.Read(buffer, 0, 4);
+            stream.ReadExactly(buffer, 0, 4);
             return BitConverter.ToUInt32(buffer, 0);
         }
 
-        byte[] buffer = new byte[4];
+        readonly byte[] buffer = new byte[4];
 
         public ushort XOffset;
         public ushort YOffset;
@@ -124,17 +121,15 @@ namespace TSMapEditor.CCEngine
 
         public void ParseFromFile(string filePath)
         {
-            using (FileStream stream = File.OpenRead(filePath))
-            {
-                Parse(stream);
-            }
+            using FileStream stream = File.OpenRead(filePath);
+            Parse(stream);
         }
 
         public void Parse(Stream stream)
         {
             byte[] buffer = new byte[stream.Length];
             stream.Position = 0;
-            stream.Read(buffer, 0, buffer.Length);
+            stream.ReadExactly(buffer);
             ParseFromBuffer(buffer);
         }
 
@@ -145,15 +140,13 @@ namespace TSMapEditor.CCEngine
                 shpFileHeader = new ShpFileHeader(buffer);
                 shpFrameInfos = new List<ShpFrameInfo>(shpFileHeader.FrameCount);
 
-                using (var memoryStream = new MemoryStream(buffer))
-                {
-                    memoryStream.Position = ShpFileHeader.SizeOf;
+                using var memoryStream = new MemoryStream(buffer);
+                memoryStream.Position = ShpFileHeader.SizeOf;
 
-                    for (int i = 0; i < shpFileHeader.FrameCount; i++)
-                    {
-                        var shpFrameInfo = new ShpFrameInfo(memoryStream);
-                        shpFrameInfos.Add(shpFrameInfo);
-                    }
+                for (int i = 0; i < shpFileHeader.FrameCount; i++)
+                {
+                    var shpFrameInfo = new ShpFrameInfo(memoryStream);
+                    shpFrameInfos.Add(shpFrameInfo);
                 }
             }
             catch (ShpLoadException ex)

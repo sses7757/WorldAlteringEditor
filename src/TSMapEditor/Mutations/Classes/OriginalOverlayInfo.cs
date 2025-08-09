@@ -5,17 +5,10 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// Struct for un-do data of mutations that change overlay of cells.
     /// </summary>
-    struct OriginalOverlayInfo
+    struct OriginalOverlayInfo(int overlayTypeIndex, int frameIndex, Point2D cellCoords)
     {
-        public int OverlayTypeIndex;
-        public int FrameIndex;
-        public Point2D CellCoords;
-
-        public OriginalOverlayInfo(int overlayTypeIndex, int frameIndex, Point2D cellCoords)
-        {
-            OverlayTypeIndex = overlayTypeIndex;
-            FrameIndex = frameIndex;
-            CellCoords = cellCoords;
-        }
+        public int OverlayTypeIndex = overlayTypeIndex;
+        public int FrameIndex = frameIndex;
+        public Point2D CellCoords = cellCoords;
     }
 }

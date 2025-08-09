@@ -8,20 +8,13 @@ namespace TSMapEditor.Mutations.Classes.HeightMutations
     /// <summary>
     /// A mutation for increasing cell height levels.
     /// </summary>
-    public class RaiseCellsMutation : Mutation
+    public class RaiseCellsMutation(IMutationTarget mutationTarget, Point2D targetCellCoords, BrushSize brushSize, bool applyOnArea) : Mutation(mutationTarget)
     {
-        public RaiseCellsMutation(IMutationTarget mutationTarget, Point2D targetCellCoords, BrushSize brushSize, bool applyOnArea) : base(mutationTarget)
-        {
-            this.targetCellCoords = targetCellCoords;
-            this.brushSize = brushSize;
-            this.applyOnArea = applyOnArea;
-        }
+        private Point2D targetCellCoords = targetCellCoords;
+        private readonly BrushSize brushSize = brushSize;
+        private readonly bool applyOnArea = applyOnArea;
 
-        private Point2D targetCellCoords;
-        private BrushSize brushSize;
-        private bool applyOnArea;
-
-        private List<Point2D> affectedCells = new List<Point2D>();
+        private readonly List<Point2D> affectedCells = [];
 
         public override string GetDisplayString()
         {

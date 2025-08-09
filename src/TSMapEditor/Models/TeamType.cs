@@ -7,17 +7,12 @@ using TSMapEditor.Misc;
 
 namespace TSMapEditor.Models
 {
-    public class TeamType : AbstractObject, IIDContainer, IHintable
+    public class TeamType(string iniName) : AbstractObject, IIDContainer, IHintable
     {
-        public TeamType(string iniName)
-        {
-            ININame = iniName;
-        }
-
         public string GetInternalID() => ININame;
         public void SetInternalID(string id) => ININame = id;
 
-        public string ININame { get; private set; }
+        public string ININame { get; private set; } = iniName;
 
         public string Name { get; set; }
         public int Group { get; set; } = -1;
@@ -34,7 +29,7 @@ namespace TSMapEditor.Models
         public int VeteranLevel { get; set; } = 1;
 
         [INI(false)]
-        public List<string> EnabledTeamTypeFlags { get; private set; } = new List<string>();
+        public List<string> EnabledTeamTypeFlags { get; private set; } = [];
 
         [INI(false)]
         public bool IsGlobalTeamType { get; set; }

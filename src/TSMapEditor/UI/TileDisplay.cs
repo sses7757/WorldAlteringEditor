@@ -12,22 +12,13 @@ using TSMapEditor.UI.CursorActions;
 
 namespace TSMapEditor.UI
 {
-    class TileDisplayTile
+    class TileDisplayTile(Point location, Point offset, Point size, TileImage tileImageToDisplay, TileImage tileImageToPlace)
     {
-        public TileDisplayTile(Point location, Point offset, Point size, TileImage tileImageToDisplay, TileImage tileImageToPlace)
-        {
-            Location = location;
-            Offset = offset;
-            Size = size;
-            TileImageToDisplay = tileImageToDisplay;
-            TileImageToPlace = tileImageToPlace;
-        }
-
-        public Point Location { get; set; }
-        public Point Offset { get; set; }
-        public Point Size { get; set; }
-        public TileImage TileImageToDisplay { get; set; }
-        public TileImage TileImageToPlace { get; set; }
+        public Point Location { get; set; } = location;
+        public Point Offset { get; set; } = offset;
+        public Point Size { get; set; } = size;
+        public TileImage TileImageToDisplay { get; set; } = tileImageToDisplay;
+        public TileImage TileImageToPlace { get; set; } = tileImageToPlace;
     }
 
     public class TileDisplay : XNAPanel
@@ -67,7 +58,7 @@ namespace TSMapEditor.UI
 
         public TileSet TileSet { get; private set; }
 
-        private List<TileDisplayTile> tilesInView = new List<TileDisplayTile>();
+        private readonly List<TileDisplayTile> tilesInView = [];
 
         private double _viewY = 0;
         private double ViewY

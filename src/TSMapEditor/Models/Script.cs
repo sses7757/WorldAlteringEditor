@@ -40,15 +40,9 @@ namespace TSMapEditor.Models
         }
     }
 
-    public class Script : IIDContainer
+    public class Script(string iniName) : IIDContainer
     {
         public const int MaxActionCount = 50;
-
-        public Script(string iniName)
-        {
-            ININame = iniName;
-        }
-
         private string _editorColor;
         /// <summary>
         /// Editor-only. The color of the script in the UI.
@@ -84,11 +78,11 @@ namespace TSMapEditor.Models
         public string GetInternalID() => ININame;
         public void SetInternalID(string id) => ININame = id;
 
-        public string ININame { get; private set; }
+        public string ININame { get; private set; } = iniName;
 
         public string Name { get; set; }
 
-        public List<ScriptActionEntry> Actions = new List<ScriptActionEntry>();
+        public List<ScriptActionEntry> Actions = [];
 
         /// <summary>
         /// Creates and returns a clone of this script.
@@ -97,9 +91,11 @@ namespace TSMapEditor.Models
         /// <returns>The created script.</returns>
         public Script Clone(string iniName)
         {
-            var script = new Script(iniName);
-            script.Name = Name + " (Clone)";
-            script.EditorColor = EditorColor;
+            var script = new Script(iniName)
+            {
+                Name = Name + " (Clone)",
+                EditorColor = EditorColor
+            };
 
             foreach (var action in Actions)
             {
@@ -136,8 +132,10 @@ namespace TSMapEditor.Models
             if (string.IsNullOrWhiteSpace(id) || scriptSection == null)
                 return null;
 
-            var script = new Script(id);
-            script.Name = scriptSection.GetStringValue("Name", string.Empty);
+            var script = new Script(id)
+            {
+                Name = scriptSection.GetStringValue("Name", string.Empty)
+            };
 
             for (int i = 0; i < MaxActionCount; i++)
             {

@@ -6,16 +6,10 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class FindWaypointWindow : INItializableWindow
+    public class FindWaypointWindow(WindowManager windowManager, Map map, IMapView mapView) : INItializableWindow(windowManager)
     {
-        public FindWaypointWindow(WindowManager windowManager, Map map, IMapView mapView) : base(windowManager)
-        {
-            this.map = map;
-            this.mapView = mapView;
-        }
-
-        private readonly Map map;
-        private readonly IMapView mapView;
+        private readonly Map map = map;
+        private readonly IMapView mapView = mapView;
 
         private EditorNumberTextBox tbWaypoint;
 

@@ -5,16 +5,10 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.CCEngine
 {
-    public class TileSet : INIDefineable
+    public class TileSet(int index) : INIDefineable
     {
-        public TileSet(int index)
-        {
-            Index = index;
-            SortID = index.ToString();
-        }
-
-        public int Index { get; }
-        public string SortID { get; set; }
+        public int Index { get; } = index;
+        public string SortID { get; set; } = index.ToString();
         public string SetName { get; set; }
         public string FileName { get; set; }
         public int TilesInSet { get; set; }
@@ -43,7 +37,7 @@ namespace TSMapEditor.CCEngine
         /// <param name="tileIndex">The index of the tile.</param>
         public bool ContainsTile(int tileIndex) => tileIndex >= StartTileIndex && tileIndex < StartTileIndex + LoadedTileCount;
 
-        private static string[] only1x1TileSets = new string[] { "cliffs", "rivers", "shores", "dirt road" };
+        private static readonly string[] only1x1TileSets = ["cliffs", "rivers", "shores", "dirt road"];
 
         public void Read(IniSection iniSection)
         {

@@ -39,16 +39,13 @@ namespace TSMapEditor.UI.Windows.MainMenuWindows
             var gameConfigIniFiles = new GameConfigINIFiles(gameDirectory, ccFileManager);
 
             // Search for tutorial lines from all directories specified in the file manager configuration
-            string tutorialsPath = ccFileManager.FindFileFromDirectories(Constants.TutorialIniPath);
-            if (tutorialsPath == null)
-                tutorialsPath = Path.Combine(gameDirectory, Constants.TutorialIniPath);
-
+            string tutorialsPath = ccFileManager.FindFileFromDirectories(Constants.TutorialIniPath) ?? Path.Combine(gameDirectory, Constants.TutorialIniPath);
             var tutorialLines = new TutorialLines(tutorialsPath, a => windowManager.AddCallback(a, null));
             var themes = new Themes(IniFileEx.FromPathOrMix(Constants.ThemeIniPath, gameDirectory, ccFileManager));
             var evaSpeeches = new EvaSpeeches(IniFileEx.FromPathOrMix(Constants.EvaIniPath, gameDirectory, ccFileManager));
             var sounds = new Sounds(IniFileEx.FromPathOrMix(Constants.SoundIniPath, gameDirectory, ccFileManager));
 
-            Map map = new Map(ccFileManager);
+            Map map = new(ccFileManager);
 
             if (createNew)
             {
@@ -97,11 +94,7 @@ namespace TSMapEditor.UI.Windows.MainMenuWindows
         /// <param name="gameDirectory">The path to the game directory.</param>
         public static void LoadTheaterGraphics(WindowManager windowManager, string gameDirectory)
         {
-            Theater theater = LoadedMap.EditorConfig.Theaters.Find(t => t.UIName.Equals(LoadedMap.TheaterName, StringComparison.InvariantCultureIgnoreCase));
-            if (theater == null)
-            {
-                throw new InvalidOperationException("Theater of map not found: " + LoadedMap.TheaterName);
-            }
+            Theater theater = LoadedMap.EditorConfig.Theaters.Find(t => t.UIName.Equals(LoadedMap.TheaterName, StringComparison.InvariantCultureIgnoreCase)) ?? throw new InvalidOperationException("Theater of map not found: " + LoadedMap.TheaterName);
             theater.ReadConfigINI(gameDirectory, ccFileManager);
 
             foreach (string theaterMIXName in theater.ContentMIXName)
@@ -110,13 +103,13 @@ namespace TSMapEditor.UI.Windows.MainMenuWindows
             foreach (string theaterMIXName in theater.OptionalContentMIXName)
                 ccFileManager.LoadOptionalMixFile(theaterMIXName);
 
-            TheaterGraphics theaterGraphics = new TheaterGraphics(windowManager.GraphicsDevice, theater, ccFileManager, LoadedMap.Rules);
+            TheaterGraphics theaterGraphics = new(windowManager.GraphicsDevice, theater, ccFileManager, LoadedMap.Rules);
             LoadedMap.TheaterInstance = theaterGraphics;
             FillConnectedTileFoundations(theaterGraphics);
 
             MapLoader.PostCheckMap(LoadedMap, theaterGraphics);
 
-            EditorGraphics editorGraphics = new EditorGraphics();
+            EditorGraphics editorGraphics = new();
 
             var uiManager = new UIManager(windowManager, LoadedMap, theaterGraphics, editorGraphics);
             windowManager.AddAndInitializeControl(uiManager);
@@ -175,7 +168,7 @@ namespace TSMapEditor.UI.Windows.MainMenuWindows
                     if (cliffTypeTile.Foundation != null)
                         continue;
 
-                    cliffTypeTile.Foundation = new HashSet<GameMath.Point2D>();
+                    cliffTypeTile.Foundation = [];
 
                     int firstTileIndexWithinSet = cliffTypeTile.IndicesInTileSet[0];
 

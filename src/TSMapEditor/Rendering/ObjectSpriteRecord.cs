@@ -7,88 +7,46 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering
 {
-    public struct ObjectSpriteEntry
+    public struct ObjectSpriteEntry(Texture2D paletteTexture, Texture2D texture, Rectangle drawingBounds, Color color, bool useRemap, bool useShadow, float depth)
     {
-        public Texture2D PaletteTexture; // 8 bytes
-        public Texture2D Texture;        // 16 bytes
-        public Rectangle DrawingBounds;        // 24 bytes
-        public Color Color;              // 28 bytes
-        public bool UseRemap;            // 29 bytes
-        public bool UseShadow;           // 30 bytes
-        public float Depth;              // 34 bytes
-
-        public ObjectSpriteEntry(Texture2D paletteTexture, Texture2D texture, Rectangle drawingBounds, Color color, bool useRemap, bool useShadow, float depth)
-        {
-            PaletteTexture = paletteTexture;
-            Texture = texture;
-            DrawingBounds = drawingBounds;
-            Color = color;
-            UseRemap = useRemap;
-            UseShadow = useShadow;
-            Depth = depth;
-        }
+        public Texture2D PaletteTexture = paletteTexture; // 8 bytes
+        public Texture2D Texture = texture;        // 16 bytes
+        public Rectangle DrawingBounds = drawingBounds;        // 24 bytes
+        public Color Color = color;              // 28 bytes
+        public bool UseRemap = useRemap;            // 29 bytes
+        public bool UseShadow = useShadow;           // 30 bytes
+        public float Depth = depth;           // 34 bytes
     }
 
-    public struct ObjectDetailEntry
+    public struct ObjectDetailEntry(Texture2D texture, Rectangle drawingBounds, Color color, float depth)
     {
-        public Texture2D Texture;
-        public Rectangle DrawingBounds;
-        public Color Color;
-        public float Depth;
-
-        public ObjectDetailEntry(Texture2D texture, Rectangle drawingBounds, Color color, float depth)
-        {
-            Texture = texture;
-            DrawingBounds = drawingBounds;
-            Color = color;
-            Depth = depth;
-        }
+        public Texture2D Texture = texture;
+        public Rectangle DrawingBounds = drawingBounds;
+        public Color Color = color;
+        public float Depth = depth;
     }
 
-    public struct ShadowEntry
+    public struct ShadowEntry(Texture2D texture, Rectangle drawingBounds, float depth)
     {
-        public Texture2D Texture;
-        public Rectangle DrawingBounds;
-        public float Depth;
-
-        public ShadowEntry(Texture2D texture, Rectangle drawingBounds, float depth)
-        {
-            Texture = texture;
-            DrawingBounds = drawingBounds;
-            Depth = depth;
-        }
+        public Texture2D Texture = texture;
+        public Rectangle DrawingBounds = drawingBounds;
+        public float Depth = depth;
     }
 
-    public struct TextEntry
+    public struct TextEntry(string text, Color color, Point2D drawPoint)
     {
-        public string Text;
-        public Color Color;
-        public Point2D DrawPoint;
-
-        public TextEntry(string text, Color color, Point2D drawPoint)
-        {
-            Text = text;
-            Color = color;
-            DrawPoint = drawPoint;
-        }
+        public string Text = text;
+        public Color Color = color;
+        public Point2D DrawPoint = drawPoint;
     }
 
-    public struct LineEntry
+    public struct LineEntry(Vector2 source, Vector2 destination, Color color, int thickness, float depth)
     {
-        public Vector2 Source;
-        public Vector2 Destination;
-        public Color Color;
-        public int Thickness;
-        public float Depth;
-
-        public LineEntry(Vector2 source, Vector2 destination, Color color, int thickness, float depth)
-        {
-            Source = source;
-            Destination = destination;
-            Color = color;
-            Thickness = thickness;
-            Depth = depth;
-        }
+        public Vector2 Source = source;
+        public Vector2 Destination = destination;
+        public Color Color = color;
+        public int Thickness = thickness;
+        public float Depth = depth;
     }
 
     /// <summary>
@@ -101,12 +59,12 @@ namespace TSMapEditor.Rendering
     /// </summary>
     public class ObjectSpriteRecord
     {
-        public Dictionary<(Texture2D, bool), List<ObjectDetailEntry>> SpriteEntries = new Dictionary<(Texture2D, bool), List<ObjectDetailEntry>>();
-        public List<ObjectDetailEntry> NonPalettedSpriteEntries = new List<ObjectDetailEntry>();
-        public List<ShadowEntry> ShadowEntries = new List<ShadowEntry>();
-        public List<TextEntry> TextEntries = new List<TextEntry>();
-        public List<LineEntry> LineEntries = new List<LineEntry>();
-        public HashSet<GameObject> ProcessedObjects = new HashSet<GameObject>();
+        public Dictionary<(Texture2D, bool), List<ObjectDetailEntry>> SpriteEntries = [];
+        public List<ObjectDetailEntry> NonPalettedSpriteEntries = [];
+        public List<ShadowEntry> ShadowEntries = [];
+        public List<TextEntry> TextEntries = [];
+        public List<LineEntry> LineEntries = [];
+        public HashSet<GameObject> ProcessedObjects = [];
 
         public void AddGraphicsEntry(in ObjectSpriteEntry entry)
         {
@@ -132,7 +90,7 @@ namespace TSMapEditor.Rendering
             bool success = SpriteEntries.TryGetValue(key, out var list);
             if (!success)
             {
-                list = new List<ObjectDetailEntry>();
+                list = [];
                 SpriteEntries.Add(key, list);
             }
 

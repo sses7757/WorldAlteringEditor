@@ -25,11 +25,8 @@ namespace TSMapEditor.Mutations.Classes
         Infantry = 64
     }
 
-    public class CopiedMapDataSerializationException : Exception
+    public class CopiedMapDataSerializationException(string message) : Exception(message)
     {
-        public CopiedMapDataSerializationException(string message) : base(message)
-        {
-        }
     }
 
     /// <summary>
@@ -369,7 +366,7 @@ namespace TSMapEditor.Mutations.Classes
 
     public class CopiedMapData
     {
-        public List<CopiedMapEntry> CopiedMapEntries { get; set; } = new List<CopiedMapEntry>();
+        public List<CopiedMapEntry> CopiedMapEntries { get; set; } = [];
         public ushort Width { get; set; }
         public ushort Height { get; set; }
 
@@ -409,47 +406,25 @@ namespace TSMapEditor.Mutations.Classes
             Height = BitConverter.ToUInt16(bytes, 2);
             int entryCount = BitConverter.ToInt32(bytes, 4);
 
-            using (var memoryStream = new MemoryStream(bytes))
+            using var memoryStream = new MemoryStream(bytes);
+            memoryStream.Position = 8;
+
+            for (int i = 0; i < entryCount; i++)
             {
-                memoryStream.Position = 8;
-
-                for (int i = 0; i < entryCount; i++)
+                CopiedEntryType entryType = (CopiedEntryType)memoryStream.ReadByte();
+                CopiedMapEntry entry = entryType switch
                 {
-                    CopiedEntryType entryType = (CopiedEntryType)memoryStream.ReadByte();
-
-                    CopiedMapEntry entry;
-
-                    switch (entryType)
-                    {
-                        case CopiedEntryType.Terrain:
-                            entry = new CopiedTerrainEntry();
-                            break;
-                        case CopiedEntryType.Overlay:
-                            entry = new CopiedOverlayEntry();
-                            break;
-                        case CopiedEntryType.Smudge:
-                            entry = new CopiedSmudgeEntry();
-                            break;
-                        case CopiedEntryType.TerrainObject:
-                            entry = new CopiedTerrainObjectEntry();
-                            break;
-                        case CopiedEntryType.Vehicle:
-                            entry = new CopiedVehicleEntry();
-                            break;
-                        case CopiedEntryType.Structure:
-                            entry = new CopiedStructureEntry();
-                            break;
-                        case CopiedEntryType.Infantry:
-                            entry = new CopiedInfantryEntry();
-                            break;
-                        default:
-                        case CopiedEntryType.Invalid:
-                            throw new CopiedMapDataSerializationException("Invalid map data entry type " + entryType);
-                    }
-
-                    entry.ReadData(memoryStream);
-                    CopiedMapEntries.Add(entry);
-                }
+                    CopiedEntryType.Terrain => new CopiedTerrainEntry(),
+                    CopiedEntryType.Overlay => new CopiedOverlayEntry(),
+                    CopiedEntryType.Smudge => new CopiedSmudgeEntry(),
+                    CopiedEntryType.TerrainObject => new CopiedTerrainObjectEntry(),
+                    CopiedEntryType.Vehicle => new CopiedVehicleEntry(),
+                    CopiedEntryType.Structure => new CopiedStructureEntry(),
+                    CopiedEntryType.Infantry => new CopiedInfantryEntry(),
+                    _ => throw new CopiedMapDataSerializationException("Invalid map data entry type " + entryType),
+                };
+                entry.ReadData(memoryStream);
+                CopiedMapEntries.Add(entry);
             }
         }
     }
@@ -457,32 +432,18 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows pasting terrain on the map.
     /// </summary>
-    public class PasteTerrainMutation : Mutation
+    public class PasteTerrainMutation(IMutationTarget mutationTarget, CopiedMapData copiedMapData, Point2D origin, bool allowOverlap, int heightOffset) : Mutation(mutationTarget)
     {
-        public PasteTerrainMutation(IMutationTarget mutationTarget, CopiedMapData copiedMapData, Point2D origin, bool allowOverlap, int heightOffset) : base(mutationTarget)
+        private struct PlacedInfantryInfo(Point2D coords, SubCell subCell)
         {
-            this.copiedMapData = copiedMapData;
-            this.origin = origin;
-            this.allowOverlap = allowOverlap;
-            this.heightOffset = heightOffset;
+            public Point2D Coords = coords;
+            public SubCell SubCell = subCell;
         }
 
-        private struct PlacedInfantryInfo
-        {
-            public Point2D Coords;
-            public SubCell SubCell;
-
-            public PlacedInfantryInfo(Point2D coords, SubCell subCell)
-            {
-                Coords = coords;
-                SubCell = subCell;
-            }
-        }
-
-        private readonly CopiedMapData copiedMapData;
-        private readonly Point2D origin;
-        private readonly bool allowOverlap;
-        private readonly int heightOffset;
+        private readonly CopiedMapData copiedMapData = copiedMapData;
+        private readonly Point2D origin = origin;
+        private readonly bool allowOverlap = allowOverlap;
+        private readonly int heightOffset = heightOffset;
 
         private OriginalCellTerrainData[] terrainUndoData;
         private OriginalOverlayInfo[] overlayUndoData;
@@ -492,7 +453,7 @@ namespace TSMapEditor.Mutations.Classes
         private Point2D[] structureCells;
         private PlacedInfantryInfo[] infantryLocations;
 
-        private List<TechnoBase> placedObjects = new List<TechnoBase>();
+        private readonly List<TechnoBase> placedObjects = [];
 
         public override string GetDisplayString()
         {
@@ -535,7 +496,7 @@ namespace TSMapEditor.Mutations.Classes
                 cell.Level = (byte)Math.Max(0, Math.Min(Constants.MaxMapHeightLevel, originLevel + copiedTerrainData.HeightOffset + heightOffset));
             }
 
-            this.terrainUndoData = terrainUndoData.ToArray();
+            this.terrainUndoData = [.. terrainUndoData];
 
             // *******
             // Overlay
@@ -569,7 +530,7 @@ namespace TSMapEditor.Mutations.Classes
                 };
             }
 
-            this.overlayUndoData = overlayUndoData.ToArray();
+            this.overlayUndoData = [.. overlayUndoData];
 
             // *******
             // Smudges
@@ -602,7 +563,7 @@ namespace TSMapEditor.Mutations.Classes
                 }
             }
 
-            this.smudgeUndoData = smudgeUndoData.ToArray();
+            this.smudgeUndoData = [.. smudgeUndoData];
 
             // ***************
             // Terrain Objects
@@ -630,7 +591,7 @@ namespace TSMapEditor.Mutations.Classes
                 MutationTarget.Map.AddTerrainObject(new TerrainObject(terrainType, cellCoords));
             }
 
-            this.terrainObjectCells = terrainObjectCells.ToArray();
+            this.terrainObjectCells = [.. terrainObjectCells];
 
             // ********
             // Vehicles
@@ -687,7 +648,7 @@ namespace TSMapEditor.Mutations.Classes
                 vehicleCells.Add(cellCoords);
             }
 
-            this.vehicleCells = vehicleCells.ToArray();
+            this.vehicleCells = [.. vehicleCells];
 
             // **********
             // Structures
@@ -746,7 +707,7 @@ namespace TSMapEditor.Mutations.Classes
                 structureCells.Add(cellCoords);
             }
 
-            this.structureCells = structureCells.ToArray();
+            this.structureCells = [.. structureCells];
 
             // ********
             // Infantry
@@ -788,7 +749,7 @@ namespace TSMapEditor.Mutations.Classes
                 infantryLocations.Add(new PlacedInfantryInfo(cellCoords, copiedInfantryEntry.SubCell));
             }
 
-            this.infantryLocations = infantryLocations.ToArray();
+            this.infantryLocations = [.. infantryLocations];
 
             AddRefresh();
         }

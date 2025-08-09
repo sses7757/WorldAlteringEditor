@@ -8,21 +8,16 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class ConfigureAlliesWindow : INItializableWindow
+    public class ConfigureAlliesWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public ConfigureAlliesWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
         public event EventHandler AlliesUpdated;
 
-        private readonly Map map;
+        private readonly Map map = map;
 
         private XNAPanel panelCheckBoxes;
         private EditorButton btnApply;
 
-        private List<XNACheckBox> checkBoxes = new List<XNACheckBox>();
+        private readonly List<XNACheckBox> checkBoxes = [];
 
         private House house;
 
@@ -61,7 +56,7 @@ namespace TSMapEditor.UI.Windows
             checkBoxes.ForEach(chk => panelCheckBoxes.RemoveChild(chk));
             checkBoxes.Clear();
 
-            string[] existingAllies = house.Allies.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] existingAllies = house.Allies.Split([','], StringSplitOptions.RemoveEmptyEntries);
 
             int y = 0;
 
@@ -73,12 +68,14 @@ namespace TSMapEditor.UI.Windows
                 if (otherHouse == house)
                     continue;
 
-                var checkBox = new XNACheckBox(WindowManager);
-                checkBox.Name = "chk" + otherHouse.ININame;
-                checkBox.X = isSecondColumn ? 150 : 0;
-                checkBox.Y = y;
-                checkBox.Text = otherHouse.ININame;
-                checkBox.Checked = Array.Exists(existingAllies, s => s == otherHouse.ININame);
+                var checkBox = new XNACheckBox(WindowManager)
+                {
+                    Name = "chk" + otherHouse.ININame,
+                    X = isSecondColumn ? 150 : 0,
+                    Y = y,
+                    Text = otherHouse.ININame,
+                    Checked = Array.Exists(existingAllies, s => s == otherHouse.ININame)
+                };
                 panelCheckBoxes.AddChild(checkBox);
                 checkBoxes.Add(checkBox);
 

@@ -9,12 +9,8 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows users to calculate the value of Tiberium on an area.
     /// </summary>
-    public class CalculateTiberiumValueCursorAction : CursorAction
+    public class CalculateTiberiumValueCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public CalculateTiberiumValueCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Calculate Resource Value";
 
         public override bool DrawCellCursor => true;

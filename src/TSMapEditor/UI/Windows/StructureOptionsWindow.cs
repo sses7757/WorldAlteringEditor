@@ -11,16 +11,11 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to edit the properties of a building.
     /// </summary>
-    public class StructureOptionsWindow : INItializableWindow
+    public class StructureOptionsWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public StructureOptionsWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
         public event EventHandler<TagEventArgs> TagOpened;
 
-        private readonly Map map;
+        private readonly Map map = map;
 
         private XNATrackbar trbStrength;
         private XNALabel lblStrengthValue;

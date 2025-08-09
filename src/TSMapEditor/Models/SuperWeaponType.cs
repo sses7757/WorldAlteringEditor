@@ -2,15 +2,10 @@
 
 namespace TSMapEditor.Models
 {
-    public class SuperWeaponType : AbstractObject, INIDefined
+    public class SuperWeaponType(string iniName) : AbstractObject, INIDefined
     {
-        public SuperWeaponType(string iniName)
-        {
-            ININame = iniName;
-        }
-
         [INI(false)]
-        public string ININame { get; }
+        public string ININame { get; } = iniName;
 
         [INI(false)]
         public int Index { get; set; }

@@ -5,16 +5,10 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectThemeWindow : SelectObjectWindow<Theme>
+    public class SelectThemeWindow(WindowManager windowManager, Map map, bool includeNone) : SelectObjectWindow<Theme>(windowManager)
     {
-        public SelectThemeWindow(WindowManager windowManager, Map map, bool includeNone) : base(windowManager)
-        {
-            this.map = map;
-            this.includeNone = includeNone;
-        }
-
-        private readonly Map map;
-        private readonly bool includeNone;
+        private readonly Map map = map;
+        private readonly bool includeNone = includeNone;
 
         public override void Initialize()
         {

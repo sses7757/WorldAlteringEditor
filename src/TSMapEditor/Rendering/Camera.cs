@@ -7,21 +7,15 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering
 {
-    public class Camera
+    public class Camera(WindowManager windowManager, Map map)
     {
         private const double ZoomMax = 3.0;
         private const double ZoomMin = 0.2;
 
-        public Camera(WindowManager windowManager, Map map)
-        {
-            this.windowManager = windowManager;
-            this.map = map;
-        }
-
         public event EventHandler CameraUpdated;
 
-        private readonly WindowManager windowManager;
-        private readonly Map map;
+        private readonly WindowManager windowManager = windowManager;
+        private readonly Map map = map;
 
         private Point2D _topLeftPoint;
         public Point2D TopLeftPoint

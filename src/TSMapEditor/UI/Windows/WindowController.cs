@@ -31,7 +31,7 @@ namespace TSMapEditor.UI.Windows
     {
         public const int ChildWindowOrderValue = 10000;
 
-        private List<EditorWindow> Windows { get; } = new List<EditorWindow>();
+        private List<EditorWindow> Windows { get; } = [];
 
         public event EventHandler Initialized;
         public event EventHandler RenderResolutionChanged;

@@ -6,13 +6,9 @@ using TSMapEditor.Models.Enums;
 
 namespace TSMapEditor.Rendering.ObjectRenderers
 {
-    public sealed class OverlayRenderer : ObjectRenderer<Overlay>
+    public sealed class OverlayRenderer(RenderDependencies renderDependencies) : ObjectRenderer<Overlay>(renderDependencies)
     {
-        public OverlayRenderer(RenderDependencies renderDependencies) : base(renderDependencies)
-        {
-        }
-
-        protected override Color ReplacementColor => new Color(255, 0, 255);
+        protected override Color ReplacementColor => new(255, 0, 255);
 
         protected override CommonDrawParams GetDrawParams(Overlay gameObject)
         {
@@ -29,21 +25,13 @@ namespace TSMapEditor.Rendering.ObjectRenderers
             {
                 double level = 0.0;
 
-                switch (RenderDependencies.EditorState.LightingPreviewState)
+                level = RenderDependencies.EditorState.LightingPreviewState switch
                 {
-                    case LightingPreviewMode.Normal:
-                        level = Map.Lighting.Level;
-                        break;
-                    case LightingPreviewMode.IonStorm:
-                        level = Map.Lighting.IonLevel;
-                        break;
-                    case LightingPreviewMode.Dominator:
-                        level = Map.Lighting.DominatorLevel.GetValueOrDefault();
-                        break;
-                    default:
-                        throw new InvalidOperationException($"{nameof(OverlayRenderer)}.{nameof(GetExtraLight)}: Unknown lighting preview state");
-                }
-
+                    LightingPreviewMode.Normal => Map.Lighting.Level,
+                    LightingPreviewMode.IonStorm => Map.Lighting.IonLevel,
+                    LightingPreviewMode.Dominator => Map.Lighting.DominatorLevel.GetValueOrDefault(),
+                    _ => throw new InvalidOperationException($"{nameof(OverlayRenderer)}.{nameof(GetExtraLight)}: Unknown lighting preview state"),
+                };
                 return level * Constants.HighBridgeHeight;
             }
 
@@ -74,7 +62,7 @@ namespace TSMapEditor.Rendering.ObjectRenderers
                 }
             }
 
-            Point2D drawPoint = new Point2D(drawPointWithoutCellHeight.X, drawPointWithoutCellHeight.Y - heightOffset);
+            Point2D drawPoint = new(drawPointWithoutCellHeight.X, drawPointWithoutCellHeight.Y - heightOffset);
 
             return drawPoint;
         }

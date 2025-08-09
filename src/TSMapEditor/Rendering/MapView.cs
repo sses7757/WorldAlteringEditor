@@ -35,24 +35,24 @@ namespace TSMapEditor.Rendering
     /// </summary>
     public class MapView : IMapView
     {
-        private static Color[] MarbleMadnessTileHeightLevelColors = new Color[]
-        {
-            new Color(165, 28, 68),
-            new Color(202, 149, 101),
-            new Color(170, 125, 76),
-            new Color(149, 109, 64),
-            new Color(133, 97, 56),
-            new Color(226, 101, 182),
-            new Color(194, 198, 255),
-            new Color(20, 153, 20),
-            new Color(4, 129, 16),
-            new Color(40, 165, 28),
-            new Color(230, 198, 109),
-            new Color(153, 20, 48),
-            new Color(80, 190, 56),
-            new Color(56, 89, 133),
-            new Color(194, 198, 255)
-        };
+        private static readonly Color[] MarbleMadnessTileHeightLevelColors =
+        [
+            new(165, 28, 68),
+            new(202, 149, 101),
+            new(170, 125, 76),
+            new(149, 109, 64),
+            new(133, 97, 56),
+            new(226, 101, 182),
+            new(194, 198, 255),
+            new(20, 153, 20),
+            new(4, 129, 16),
+            new(40, 165, 28),
+            new(230, 198, 109),
+            new(153, 20, 48),
+            new(80, 190, 56),
+            new(56, 89, 133),
+            new(194, 198, 255)
+        ];
 
         public MapView(WindowManager windowManager, Map map, TheaterGraphics theaterGraphics, EditorGraphics editorGraphics, EditorState editorState)
         {
@@ -70,7 +70,7 @@ namespace TSMapEditor.Rendering
             };
         }
 
-        private WindowManager windowManager;
+        private readonly WindowManager windowManager;
 
         private GraphicsDevice GraphicsDevice => windowManager.GraphicsDevice;
 
@@ -93,7 +93,7 @@ namespace TSMapEditor.Rendering
         /// If the minimap texture is not used by anyone, we can save
         /// processing power and skip certain actions that would update it.
         /// </summary>
-        public HashSet<object> MinimapUsers { get; } = new HashSet<object>();
+        public HashSet<object> MinimapUsers { get; } = [];
         public Camera Camera { get; private set; }
 
         public MapWideOverlay MapWideOverlay { get; private set; }
@@ -118,12 +118,12 @@ namespace TSMapEditor.Rendering
         private bool cameraMoved;
         private bool minimapNeedsRefresh;
 
-        private List<Structure> structuresToRender = new List<Structure>();
-        private List<Overlay> flatOverlaysToRender = new List<Overlay>();
-        private List<GameObject> gameObjectsToRender = new List<GameObject>(); 
-        private List<Smudge> smudgesToRender = new List<Smudge>();
-        private List<AlphaImageRenderStruct> alphaImagesToRender = new List<AlphaImageRenderStruct>();
-        private ObjectSpriteRecord objectSpriteRecord = new ObjectSpriteRecord();
+        private readonly List<Structure> structuresToRender = [];
+        private readonly List<Overlay> flatOverlaysToRender = [];
+        private readonly List<GameObject> gameObjectsToRender = []; 
+        private readonly List<Smudge> smudgesToRender = [];
+        private readonly List<AlphaImageRenderStruct> alphaImagesToRender = [];
+        private readonly ObjectSpriteRecord objectSpriteRecord = new();
 
         private Stopwatch refreshStopwatch;
 
@@ -291,22 +291,17 @@ namespace TSMapEditor.Rendering
 
         private void CreateDepthStencilStates()
         {
-            if (depthRenderStencilState == null)
-            {
-                depthRenderStencilState = new DepthStencilState()
+            depthRenderStencilState ??= new DepthStencilState()
                 {
                     DepthBufferEnable = true,
                     DepthBufferWriteEnable = true,
                     DepthBufferFunction = CompareFunction.GreaterEqual,
                 };
-            }
 
             // Depth stencil state for rendering objects.
             // Sets the stencil value in the stencil buffer to prevent shadows from being drawn over objects.
             // While it'd usually look nicer, shadows cannot be cast over objects in the C&C engine.
-            if (objectRenderStencilState == null)
-            {
-                objectRenderStencilState = new DepthStencilState()
+            objectRenderStencilState ??= new DepthStencilState()
                 {
                     DepthBufferEnable = true,
                     DepthBufferWriteEnable = true,
@@ -316,11 +311,8 @@ namespace TSMapEditor.Rendering
                     StencilFunction = CompareFunction.Always,
                     ReferenceStencil = 1
                 };
-            }
 
-            if (shadowRenderStencilState == null)
-            {
-                shadowRenderStencilState = new DepthStencilState()
+            shadowRenderStencilState ??= new DepthStencilState()
                 {
                     DepthBufferEnable = true,
                     DepthBufferWriteEnable = true,
@@ -331,7 +323,6 @@ namespace TSMapEditor.Rendering
                     StencilFunction = CompareFunction.Greater,
                     ReferenceStencil = 1
                 };
-            }
         }
 
         private RenderDependencies CreateRenderDependencies()
@@ -559,7 +550,7 @@ namespace TSMapEditor.Rendering
         public int GetCameraBottomYCoord() => Math.Min(Camera.TopLeftPoint.Y + GetCameraHeight(), Map.Size.Y * Constants.CellSizeY + Constants.MapYBaseline);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Rectangle GetCameraRectangle() => new Rectangle(Camera.TopLeftPoint.X, Camera.TopLeftPoint.Y, GetCameraWidth(), GetCameraHeight());
+        public Rectangle GetCameraRectangle() => new(Camera.TopLeftPoint.X, Camera.TopLeftPoint.Y, GetCameraWidth(), GetCameraHeight());
 
         public void DrawTerrainTileAndRegisterObjects(MapTile tile)
         {
@@ -661,8 +652,8 @@ namespace TSMapEditor.Rendering
                 // Ideally we'd need to check HasDamagedData in the subcell's TmpImage, but that
                 // would be very messy..
                 if (theater.BridgeTileSet.ContainsTile(tile.TileIndex) ||
-                    theater.TrainBridgeTileSet.ContainsTile(tile.TileIndex) ||
-                    (theater.WoodBridgeTileSet != null && theater.WoodBridgeTileSet.ContainsTile(tile.TileIndex)))
+                    theater.TrainBridgeTileSet?.ContainsTile(tile.TileIndex) == true ||
+                    theater.WoodBridgeTileSet?.ContainsTile(tile.TileIndex) == true)
                 {
                     tile.TileImage = TheaterGraphics.GetTileGraphics(tile.TileIndex, 0);
                 }
@@ -717,7 +708,7 @@ namespace TSMapEditor.Rendering
             // Divide the color by 2f. This is done because unlike map lighting which can exceed 1.0 and go up to 2.0,
             // the Color instance values are capped at 1.0.
             // We lose a bit of precision from doing this, but we'll have to accept that.
-            Color color = new Color((float)tile.CellLighting.R / 2f, (float)tile.CellLighting.G / 2f, (float)tile.CellLighting.B / 2f, 0.5f);
+            Color color = new((float)tile.CellLighting.R / 2f, (float)tile.CellLighting.G / 2f, (float)tile.CellLighting.B / 2f, 0.5f);
 
             if (tmpImage.Texture != null)
             {
@@ -730,7 +721,7 @@ namespace TSMapEditor.Rendering
                     {
                         textureToDraw = EditorGraphics.GenericTileWithBorderTexture;
                         color = MarbleMadnessTileHeightLevelColors[level];
-                        color = color * 0.5f;
+                        color *= 0.5f;
                         SetPaletteEffectParams(palettedColorDrawEffect, null, false, false, 1.0f, false, false);
                     }
                     else
@@ -1097,7 +1088,7 @@ namespace TSMapEditor.Rendering
             int y = drawPoint.Y - frame.ShapeHeight / 2 + frame.OffsetY + Constants.CellSizeY / 2 + yDrawOffset;
             int width = texture.Width;
             int height = texture.Height;
-            Rectangle drawRectangle = new Rectangle(x, y, width, height);
+            Rectangle drawRectangle = new(x, y, width, height);
 
             SetPaletteEffectParams(palettedColorDrawEffect, graphics.GetPaletteTexture(), true, true, opacity);
 
@@ -1278,7 +1269,7 @@ namespace TSMapEditor.Rendering
                     lineColor = Color.Red;
                 }
 
-                Point2D cameraAndCellCenterOffset = new Point2D(-Camera.TopLeftPoint.X + Constants.CellSizeX / 2,
+                Point2D cameraAndCellCenterOffset = new(-Camera.TopLeftPoint.X + Constants.CellSizeX / 2,
                                                  -Camera.TopLeftPoint.Y + Constants.CellSizeY / 2);
 
                 Point2D startDrawPoint = CellMath.CellTopLeftPointFromCellCoords(draggedOrRotatedObject.Position, Map) + cameraAndCellCenterOffset;
@@ -1316,7 +1307,7 @@ namespace TSMapEditor.Rendering
 
                 Color lineColor = Color.Yellow;
 
-                Point2D cameraAndCellCenterOffset = new Point2D(-Camera.TopLeftPoint.X + Constants.CellSizeX / 2,
+                Point2D cameraAndCellCenterOffset = new(-Camera.TopLeftPoint.X + Constants.CellSizeX / 2,
                                                  -Camera.TopLeftPoint.Y + Constants.CellSizeY / 2);
 
                 Point2D startDrawPoint = CellMath.CellTopLeftPointFromCellCoords(draggedOrRotatedObject.Position, Map) + cameraAndCellCenterOffset;
@@ -1376,7 +1367,7 @@ namespace TSMapEditor.Rendering
 
         private void DrawTileCursor(MapTile tileUnderCursor)
         {
-            Color lineColor = new Color(96, 168, 96, 128);
+            Color lineColor = new(96, 168, 96, 128);
             Point2D cellTopLeftPoint = CellMath.CellTopLeftPointFromCellCoords(new Point2D(tileUnderCursor.X, tileUnderCursor.Y), Map) - Camera.TopLeftPoint;
 
             int height = 0;
@@ -1632,7 +1623,7 @@ namespace TSMapEditor.Rendering
 
         private void DrawWorld()
         {
-            Rectangle sourceRectangle = new Rectangle(0, 0, mapRenderTarget.Width, mapRenderTarget.Height);
+            Rectangle sourceRectangle = new(0, 0, mapRenderTarget.Width, mapRenderTarget.Height);
             Rectangle destinationRectangle = sourceRectangle;
 
             combineDrawEffect.Parameters["TerrainDepthTexture"].SetValue(mapDepthRenderTarget);
@@ -1792,10 +1783,8 @@ namespace TSMapEditor.Rendering
 
             try
             {
-                using (var stream = File.OpenWrite(path))
-                {
-                    megamapTexture.SaveAsPng(stream, megamapTexture.Width, megamapTexture.Height);
-                }
+                using var stream = File.OpenWrite(path);
+                megamapTexture.SaveAsPng(stream, megamapTexture.Width, megamapTexture.Height);
             }
             catch (IOException ex)
             {

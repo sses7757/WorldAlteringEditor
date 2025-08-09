@@ -17,7 +17,7 @@ namespace TSMapEditor.UI
 
         public EventHandler<FileSelectedEventArgs> FileSelected;
 
-        private List<XNALinkLabel> fileLabels = new List<XNALinkLabel>();
+        private readonly List<XNALinkLabel> fileLabels = [];
 
         public override void Initialize()
         {

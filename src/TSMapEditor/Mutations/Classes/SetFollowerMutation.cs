@@ -3,16 +3,10 @@ using TSMapEditor.UI;
 
 namespace TSMapEditor.Mutations.Classes
 {
-    public class SetFollowerMutation : Mutation
+    public class SetFollowerMutation(IMutationTarget mutationTarget, Unit followedUnit, Unit followerUnit) : Mutation(mutationTarget)
     {
-        public SetFollowerMutation(IMutationTarget mutationTarget, Unit followedUnit, Unit followerUnit) : base(mutationTarget)
-        {
-            this.followedUnit = followedUnit;
-            this.followerUnit = followerUnit;
-        }
-
-        private Unit followedUnit;
-        private Unit followerUnit;
+        private readonly Unit followedUnit = followedUnit;
+        private readonly Unit followerUnit = followerUnit;
         private Unit oldFollowerUnit;
 
         public override string GetDisplayString()

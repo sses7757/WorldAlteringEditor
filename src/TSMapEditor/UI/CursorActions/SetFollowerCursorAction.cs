@@ -10,12 +10,8 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allow setting the follower of a vehicle.
     /// </summary>
-    public class SetFollowerCursorAction : CursorAction
+    public class SetFollowerCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public SetFollowerCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Select Follower";
 
         public sealed override bool DrawCellCursor => true;

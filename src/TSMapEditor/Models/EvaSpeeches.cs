@@ -5,23 +5,16 @@ using TSMapEditor.Misc;
 
 namespace TSMapEditor.Models
 {
-    public class EvaSpeech
+    public class EvaSpeech(int index, string name, string text)
     {
-        public EvaSpeech(int index, string name, string text)
-        {
-            Index = index;
-            Name = name;
-            Text = text;
-        }
-
         public override string ToString()
         {
             return $"{Name} {Text}";
         }
 
-        public int Index { get; }
-        public string Name { get; }
-        public string Text { get; }
+        public int Index { get; } = index;
+        public string Name { get; } = name;
+        public string Text { get; } = text;
     }
 
     public class EvaSpeeches

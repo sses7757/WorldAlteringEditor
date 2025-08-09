@@ -5,33 +5,20 @@ using TSMapEditor.Models.Enums;
 
 namespace TSMapEditor.CCEngine
 {
-    public class TriggerActionParam
+    public class TriggerActionParam(TriggerParamType triggerParamType, string nameOverride, List<string> presetOptions = null)
     {
-        public TriggerActionParam(TriggerParamType triggerParamType, string nameOverride, List<string> presetOptions = null)
-        {
-            TriggerParamType = triggerParamType;
-            NameOverride = nameOverride;
-            PresetOptions = presetOptions;
-        }
-
-        public TriggerParamType TriggerParamType { get; }
-        public string NameOverride { get; }
-        public List<string> PresetOptions { get; }
+        public TriggerParamType TriggerParamType { get; } = triggerParamType;
+        public string NameOverride { get; } = nameOverride;
+        public List<string> PresetOptions { get; } = presetOptions;
 
         public bool HasPresetOptions() => PresetOptions != null && PresetOptions.Count > 0;
     }
 
-    public class TriggerActionType
+    public class TriggerActionType(int id)
     {
         public const int MAX_PARAM_COUNT = 7;
 
-        public TriggerActionType(int id)
-        {
-            ID = id;
-        }
-
-
-        public int ID { get; set; }
+        public int ID { get; set; } = id;
 
         public string Name { get; set; }
         public string Description { get; set; }
@@ -64,7 +51,7 @@ namespace TSMapEditor.CCEngine
                 string presetOptionsString = iniSection.GetStringValue(presetOptionsKey, null);
                 if (!string.IsNullOrWhiteSpace(presetOptionsString))
                 {
-                    presetOptions = new List<string>(presetOptionsString.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries));
+                    presetOptions = new List<string>(presetOptionsString.Split([','], StringSplitOptions.RemoveEmptyEntries));
                 }
 
                 Parameters[i] = new TriggerActionParam(triggerParamType, nameOverride, presetOptions);

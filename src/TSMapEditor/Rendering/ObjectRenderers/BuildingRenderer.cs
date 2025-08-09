@@ -7,16 +7,11 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering.ObjectRenderers
 {
-    public sealed class BuildingRenderer : ObjectRenderer<Structure>
+    public sealed class BuildingRenderer(RenderDependencies renderDependencies) : ObjectRenderer<Structure>(renderDependencies)
     {
-        public BuildingRenderer(RenderDependencies renderDependencies) : base(renderDependencies)
-        {
-            buildingAnimRenderer = new AnimRenderer(renderDependencies);
-        }
-
         protected override Color ReplacementColor => Color.Yellow;
 
-        private AnimRenderer buildingAnimRenderer;
+        private readonly AnimRenderer buildingAnimRenderer = new AnimRenderer(renderDependencies);
 
         public Point2D GetBuildingCenterPoint(Structure structure)
         {

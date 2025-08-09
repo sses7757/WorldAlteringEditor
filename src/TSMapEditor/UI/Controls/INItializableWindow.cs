@@ -12,12 +12,8 @@ namespace TSMapEditor.UI.Controls
     /// <summary>
     /// A base class for windows that can create themselves through an INI configuration file.
     /// </summary>
-    public class INItializableWindow : EditorWindow
+    public class INItializableWindow(WindowManager windowManager) : EditorWindow(windowManager)
     {
-        public INItializableWindow(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         protected IniFile ConfigIni { get; set; }
 
         private bool _initialized = false;
@@ -80,11 +76,13 @@ namespace TSMapEditor.UI.Controls
 
             if (HasCloseButton)
             {
-                btnClose = new EditorButton(WindowManager);
-                btnClose.Name = "btnCloseX";
-                btnClose.Width = Constants.UIButtonHeight;
-                btnClose.Height = Constants.UIButtonHeight;
-                btnClose.Text = "X";
+                btnClose = new EditorButton(WindowManager)
+                {
+                    Name = "btnCloseX",
+                    Width = Constants.UIButtonHeight,
+                    Height = Constants.UIButtonHeight,
+                    Text = "X"
+                };
                 btnClose.X = Width - btnClose.Width;
                 btnClose.Y = 0;
                 AddChild(btnClose);
@@ -113,8 +111,7 @@ namespace TSMapEditor.UI.Controls
                 ReadINIForControl(control, true);
             }
 
-            if (btnClose != null)
-                btnClose.X = Width - btnClose.Width;
+            btnClose?.X = Width - btnClose.Width;
         }
 
         private bool ReadINIForControl(XNAControl control, bool isForLayout = false)
@@ -138,10 +135,7 @@ namespace TSMapEditor.UI.Controls
                     else
                     {
                         string childName = GetChildControlName(control, kvp.Value);
-                        var child = Children.First(cc => cc.Name == childName);
-                        if (child == null)
-                            throw new INIConfigException($"Processing {control.Name} in {nameof(INItializableWindow)}: Unable to find child control {kvp.Value} while calculating layout");
-
+                        var child = Children.First(cc => cc.Name == childName) ?? throw new INIConfigException($"Processing {control.Name} in {nameof(INItializableWindow)}: Unable to find child control {kvp.Value} while calculating layout");
                         ReadINIForControl(child, true);
                     }
                 }
@@ -233,8 +227,7 @@ namespace TSMapEditor.UI.Controls
 
                                 if (otherChild is XNATextBox otherAsTb)
                                 {
-                                    if (otherAsTb.PreviousControl == null)
-                                        otherAsTb.PreviousControl = child;
+                                    otherAsTb.PreviousControl ??= child;
                                 }
                             }
                         }
@@ -251,9 +244,11 @@ namespace TSMapEditor.UI.Controls
                     string toolTipText = childSection.GetStringValue("ToolTip", null);
                     if (!string.IsNullOrWhiteSpace(toolTipText))
                     {
-                        var toolTipControl = new ToolTip(WindowManager, child);
-                        toolTipControl.Text = toolTipText;
-                        toolTipControl.ToolTipDelay = 0;
+                        var toolTipControl = new ToolTip(WindowManager, child)
+                        {
+                            Text = toolTipText,
+                            ToolTipDelay = 0
+                        };
                     }
                 }
                     
@@ -263,7 +258,7 @@ namespace TSMapEditor.UI.Controls
 
         private XNAControl CreateChildControl(XNAControl parent, string keyValue)
         {
-            string[] parts = keyValue.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = keyValue.Split([':'], StringSplitOptions.RemoveEmptyEntries);
             string childName = GetChildControlName(parent, keyValue);
 
             if (FindChild<XNAControl>(childName, true) != null)
@@ -279,7 +274,7 @@ namespace TSMapEditor.UI.Controls
 
         private string GetChildControlName(XNAControl parent, string keyValue)
         {
-            string[] parts = keyValue.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = keyValue.Split([':'], StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length != 2)
                 throw new INIConfigException("Invalid child control definition " + keyValue);

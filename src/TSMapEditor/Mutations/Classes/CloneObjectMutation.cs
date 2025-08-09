@@ -19,7 +19,7 @@ namespace TSMapEditor.Mutations.Classes
             this.clonePosition = clonePosition;
         }
 
-        private AbstractObject objectToClone;
+        private readonly AbstractObject objectToClone;
         private Point2D clonePosition;
         private AbstractObject placedClone;
 

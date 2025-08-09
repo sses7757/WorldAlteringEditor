@@ -2,12 +2,8 @@
 
 namespace TSMapEditor.Models
 {
-    public class AircraftType : TechnoType, IArtConfigContainer
+    public class AircraftType(string iniName) : TechnoType(iniName), IArtConfigContainer
     {
-        public AircraftType(string iniName) : base(iniName)
-        {
-        }
-
         public AircraftArtConfig ArtConfig { get; private set; } = new AircraftArtConfig();
         public IArtConfig GetArtConfig() => ArtConfig;
 

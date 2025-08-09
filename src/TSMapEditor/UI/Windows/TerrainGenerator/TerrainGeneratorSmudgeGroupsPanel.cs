@@ -13,16 +13,10 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
     /// A panel that allows the user to customize how the terrain 
     /// generator places smudges on the map.
     /// </summary>
-    public class TerrainGeneratorSmudgeGroupsPanel : EditorPanel
+    public class TerrainGeneratorSmudgeGroupsPanel(WindowManager windowManager, Map map) : EditorPanel(windowManager)
     {
         private const int MaxSmudgeTypeGroupCount = 8;
-
-        public TerrainGeneratorSmudgeGroupsPanel(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private EditorTextBox[] smudgeTypeTextBoxes;
         private EditorNumberTextBox[] smudgeTypeOpenChances;
@@ -77,12 +71,14 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 lblOccupiedChance.Text = "Occupied cell chance:";
                 AddChild(lblOccupiedChance);
 
-                var tbOccupiedChance = new EditorNumberTextBox(WindowManager);
-                tbOccupiedChance.Name = nameof(tbOpenChance) + i;
-                tbOccupiedChance.X = lblOccupiedChance.X;
-                tbOccupiedChance.Y = tbSmudgeTypes.Y;
-                tbOccupiedChance.AllowDecimals = true;
-                tbOccupiedChance.Width = 120;
+                var tbOccupiedChance = new EditorNumberTextBox(WindowManager)
+                {
+                    Name = nameof(tbOpenChance) + i,
+                    X = lblOccupiedChance.X,
+                    Y = tbSmudgeTypes.Y,
+                    AllowDecimals = true,
+                    Width = 120
+                };
                 AddChild(tbOccupiedChance);
                 smudgeTypeOccupiedChances[i] = tbOccupiedChance;
 
@@ -102,7 +98,7 @@ namespace TSMapEditor.UI.Windows.TerrainGenerator
                 if (string.IsNullOrWhiteSpace(text))
                     continue;
 
-                string[] parts = text.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = text.Split([','], StringSplitOptions.RemoveEmptyEntries);
                 var smudgeTypes = new List<SmudgeType>();
                 for (int a = 0; a < parts.Length; a++)
                 {

@@ -15,29 +15,17 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows pasting previously copied terrain.
     /// </summary>
-    public class PasteTerrainCursorAction : CursorAction
+    public class PasteTerrainCursorAction(ICursorActionTarget cursorActionTarget, RKeyboard keyboard) : CursorAction(cursorActionTarget)
     {
-        public PasteTerrainCursorAction(ICursorActionTarget cursorActionTarget, RKeyboard keyboard) : base(cursorActionTarget)
-        {
-            this.keyboard = keyboard;
-        }
-
         public override string GetName() => "Paste Copied Terrain";
 
         public override bool HandlesKeyboardInput => true;
 
-        struct OriginalOverlayInfo
+        struct OriginalOverlayInfo(Point2D cellCoords, OverlayType overlayType, int frameIndex)
         {
-            public Point2D CellCoords;
-            public OverlayType OverlayType;
-            public int FrameIndex;
-
-            public OriginalOverlayInfo(Point2D cellCoords, OverlayType overlayType, int frameIndex)
-            {
-                CellCoords = cellCoords;
-                OverlayType = overlayType;
-                FrameIndex = frameIndex;
-            }
+            public Point2D CellCoords = cellCoords;
+            public OverlayType OverlayType = overlayType;
+            public int FrameIndex = frameIndex;
         }
 
         struct OriginalSmudgeInfo
@@ -51,16 +39,16 @@ namespace TSMapEditor.UI.CursorActions
 
         private CopiedMapData copiedMapData;
 
-        private List<OriginalOverlayInfo> originalOverlay = new List<OriginalOverlayInfo>();
+        private readonly List<OriginalOverlayInfo> originalOverlay = [];
 
-        private RKeyboard keyboard;
+        private readonly RKeyboard keyboard = keyboard;
 
         private int originLevelOffset;
 
         private bool wasDrawnAbove;
 
 
-        private Point2D[][] edges { get; set; } = new Point2D[][] { Array.Empty<Point2D>() };
+        private Point2D[][] edges { get; set; } = [Array.Empty<Point2D>()];
 
         public override void OnKeyPressed(KeyPressEventArgs e, Point2D cellCoords)
         {

@@ -3,12 +3,8 @@ using TSMapEditor.Mutations.Classes;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class PlaceVeinholeMonsterCursorAction : CursorAction
+    public class PlaceVeinholeMonsterCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public PlaceVeinholeMonsterCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Place Veinhole Monster";
 
         public override bool DrawCellCursor => true;

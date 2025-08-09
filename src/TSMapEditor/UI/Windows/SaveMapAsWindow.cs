@@ -11,14 +11,9 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to save the map with a customized file path.
     /// </summary>
-    public class SaveMapAsWindow : EditorWindow
+    public class SaveMapAsWindow(WindowManager windowManager, Map map) : EditorWindow(windowManager)
     {
-        public SaveMapAsWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private FileBrowserListBox lbFileList;
         private EditorTextBox tbFileName;
@@ -124,7 +119,7 @@ namespace TSMapEditor.UI.Windows
 
         private void LbFileList_FileSelected(object sender, FileSelectionEventArgs e)
         {
-            tbFileName.Text = e.FilePath.Substring(lbFileList.DirectoryPath.Length);
+            tbFileName.Text = e.FilePath[lbFileList.DirectoryPath.Length..];
         }
     }
 }

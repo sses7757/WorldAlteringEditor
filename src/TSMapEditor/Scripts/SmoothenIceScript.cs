@@ -14,96 +14,82 @@ namespace TSMapEditor.Scripts
     /// </summary>
     public class SmoothenIceScript
     {
-        private class IceTransitionDirectionAndTileIndex
+        private class IceTransitionDirectionAndTileIndex(int tileIndex, bool isExhaustive, Direction[] directionsWithIce, Direction[] directionsWithoutIce = null)
         {
-            public List<Direction> DirectionsWithIce;
+            public List<Direction> DirectionsWithIce = [.. directionsWithIce];
 
             /// <summary>
             /// If IsExhaustive is set to false, then this can be used to specify which directions
             /// should be checked for not having ice for this transition to be selected.
             /// </summary>
-            public List<Direction> DirectionsWithoutIce;
+            public List<Direction> DirectionsWithoutIce = directionsWithoutIce?.ToList();
 
             /// <summary>
             /// If set to true, then no nearby cell aside from the ones listed 
             /// in DirectionsWithIce may contain ice for this transition to be selected.
             /// </summary>
-            public bool IsExhaustive;
+            public bool IsExhaustive = isExhaustive;
 
-            public int TileIndex;
-
-            public IceTransitionDirectionAndTileIndex(int tileIndex, bool isExhaustive, Direction[] directionsWithIce, Direction[] directionsWithoutIce = null)
-            {
-                DirectionsWithIce = directionsWithIce.ToList();
-                DirectionsWithoutIce = directionsWithoutIce?.ToList();
-                IsExhaustive = isExhaustive;
-                TileIndex = tileIndex;
-            }
+            public int TileIndex = tileIndex;
         }
 
-        private struct PendingTransition
+        private struct PendingTransition(Point2D cellCoords, int tileIndex)
         {
-            public Point2D CellCoords;
-            public int TileIndex;
-
-            public PendingTransition(Point2D cellCoords, int tileIndex)
-            {
-                CellCoords = cellCoords;
-                TileIndex = tileIndex;
-            }
+            public Point2D CellCoords = cellCoords;
+            public int TileIndex = tileIndex;
         }
 
         // This is where the fun begins.
         // You have been warned. :evilkane:
-        private List<IceTransitionDirectionAndTileIndex> transitionInfo = new List<IceTransitionDirectionAndTileIndex>()
-        {
-            new IceTransitionDirectionAndTileIndex(17, false, new[] { Direction.NE }),
-            new IceTransitionDirectionAndTileIndex(18, false, new[] { Direction.SE }),
-            new IceTransitionDirectionAndTileIndex(19, false, new[] { Direction.NE, Direction.SE }),
-            new IceTransitionDirectionAndTileIndex(20, false, new[] { Direction.SW }),
-            new IceTransitionDirectionAndTileIndex(21, false, new[] { Direction.NE, Direction.SW }),
-            new IceTransitionDirectionAndTileIndex(22, false, new[] { Direction.SE, Direction.SW }),
-            new IceTransitionDirectionAndTileIndex(23, false, new[] { Direction.NE, Direction.SE, Direction.SW }),
-            new IceTransitionDirectionAndTileIndex(24, false, new[] { Direction.NW }, new[] { Direction.SW }),
-            new IceTransitionDirectionAndTileIndex(25, false, new[] { Direction.NE, Direction.NW }),
-            new IceTransitionDirectionAndTileIndex(26, false, new[] { Direction.SE, Direction.NW }),
-            new IceTransitionDirectionAndTileIndex(27, false, new[] { Direction.NE, Direction.SE, Direction.NW }),
-            new IceTransitionDirectionAndTileIndex(28, false, new[] { Direction.SW, Direction.NW }, new[] { Direction.NE }),
-            new IceTransitionDirectionAndTileIndex(29, false, new[] { Direction.NE, Direction.SW, Direction.NW }),
-            new IceTransitionDirectionAndTileIndex(30, false, new[] { Direction.SE, Direction.SW, Direction.NW }),
-            new IceTransitionDirectionAndTileIndex(31, false, new[] { Direction.NE, Direction.SE, Direction.SW, Direction.NW }),
-            new IceTransitionDirectionAndTileIndex(32, false, new[] { Direction.NE, Direction.S }, new[] { Direction.SE, Direction.SW, Direction.NW }),
-            new IceTransitionDirectionAndTileIndex(33, false, new[] { Direction.SE, Direction.W }, new[] { Direction.NE, Direction.SW, Direction.NW }),
-            new IceTransitionDirectionAndTileIndex(34, false, new[] { Direction.NE, Direction.SE, Direction.W }, new[] { Direction.SW, Direction.NW }),
-            new IceTransitionDirectionAndTileIndex(35, false, new[] { Direction.SW, Direction.N }, new[] { Direction.NE, Direction.NW, Direction.SE }),
-            new IceTransitionDirectionAndTileIndex(36, false, new[] { Direction.SE, Direction.SW, Direction.N }, new[] { Direction.NW, Direction.NE }),
-            new IceTransitionDirectionAndTileIndex(37, false, new[] { Direction.NW, Direction.E }, new[] { Direction.SE, Direction.NE, Direction.SW }),
-            new IceTransitionDirectionAndTileIndex(38, false, new[] { Direction.NE, Direction.NW, Direction.S }, new[] { Direction.SE, Direction.SW }),
-            new IceTransitionDirectionAndTileIndex(39, false, new[] { Direction.SW, Direction.NW, Direction.E }, new[] { Direction.NE, Direction.SW }),
-            new IceTransitionDirectionAndTileIndex(40, false, new[] { Direction.NE, Direction.W }, new[] { Direction.NW, Direction.SE, Direction.SW }),
-            new IceTransitionDirectionAndTileIndex(41, false, new[] { Direction.SE, Direction.N}, new[] { Direction.NE, Direction.SW, Direction.NW }),
-            new IceTransitionDirectionAndTileIndex(42, false, new[] { Direction.SW, Direction.E }, new[] { Direction.SE, Direction.NW, Direction.NE }),
-            new IceTransitionDirectionAndTileIndex(43, false, new[] { Direction.NW, Direction.S }, new[] { Direction.SE, Direction.SW, Direction.NE }),
-            new IceTransitionDirectionAndTileIndex(44, false, new[] { Direction.NE, Direction.S, Direction.W }, new[] { Direction.NW, Direction.SE, Direction.SW }),
-            new IceTransitionDirectionAndTileIndex(45, false, new[] { Direction.SE, Direction.N, Direction.W }, new[] { Direction.SW, Direction.NE, Direction.NW }),
-            new IceTransitionDirectionAndTileIndex(46, false, new[] { Direction.SW, Direction.N, Direction.E }, new[] { Direction.SE, Direction.NW, Direction.NE }),
-            new IceTransitionDirectionAndTileIndex(47, true, new[] { Direction.NW, Direction.E, Direction.S }),
-            new IceTransitionDirectionAndTileIndex(48, true, new[] { Direction.N }),
-            new IceTransitionDirectionAndTileIndex(49, true, new[] { Direction.E }),
-            new IceTransitionDirectionAndTileIndex(50, true, new[] { Direction.S }),
-            new IceTransitionDirectionAndTileIndex(51, true, new[] { Direction.W }),
-            new IceTransitionDirectionAndTileIndex(52, true, new[] { Direction.E, Direction.N }),
-            new IceTransitionDirectionAndTileIndex(53, true, new[] { Direction.E, Direction.S }),
-            new IceTransitionDirectionAndTileIndex(54, true, new[] { Direction.S, Direction.W }),
-            new IceTransitionDirectionAndTileIndex(55, true, new[] { Direction.W, Direction.N }),
-            new IceTransitionDirectionAndTileIndex(56, true, new[] { Direction.E, Direction.S, Direction.N }),
-            new IceTransitionDirectionAndTileIndex(57, true, new[] { Direction.E, Direction.S, Direction.W }),
-            new IceTransitionDirectionAndTileIndex(58, true, new[] { Direction.S, Direction.W, Direction.N }),
-            new IceTransitionDirectionAndTileIndex(59, true, new[] { Direction.E, Direction.W, Direction.N }),
-            new IceTransitionDirectionAndTileIndex(60, true, new[] { Direction.S, Direction.N }),
-            new IceTransitionDirectionAndTileIndex(61, true, new[] { Direction.E, Direction.W }),
-            new IceTransitionDirectionAndTileIndex(62, true, new[] { Direction.E, Direction.S, Direction.W, Direction.N }),
-        };
+        private readonly List<IceTransitionDirectionAndTileIndex> transitionInfo =
+        [
+            new IceTransitionDirectionAndTileIndex(17, false, [Direction.NE]),
+            new IceTransitionDirectionAndTileIndex(18, false, [Direction.SE]),
+            new IceTransitionDirectionAndTileIndex(19, false, [Direction.NE, Direction.SE]),
+            new IceTransitionDirectionAndTileIndex(20, false, [Direction.SW]),
+            new IceTransitionDirectionAndTileIndex(21, false, [Direction.NE, Direction.SW]),
+            new IceTransitionDirectionAndTileIndex(22, false, [Direction.SE, Direction.SW]),
+            new IceTransitionDirectionAndTileIndex(23, false, [Direction.NE, Direction.SE, Direction.SW]),
+            new IceTransitionDirectionAndTileIndex(24, false, [Direction.NW], [Direction.SW]),
+            new IceTransitionDirectionAndTileIndex(25, false, [Direction.NE, Direction.NW]),
+            new IceTransitionDirectionAndTileIndex(26, false, [Direction.SE, Direction.NW]),
+            new IceTransitionDirectionAndTileIndex(27, false, [Direction.NE, Direction.SE, Direction.NW]),
+            new IceTransitionDirectionAndTileIndex(28, false, [Direction.SW, Direction.NW], [Direction.NE]),
+            new IceTransitionDirectionAndTileIndex(29, false, [Direction.NE, Direction.SW, Direction.NW]),
+            new IceTransitionDirectionAndTileIndex(30, false, [Direction.SE, Direction.SW, Direction.NW]),
+            new IceTransitionDirectionAndTileIndex(31, false, [Direction.NE, Direction.SE, Direction.SW, Direction.NW]),
+            new IceTransitionDirectionAndTileIndex(32, false, [Direction.NE, Direction.S], [Direction.SE, Direction.SW, Direction.NW]),
+            new IceTransitionDirectionAndTileIndex(33, false, [Direction.SE, Direction.W], [Direction.NE, Direction.SW, Direction.NW]),
+            new IceTransitionDirectionAndTileIndex(34, false, [Direction.NE, Direction.SE, Direction.W], [Direction.SW, Direction.NW]),
+            new IceTransitionDirectionAndTileIndex(35, false, [Direction.SW, Direction.N], [Direction.NE, Direction.NW, Direction.SE]),
+            new IceTransitionDirectionAndTileIndex(36, false, [Direction.SE, Direction.SW, Direction.N], [Direction.NW, Direction.NE]),
+            new IceTransitionDirectionAndTileIndex(37, false, [Direction.NW, Direction.E], [Direction.SE, Direction.NE, Direction.SW]),
+            new IceTransitionDirectionAndTileIndex(38, false, [Direction.NE, Direction.NW, Direction.S], [Direction.SE, Direction.SW]),
+            new IceTransitionDirectionAndTileIndex(39, false, [Direction.SW, Direction.NW, Direction.E], [Direction.NE, Direction.SW]),
+            new IceTransitionDirectionAndTileIndex(40, false, [Direction.NE, Direction.W], [Direction.NW, Direction.SE, Direction.SW]),
+            new IceTransitionDirectionAndTileIndex(41, false, [Direction.SE, Direction.N], [Direction.NE, Direction.SW, Direction.NW]),
+            new IceTransitionDirectionAndTileIndex(42, false, [Direction.SW, Direction.E], [Direction.SE, Direction.NW, Direction.NE]),
+            new IceTransitionDirectionAndTileIndex(43, false, [Direction.NW, Direction.S], [Direction.SE, Direction.SW, Direction.NE]),
+            new IceTransitionDirectionAndTileIndex(44, false, [Direction.NE, Direction.S, Direction.W], [Direction.NW, Direction.SE, Direction.SW]),
+            new IceTransitionDirectionAndTileIndex(45, false, [Direction.SE, Direction.N, Direction.W], [Direction.SW, Direction.NE, Direction.NW]),
+            new IceTransitionDirectionAndTileIndex(46, false, [Direction.SW, Direction.N, Direction.E], [Direction.SE, Direction.NW, Direction.NE]),
+            new IceTransitionDirectionAndTileIndex(47, true, [Direction.NW, Direction.E, Direction.S]),
+            new IceTransitionDirectionAndTileIndex(48, true, [Direction.N]),
+            new IceTransitionDirectionAndTileIndex(49, true, [Direction.E]),
+            new IceTransitionDirectionAndTileIndex(50, true, [Direction.S]),
+            new IceTransitionDirectionAndTileIndex(51, true, [Direction.W]),
+            new IceTransitionDirectionAndTileIndex(52, true, [Direction.E, Direction.N]),
+            new IceTransitionDirectionAndTileIndex(53, true, [Direction.E, Direction.S]),
+            new IceTransitionDirectionAndTileIndex(54, true, [Direction.S, Direction.W]),
+            new IceTransitionDirectionAndTileIndex(55, true, [Direction.W, Direction.N]),
+            new IceTransitionDirectionAndTileIndex(56, true, [Direction.E, Direction.S, Direction.N]),
+            new IceTransitionDirectionAndTileIndex(57, true, [Direction.E, Direction.S, Direction.W]),
+            new IceTransitionDirectionAndTileIndex(58, true, [Direction.S, Direction.W, Direction.N]),
+            new IceTransitionDirectionAndTileIndex(59, true, [Direction.E, Direction.W, Direction.N]),
+            new IceTransitionDirectionAndTileIndex(60, true, [Direction.S, Direction.N]),
+            new IceTransitionDirectionAndTileIndex(61, true, [Direction.E, Direction.W]),
+            new IceTransitionDirectionAndTileIndex(62, true, [Direction.E, Direction.S, Direction.W, Direction.N]),
+        ];
 
 
         public void Perform(Map map)
@@ -295,11 +281,11 @@ namespace TSMapEditor.Scripts
 
             var nearbyCells = new Point2D[]
             {
-                new Point2D(0, -1),
-                new Point2D(-1, 0),
-                new Point2D(0, 0),
-                new Point2D(1, 0),
-                new Point2D(0, 1)
+                new(0, -1),
+                new(-1, 0),
+                new(0, 0),
+                new(1, 0),
+                new(0, 1)
             };
 
             map.DoForAllValidTiles(mapCell =>
@@ -363,22 +349,12 @@ namespace TSMapEditor.Scripts
                     int indexInSet = mapCell.TileIndex - iceTileSetInfo.Ice1Set.StartTileIndex;
 
                     int tileSetToUse = random.Next(0, 3);
-
-                    TileSet iceTileSet;
-                    switch (tileSetToUse)
+                    TileSet iceTileSet = tileSetToUse switch
                     {
-                        case 0:
-                            iceTileSet = iceTileSetInfo.Ice1Set;
-                            break;
-                        case 1:
-                            iceTileSet = iceTileSetInfo.Ice2Set;
-                            break;
-                        case 2:
-                        default:
-                            iceTileSet = iceTileSetInfo.Ice3Set;
-                            break;
-                    }
-
+                        0 => iceTileSetInfo.Ice1Set,
+                        1 => iceTileSetInfo.Ice2Set,
+                        _ => iceTileSetInfo.Ice3Set,
+                    };
                     mapCell.ChangeTileIndex(iceTileSet.StartTileIndex + indexInSet, 0);
                 }
             });

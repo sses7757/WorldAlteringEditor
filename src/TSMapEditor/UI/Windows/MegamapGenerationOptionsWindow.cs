@@ -6,12 +6,8 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class MegamapGenerationOptionsWindow : INItializableWindow
+    public class MegamapGenerationOptionsWindow(WindowManager windowManager) : INItializableWindow(windowManager)
     {
-        public MegamapGenerationOptionsWindow(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         public event EventHandler<MegamapRenderOptions> OnGeneratePreview;
 
         public bool IsForPreview { get; set; }

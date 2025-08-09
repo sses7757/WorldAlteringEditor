@@ -4,14 +4,9 @@ using TSMapEditor.UI;
 
 namespace TSMapEditor.Mutations.Classes
 {
-    public class PlaceTubeMutation : Mutation
+    public class PlaceTubeMutation(IMutationTarget mutationTarget, Tube tube) : Mutation(mutationTarget)
     {
-        public PlaceTubeMutation(IMutationTarget mutationTarget, Tube tube) : base(mutationTarget)
-        {
-            this.tube = tube;
-        }
-
-        private readonly Tube tube;
+        private readonly Tube tube = tube;
 
         public override string GetDisplayString()
         {

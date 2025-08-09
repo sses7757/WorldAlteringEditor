@@ -3,12 +3,8 @@ using TSMapEditor.Mutations.Classes.HeightMutations;
 
 namespace TSMapEditor.UI.CursorActions.HeightActions
 {
-    internal class LowerCellsCursorAction : CursorAction
+    internal class LowerCellsCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public LowerCellsCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Lower Cells";
 
         public override bool DrawCellCursor => true;

@@ -11,29 +11,19 @@ using TSMapEditor.UI.CursorActions;
 
 namespace TSMapEditor.UI.Sidebar
 {
-    public class OverlayListPanel : XNAPanel, ISearchBoxContainer
+    public class OverlayListPanel(WindowManager windowManager, EditorState editorState,
+        Map map, TheaterGraphics theaterGraphics, ICursorActionTarget cursorActionTarget,
+        OverlayPlacementAction overlayPlacementAction) : XNAPanel(windowManager), ISearchBoxContainer
     {
-        public OverlayListPanel(WindowManager windowManager, EditorState editorState,
-            Map map, TheaterGraphics theaterGraphics, ICursorActionTarget cursorActionTarget,
-            OverlayPlacementAction overlayPlacementAction) : base(windowManager)
-        {
-            EditorState = editorState;
-            Map = map;
-            TheaterGraphics = theaterGraphics;
-            this.cursorActionTarget = cursorActionTarget;
-            this.overlayPlacementAction = overlayPlacementAction;
-        }
-
-
-        protected EditorState EditorState { get; }
-        protected Map Map { get; }
-        protected TheaterGraphics TheaterGraphics { get; }
+        protected EditorState EditorState { get; } = editorState;
+        protected Map Map { get; } = map;
+        protected TheaterGraphics TheaterGraphics { get; } = theaterGraphics;
 
         public XNASuggestionTextBox SearchBox { get; private set; }
         public TreeView ObjectTreeView { get; private set; }
 
-        private readonly ICursorActionTarget cursorActionTarget;
-        private readonly OverlayPlacementAction overlayPlacementAction;
+        private readonly ICursorActionTarget cursorActionTarget = cursorActionTarget;
+        private readonly OverlayPlacementAction overlayPlacementAction = overlayPlacementAction;
 
         private OverlayCollectionPlacementAction overlayCollectionPlacementAction;
         private ConnectedOverlayPlacementAction connectedOverlayPlacementAction;
@@ -179,13 +169,14 @@ namespace TSMapEditor.UI.Sidebar
         {
             var renderTarget = new RenderTarget2D(GraphicsDevice, ObjectTreeView.Width, ObjectTreeView.LineHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-            var categories = new List<TreeViewCategory>();
-
-            categories.Add(new TreeViewCategory()
+            var categories = new List<TreeViewCategory>
             {
-                Text = "Erase Overlay",
-                Tag = new object()
-            });
+                new TreeViewCategory()
+                {
+                    Text = "Erase Overlay",
+                    Tag = new object()
+                }
+            };
 
             if (Map.EditorConfig.OverlayCollections.Count > 0)
             {
@@ -303,7 +294,7 @@ namespace TSMapEditor.UI.Sidebar
                     RemapColor = remapColor
                 });
 
-                category.Nodes = category.Nodes.OrderBy(n => n.Text).ToList();
+                category.Nodes = [.. category.Nodes.OrderBy(n => n.Text)];
             }
 
             categories.ForEach(c => ObjectTreeView.AddCategory(c));

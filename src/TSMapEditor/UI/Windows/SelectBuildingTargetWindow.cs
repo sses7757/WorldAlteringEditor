@@ -6,14 +6,9 @@ using TSMapEditor.CCEngine;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectBuildingTargetWindow : SelectObjectWindow<int>
+    public class SelectBuildingTargetWindow(WindowManager windowManager, Map map) : SelectObjectWindow<int>(windowManager)
     {
-        public SelectBuildingTargetWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private XNADropDown ddTarget;
 

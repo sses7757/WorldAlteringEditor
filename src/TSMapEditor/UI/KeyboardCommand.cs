@@ -14,16 +14,10 @@ namespace TSMapEditor.UI
         Alt = 4
     }
 
-    public class KeyboardCommandInput
+    public class KeyboardCommandInput(Keys key, KeyboardModifiers modifiers)
     {
-        public KeyboardCommandInput(Keys key, KeyboardModifiers modifiers)
-        {
-            Key = key;
-            Modifiers = modifiers;
-        }
-
-        public Keys Key;
-        public KeyboardModifiers Modifiers;
+        public Keys Key = key;
+        public KeyboardModifiers Modifiers = modifiers;
 
         public string GetKeyDisplayString(bool allowModifiersOnly)
         {
@@ -100,26 +94,16 @@ namespace TSMapEditor.UI
         }
     }
 
-    public class KeyboardCommand
+    public class KeyboardCommand(string iniName, string uiName, KeyboardCommandInput defaultKey, bool allowedWithModifiersOnly = false, bool forActionsOnly = false)
     {
-        public KeyboardCommand(string iniName, string uiName, KeyboardCommandInput defaultKey, bool allowedWithModifiersOnly = false, bool forActionsOnly = false)
-        {
-            ININame = iniName;
-            UIName = uiName;
-            AllowedWithModifiersOnly = allowedWithModifiersOnly;
-            DefaultKey = defaultKey;
-            Key = new KeyboardCommandInput(defaultKey.Key, defaultKey.Modifiers);
-            ForActionsOnly = forActionsOnly;
-        }
-
         public event EventHandler Triggered;
 
-        public string ININame { get; }
-        public string UIName { get; }
-        public bool AllowedWithModifiersOnly { get; }
-        public bool ForActionsOnly { get; }
-        public KeyboardCommandInput DefaultKey { get; }
-        public KeyboardCommandInput Key { get; set; }
+        public string ININame { get; } = iniName;
+        public string UIName { get; } = uiName;
+        public bool AllowedWithModifiersOnly { get; } = allowedWithModifiersOnly;
+        public bool ForActionsOnly { get; } = forActionsOnly;
+        public KeyboardCommandInput DefaultKey { get; } = defaultKey;
+        public KeyboardCommandInput Key { get; set; } = new KeyboardCommandInput(defaultKey.Key, defaultKey.Modifiers);
 
         private Action action;
         public Action Action

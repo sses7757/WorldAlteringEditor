@@ -10,13 +10,9 @@ using TSMapEditor.Rendering;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class PlaceTubeCursorAction : CursorAction
+    public class PlaceTubeCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
         private const double DoubleClickTime = 0.2f;
-
-        public PlaceTubeCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
 
         public override string GetName() => "Place Tube";
 
@@ -26,8 +22,8 @@ namespace TSMapEditor.UI.CursorActions
 
         private Tube tube;
 
-        private List<Point2D> points = new List<Point2D>();
-        private List<Point2D> tubeCells = new List<Point2D>();
+        private readonly List<Point2D> points = [];
+        private readonly List<Point2D> tubeCells = [];
 
         private bool pointAddedForPreview;
 
@@ -82,9 +78,9 @@ namespace TSMapEditor.UI.CursorActions
             var textDimensions = Renderer.GetTextDimensions(text, Constants.UIBoldFont);
             int x = cellTopLeftPoint.X - (int)(textDimensions.X - Constants.CellSizeX) / 2;
 
-            Vector2 textPosition = new Vector2(x + 60, cellTopLeftPoint.Y - 150);
+            Vector2 textPosition = new(x + 60, cellTopLeftPoint.Y - 150);
 
-            Rectangle textBackgroundRectangle = new Rectangle((int)textPosition.X - Constants.UIEmptySideSpace,
+            Rectangle textBackgroundRectangle = new((int)textPosition.X - Constants.UIEmptySideSpace,
                 (int)textPosition.Y - Constants.UIEmptyTopSpace,
                 (int)textDimensions.X + Constants.UIEmptySideSpace * 2,
                 (int)textDimensions.Y + Constants.UIEmptyBottomSpace + Constants.UIEmptyTopSpace);
@@ -162,8 +158,7 @@ namespace TSMapEditor.UI.CursorActions
                 return;
             }
 
-            if (tube == null)
-                tube = new Tube();
+            tube ??= new Tube();
 
             tube.Pending = true;
 
@@ -196,7 +191,7 @@ namespace TSMapEditor.UI.CursorActions
                     else if (y < next.Y)
                         y++;
 
-                    Point2D newPoint = new Point2D(x, y);
+                    Point2D newPoint = new(x, y);
 
                     // Fetch tube direction for this cell
                     // Check each tube direction to see if we find a fitting one

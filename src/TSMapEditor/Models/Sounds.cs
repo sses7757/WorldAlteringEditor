@@ -5,21 +5,15 @@ using TSMapEditor.Misc;
 
 namespace TSMapEditor.Models
 {
-    public class Sound
+    public class Sound(int index, string name)
     {
-        public Sound(int index, string name)
-        {
-            Index = index;
-            Name = name;
-        }
-
         public override string ToString()
         {
             return $"{Index} {Name}";
         }
 
-        public int Index { get; }
-        public string Name { get; }
+        public int Index { get; } = index;
+        public string Name { get; } = name;
     }
 
     public class Sounds

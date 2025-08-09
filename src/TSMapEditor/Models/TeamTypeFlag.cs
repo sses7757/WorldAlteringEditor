@@ -1,14 +1,8 @@
 ﻿namespace TSMapEditor.Models
 {
-    public class TeamTypeFlag
+    public class TeamTypeFlag(string name, bool defaultValue)
     {
-        public TeamTypeFlag(string name, bool defaultValue)
-        {
-            Name = name;
-            DefaultValue = defaultValue;
-        }
-
-        public string Name { get; }
-        public bool DefaultValue { get; }
+        public string Name { get; } = name;
+        public bool DefaultValue { get; } = defaultValue;
     }
 }

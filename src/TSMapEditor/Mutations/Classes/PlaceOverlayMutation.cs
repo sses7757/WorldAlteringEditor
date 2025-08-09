@@ -9,20 +9,12 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows placing regular, individual overlay.
     /// </summary>
-    class PlaceOverlayMutation : Mutation
+    class PlaceOverlayMutation(IMutationTarget mutationTarget, OverlayType overlayType, int? forcedFrameIndex, Point2D cellCoords) : Mutation(mutationTarget)
     {
-        public PlaceOverlayMutation(IMutationTarget mutationTarget, OverlayType overlayType, int? forcedFrameIndex, Point2D cellCoords) : base(mutationTarget)
-        {
-            this.overlayType = overlayType;
-            this.forcedFrameIndex = forcedFrameIndex;
-            this.cellCoords = cellCoords;
-            brush = mutationTarget.BrushSize;
-        }
-
-        private readonly OverlayType overlayType;
-        private readonly int? forcedFrameIndex;
-        private readonly BrushSize brush;
-        private readonly Point2D cellCoords;
+        private readonly OverlayType overlayType = overlayType;
+        private readonly int? forcedFrameIndex = forcedFrameIndex;
+        private readonly BrushSize brush = mutationTarget.BrushSize;
+        private readonly Point2D cellCoords = cellCoords;
 
         private OriginalOverlayInfo[] undoData;
 
@@ -77,7 +69,7 @@ namespace TSMapEditor.Mutations.Classes
                 }
             }
 
-            undoData = originalOverlayInfos.ToArray();
+            undoData = [.. originalOverlayInfos];
             MutationTarget.AddRefreshPoint(cellCoords, Math.Max(brush.Width, brush.Height) + 1);
         }
 

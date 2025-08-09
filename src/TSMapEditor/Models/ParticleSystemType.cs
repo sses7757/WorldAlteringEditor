@@ -2,15 +2,10 @@
 
 namespace TSMapEditor.Models
 {
-    public class ParticleSystemType : AbstractObject, INIDefined
+    public class ParticleSystemType(string iniName) : AbstractObject, INIDefined
     {
-        public ParticleSystemType(string iniName)
-        {
-            ININame = iniName;
-        }
-
         [INI(false)]
-        public string ININame { get; }
+        public string ININame { get; } = iniName;
 
         [INI(false)]
         public int Index { get; set; }

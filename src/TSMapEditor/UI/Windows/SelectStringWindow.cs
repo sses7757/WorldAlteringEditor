@@ -6,14 +6,9 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectStringWindow : SelectObjectWindow<CsfString>
+    public class SelectStringWindow(WindowManager windowManager, Map map) : SelectObjectWindow<CsfString>(windowManager)
     {
-        public SelectStringWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private EditorDescriptionPanel panelContent;
 

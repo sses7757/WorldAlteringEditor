@@ -5,12 +5,8 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering.ObjectRenderers
 {
-    internal class AircraftRenderer : ObjectRenderer<Aircraft>
+    internal class AircraftRenderer(RenderDependencies renderDependencies) : ObjectRenderer<Aircraft>(renderDependencies)
     {
-        public AircraftRenderer(RenderDependencies renderDependencies) : base(renderDependencies)
-        {
-        }
-
         protected override Color ReplacementColor => Color.HotPink;
 
         protected override CommonDrawParams GetDrawParams(Aircraft gameObject)

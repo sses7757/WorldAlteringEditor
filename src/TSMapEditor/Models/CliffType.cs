@@ -117,11 +117,11 @@ namespace TSMapEditor.Models
         /// <summary>
         /// Accumulated set of all cell coordinates occupied up to this node
         /// </summary>
-        public HashSet<Point2D> OccupiedCells = new HashSet<Point2D>();
+        public HashSet<Point2D> OccupiedCells = [];
 
         public static CliffAStarNode MakeStartNode(Point2D location, Point2D destination, CliffSide startingSide)
         {
-            CliffConnectionPoint connectionPoint = new CliffConnectionPoint
+            CliffConnectionPoint connectionPoint = new()
             {
                 Index = 0,
                 ConnectionMask = 0b11111111,
@@ -146,7 +146,7 @@ namespace TSMapEditor.Models
 
         public List<CliffAStarNode> GetNextNodes(CliffTile tile)
         {
-            List<(CliffConnectionPoint, List<Direction>)> possibleNeighbors = new();
+            List<(CliffConnectionPoint, List<Direction>)> possibleNeighbors = [];
 
             foreach (CliffConnectionPoint cp in tile.ConnectionPoints)
             {
@@ -190,7 +190,7 @@ namespace TSMapEditor.Models
 
         public List<CliffAStarNode> GetNextNodes(List<CliffTile> tiles, bool allowTurn)
         {
-            List <CliffAStarNode > nextNodes = new List<CliffAStarNode>();
+            List <CliffAStarNode > nextNodes = [];
             foreach (var tile in tiles)
             {
                 if (!allowTurn && tile.ConnectionPoints[0].Side != tile.ConnectionPoints[1].Side)
@@ -220,7 +220,7 @@ namespace TSMapEditor.Models
 
             TileSetName = tileSet;
 
-            IndicesInTileSet = indicesString.Split(',').Select(s => int.Parse(s, CultureInfo.InvariantCulture)).ToList();
+            IndicesInTileSet = [.. indicesString.Split(',').Select(s => int.Parse(s, CultureInfo.InvariantCulture))];
 
             ConnectionPoints = new CliffConnectionPoint[2];
 
@@ -272,7 +272,7 @@ namespace TSMapEditor.Models
 
                 if (requiredTilesList.Count > 0)
                 {
-                    requiredTiles = requiredTilesList.ToArray();
+                    requiredTiles = [.. requiredTilesList];
                     forbiddenTiles = Array.Empty<int>();
                 }
                 else
@@ -280,7 +280,7 @@ namespace TSMapEditor.Models
                     var forbiddenTilesList =
                         iniSection.GetListValue($"ConnectionPoint{i}.ForbiddenTiles", ',', int.Parse);
 
-                    forbiddenTiles = forbiddenTilesList.ToArray();
+                    forbiddenTiles = [.. forbiddenTilesList];
                     requiredTiles = Array.Empty<int>();
                 }
 
@@ -301,7 +301,7 @@ namespace TSMapEditor.Models
                 if (!Regex.IsMatch(foundationString, "^((?:\\d+?,\\d+?\\|)*(?:\\d+?,\\d+?))$"))
                     throw new INIConfigException($"Connected Tile {iniSection.SectionName} has an invalid Foundation: {foundationString}!");
 
-                Foundation = foundationString.Split("|").Select(Point2D.FromString).ToHashSet();
+                Foundation = [.. foundationString.Split("|").Select(Point2D.FromString)];
             }
 
             ExtraPriority = -iniSection.GetIntValue("ExtraPriority", IsStraight(ConnectionPoints) ? -1 : 0); // negated because sorting is in ascending order by default, but it's more intuitive to have larger numbers be more important
@@ -367,42 +367,18 @@ namespace TSMapEditor.Models
 
         private static byte DirectionFromString(string str)
         {
-            switch (str.Trim().ToUpperInvariant())
+            return str.Trim().ToUpperInvariant() switch
             {
-                case "NORTH":
-                case "TOPRIGHT":
-                    return 1 << 7;
-
-                case "NORTHEAST":
-                case "RIGHT":
-                    return 1 << 6;
-
-                case "EAST":
-                case "BOTTOMRIGHT":
-                    return 1 << 5;
-
-                case "SOUTHEAST":
-                case "BOTTOM":
-                    return 1 << 4;
-
-                case "SOUTH":
-                case "BOTTOMLEFT":
-                    return 1 << 3;
-
-                case "SOUTHWEST":
-                case "LEFT":
-                    return 1 << 2;
-
-                case "WEST":
-                case "TOPLEFT":
-                    return 1 << 1;
-
-                case "NORTHWEST":
-                case "TOP":
-                    return 1 << 0;
-            }
-
-            return byte.MaxValue;
+                "NORTH" or "TOPRIGHT" => 1 << 7,
+                "NORTHEAST" or "RIGHT" => 1 << 6,
+                "EAST" or "BOTTOMRIGHT" => 1 << 5,
+                "SOUTHEAST" or "BOTTOM" => 1 << 4,
+                "SOUTH" or "BOTTOMLEFT" => 1 << 3,
+                "SOUTHWEST" or "LEFT" => 1 << 2,
+                "WEST" or "TOPLEFT" => 1 << 1,
+                "NORTHWEST" or "TOP" => 1 << 0,
+                _ => byte.MaxValue,
+            };
         }
     }
 
@@ -438,7 +414,7 @@ namespace TSMapEditor.Models
             FrontOnly = frontOnly;
             Color = color;
 
-            Tiles = new List<CliffTile>();
+            Tiles = [];
 
             foreach (var sectionName in iniFile.GetSections())
             {

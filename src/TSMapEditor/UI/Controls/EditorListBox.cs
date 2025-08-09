@@ -3,12 +3,8 @@ using Rampastring.XNAUI.XNAControls;
 
 namespace TSMapEditor.UI.Controls
 {
-    public class EditorListBox : XNAListBox
+    public class EditorListBox(WindowManager windowManager) : XNAListBox(windowManager)
     {
-        public EditorListBox(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         public override void Initialize()
         {
             base.Initialize();

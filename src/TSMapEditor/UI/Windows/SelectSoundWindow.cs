@@ -5,14 +5,9 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectSoundWindow : SelectObjectWindow<Sound>
+    public class SelectSoundWindow(WindowManager windowManager, Map map) : SelectObjectWindow<Sound>(windowManager)
     {
-        public SelectSoundWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public override void Initialize()
         {

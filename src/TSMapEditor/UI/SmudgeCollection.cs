@@ -9,23 +9,20 @@ namespace TSMapEditor.UI
     /// </summary>
     public class SmudgeCollection : ObjectTypeCollection
     {
-        public struct SmudgeCollectionEntry
+        public struct SmudgeCollectionEntry(SmudgeType smudgeType)
         {
-            public SmudgeType SmudgeType;
-
-            public SmudgeCollectionEntry(SmudgeType smudgeType)
-            {
-                SmudgeType = smudgeType;
-            }
+            public SmudgeType SmudgeType = smudgeType;
         }
 
         public SmudgeCollectionEntry[] Entries;
 
         public static SmudgeCollection InitFromIniSection(IniSection iniSection, List<SmudgeType> smudgeTypes)
         {
-            var smudgeCollection = new SmudgeCollection();
-            smudgeCollection.Name = iniSection.GetStringValue("Name", "Unnamed Collection");
-            smudgeCollection.AllowedTheaters = iniSection.GetListValue("AllowedTheaters", ',', s => s);
+            var smudgeCollection = new SmudgeCollection
+            {
+                Name = iniSection.GetStringValue("Name", "Unnamed Collection"),
+                AllowedTheaters = iniSection.GetListValue("AllowedTheaters", ',', s => s)
+            };
 
             var entryList = new List<SmudgeCollectionEntry>();
 
@@ -36,18 +33,13 @@ namespace TSMapEditor.UI
                 if (string.IsNullOrWhiteSpace(smudgeTypeName))
                     break;
 
-                var smudgeType = smudgeTypes.Find(o => o.ININame == smudgeTypeName);
-                if (smudgeType == null)
-                {
-                    throw new INIConfigException($"Smudge type \"{smudgeTypeName}\" not found while initializing smudge collection \"{smudgeCollection.Name}\"!");
-                }
-
+                var smudgeType = smudgeTypes.Find(o => o.ININame == smudgeTypeName) ?? throw new INIConfigException($"Smudge type \"{smudgeTypeName}\" not found while initializing smudge collection \"{smudgeCollection.Name}\"!");
                 entryList.Add(new SmudgeCollectionEntry(smudgeType));
 
                 i++;
             }
 
-            smudgeCollection.Entries = entryList.ToArray();
+            smudgeCollection.Entries = [.. entryList];
             return smudgeCollection;
         }
     }

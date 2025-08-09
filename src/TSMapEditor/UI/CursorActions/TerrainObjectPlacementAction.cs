@@ -8,12 +8,8 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows placing down terrain objects.
     /// </summary>
-    public class TerrainObjectPlacementAction : CursorAction
+    public class TerrainObjectPlacementAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public TerrainObjectPlacementAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Place Terrain Object";
 
         private TerrainObject terrainObject;

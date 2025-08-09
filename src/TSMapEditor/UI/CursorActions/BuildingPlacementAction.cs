@@ -9,20 +9,15 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows placing buildings on the map.
     /// </summary>
-    public class BuildingPlacementAction : CursorAction
+    public class BuildingPlacementAction(ICursorActionTarget cursorActionTarget, RKeyboard keyboard) : CursorAction(cursorActionTarget)
     {
-        public BuildingPlacementAction(ICursorActionTarget cursorActionTarget, RKeyboard keyboard) : base(cursorActionTarget)
-        {
-            this.keyboard = keyboard;
-        }
-
         public override string GetName() => "Place Building";
 
         private Structure structure;
 
         private BuildingType _buildingType;
 
-        private readonly RKeyboard keyboard;
+        private readonly RKeyboard keyboard = keyboard;
 
         public BuildingType BuildingType
         {
@@ -47,8 +42,7 @@ namespace TSMapEditor.UI.CursorActions
 
         public override void OnActionEnter()
         {
-            if (structure != null)
-                structure.Owner = CursorActionTarget.MutationTarget.ObjectOwner;
+            structure?.Owner = CursorActionTarget.MutationTarget.ObjectOwner;
         }
 
         public override void PreMapDraw(Point2D cellCoords)

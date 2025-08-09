@@ -28,27 +28,16 @@ namespace TSMapEditor.Rendering
         Theater Theater { get; }
     }
 
-    public class VoxelModel : IDisposable
+    public class VoxelModel(GraphicsDevice graphicsDevice, VxlFile vxl, HvaFile hva, XNAPalette palette,
+        bool remapable = false, bool subjectToLighting = false, VplFile vpl = null) : IDisposable
     {
-        public VoxelModel(GraphicsDevice graphicsDevice, VxlFile vxl, HvaFile hva, XNAPalette palette,
-            bool remapable = false, bool subjectToLighting = false, VplFile vpl = null)
-        {
-            this.graphicsDevice = graphicsDevice;
-            this.vxl = vxl;
-            this.hva = hva;
-            this.vpl = vpl;
-            this.palette = palette;
-            this.remapable = remapable;
-            this.subjectToLighting = subjectToLighting;
-        }
-
-        private readonly GraphicsDevice graphicsDevice;
-        private readonly VxlFile vxl;
-        private readonly HvaFile hva;
-        private readonly VplFile vpl;
-        private readonly XNAPalette palette;
-        private readonly bool remapable;
-        private readonly bool subjectToLighting;
+        private readonly GraphicsDevice graphicsDevice = graphicsDevice;
+        private readonly VxlFile vxl = vxl;
+        private readonly HvaFile hva = hva;
+        private readonly VplFile vpl = vpl;
+        private readonly XNAPalette palette = palette;
+        private readonly bool remapable = remapable;
+        private readonly bool subjectToLighting = subjectToLighting;
 
         public void Dispose()
         {
@@ -117,7 +106,7 @@ namespace TSMapEditor.Rendering
                     colorData[i] = Color.Transparent;
             }
 
-            Color[] remapColorArray = colorData.Select(color =>
+            Color[] remapColorArray = [.. colorData.Select(color =>
             {
                 // Convert the color to grayscale
                 float remapColor = Math.Max(color.R / 255.0f, Math.Max(color.G / 255.0f, color.B / 255.0f));
@@ -126,7 +115,7 @@ namespace TSMapEditor.Rendering
                 remapColor *= Constants.RemapBrightenFactor;
                 return new Color(remapColor, remapColor, remapColor, color.A);
 
-            }).ToArray();
+            })];
 
             var remapTexture = new Texture2D(graphicsDevice, texture.Width, texture.Height, false, SurfaceFormat.Color);
             remapTexture.SetData(remapColorArray);
@@ -146,8 +135,8 @@ namespace TSMapEditor.Rendering
             RemapFrames.Clear();
         }
 
-        public Dictionary<(byte facing, RampType ramp), PositionedTexture> Frames { get; set; } = new();
-        public Dictionary<(byte facing, RampType ramp), PositionedTexture> RemapFrames { get; set; } = new();
+        public Dictionary<(byte facing, RampType ramp), PositionedTexture> Frames { get; set; } = [];
+        public Dictionary<(byte facing, RampType ramp), PositionedTexture> RemapFrames { get; set; } = [];
     }
 
     public class ShapeImage : IDisposable
@@ -165,7 +154,7 @@ namespace TSMapEditor.Rendering
             if (pngTexture != null && !remapable)
             {
                 IsPNG = true;
-                Frames = new PositionedTexture[] { pngTexture };
+                Frames = [pngTexture];
                 return;
             }
 
@@ -178,25 +167,23 @@ namespace TSMapEditor.Rendering
         {
             Array.ForEach(Frames, frame =>
             {
-                if (frame != null)
-                    frame.Dispose();
+                frame?.Dispose();
             });
 
             if (RemapFrames != null)
             {
                 Array.ForEach(RemapFrames, frame =>
                 {
-                    if (frame != null)
-                        frame.Dispose();
+                    frame?.Dispose();
                 });
             }
         }
 
         private XNAPalette Palette { get; }
-        private ShpFile shpFile;
-        private byte[] shpFileData;
-        private bool remapable;
-        private GraphicsDevice graphicsDevice;
+        private readonly ShpFile shpFile;
+        private readonly byte[] shpFileData;
+        private readonly bool remapable;
+        private readonly GraphicsDevice graphicsDevice;
 
         public bool SubjectToLighting { get; }
 
@@ -292,7 +279,7 @@ namespace TSMapEditor.Rendering
         public Texture2D GetTextureForFrame_RGBA(int index, ShpFrameInfo frameInfo, byte[] frameData)
         {
             var texture = new Texture2D(graphicsDevice, frameInfo.Width, frameInfo.Height, false, SurfaceFormat.Color);
-            Color[] colorArray = frameData.Select(b => b == 0 ? Color.Transparent : Palette.Data[b].ToXnaColor()).ToArray();
+            Color[] colorArray = [.. frameData.Select(b => b == 0 ? Color.Transparent : Palette.Data[b].ToXnaColor())];
             texture.SetData<Color>(colorArray);
 
             return texture;
@@ -313,7 +300,7 @@ namespace TSMapEditor.Rendering
 
         public Texture2D GetRemapTextureForFrame_Paletted(int index, ShpFrameInfo frameInfo, byte[] frameData)
         {
-            byte[] remapColorArray = frameData.Select(b =>
+            byte[] remapColorArray = [.. frameData.Select(b =>
             {
                 if (b >= 0x10 && b <= 0x1F)
                 {
@@ -322,7 +309,7 @@ namespace TSMapEditor.Rendering
                 }
 
                 return (byte)0;
-            }).ToArray();
+            })];
 
             var remapTexture = new Texture2D(graphicsDevice, frameInfo.Width, frameInfo.Height, false, SurfaceFormat.Alpha8);
             remapTexture.SetData(remapColorArray);
@@ -331,7 +318,7 @@ namespace TSMapEditor.Rendering
 
         public Texture2D GetRemapTextureForFrame_RGBA(int index, ShpFrameInfo frameInfo, byte[] frameData)
         {
-            Color[] remapColorArray = frameData.Select(b =>
+            Color[] remapColorArray = [.. frameData.Select(b =>
             {
                 if (b >= 0x10 && b <= 0x1F)
                 {
@@ -345,7 +332,7 @@ namespace TSMapEditor.Rendering
                 }
 
                 return Color.Transparent;
-            }).ToArray();
+            })];
 
             var remapTexture = new Texture2D(graphicsDevice, frameInfo.Width, frameInfo.Height, false, SurfaceFormat.Color);
             remapTexture.SetData<Color>(remapColorArray);
@@ -366,27 +353,17 @@ namespace TSMapEditor.Rendering
         private PositionedTexture[] RemapFrames { get; set; }
     }
 
-    public class PositionedTexture
+    public class PositionedTexture(int shapeWidth, int shapeHeight, int offsetX, int offsetY, Texture2D texture)
     {
-        public int ShapeWidth;
-        public int ShapeHeight;
-        public int OffsetX;
-        public int OffsetY;
-        public Texture2D Texture;
-
-        public PositionedTexture(int shapeWidth, int shapeHeight, int offsetX, int offsetY, Texture2D texture)
-        {
-            ShapeWidth = shapeWidth;
-            ShapeHeight = shapeHeight;
-            OffsetX = offsetX;
-            OffsetY = offsetY;
-            Texture = texture;
-        }
+        public int ShapeWidth = shapeWidth;
+        public int ShapeHeight = shapeHeight;
+        public int OffsetX = offsetX;
+        public int OffsetY = offsetY;
+        public Texture2D Texture = texture;
 
         public void Dispose()
         {
-            if (Texture != null)
-                Texture.Dispose();
+            Texture?.Dispose();
         }
     }
 
@@ -402,11 +379,11 @@ namespace TSMapEditor.Rendering
         private const string TURRET_FILE_SUFFIX = "TUR";
         private const string BARREL_FILE_SUFFIX = "BARL";
 
-        private Random random = new Random();
+        private readonly Random random = new();
 
         public Theater Theater { get; }
 
-        private CCFileManager fileManager;
+        private readonly CCFileManager fileManager;
 
         public readonly XNAPalette TheaterPalette;
         private readonly XNAPalette unitPalette;
@@ -415,11 +392,11 @@ namespace TSMapEditor.Rendering
         private readonly XNAPalette alphaPalette;
         private readonly VplFile vplFile;
 
-        private readonly List<XNAPalette> palettes = new List<XNAPalette>();
+        private readonly List<XNAPalette> palettes = [];
 
-        private List<TileImage[]> terrainGraphicsList = new List<TileImage[]>();
-        private List<TileImage[]> mmTerrainGraphicsList = new List<TileImage[]>();
-        private List<bool> hasMMGraphics = new List<bool>();
+        private readonly List<TileImage[]> terrainGraphicsList = [];
+        private readonly List<TileImage[]> mmTerrainGraphicsList = [];
+        private readonly List<bool> hasMMGraphics = [];
 
         public int TileCount => terrainGraphicsList.Count;
 
@@ -444,7 +421,7 @@ namespace TSMapEditor.Rendering
         public ShapeImage[] OverlayTextures { get; set; }
         public ShapeImage[] SmudgeTextures { get; set; }
         public ShapeImage[] AnimTextures { get; set; }
-        public Dictionary<string, ShapeImage> AlphaImages { get; set; } = new Dictionary<string, ShapeImage>();
+        public Dictionary<string, ShapeImage> AlphaImages { get; set; } = [];
 
         public TheaterGraphics(GraphicsDevice graphicsDevice, Theater theater, CCFileManager fileManager, Rules rules)
         {
@@ -505,7 +482,7 @@ namespace TSMapEditor.Rendering
         private readonly GraphicsDevice graphicsDevice;
 
 
-        private static string[] NewTheaterHardcodedPrefixes = new string[] { "CA", "CT", "GA", "GT", "NA", "NT" };
+        private static readonly string[] NewTheaterHardcodedPrefixes = ["CA", "CT", "GA", "GT", "NA", "NT"];
 
         private void ReadTileTextures()
         {
@@ -534,7 +511,7 @@ namespace TSMapEditor.Rendering
 
                         if (v > 0)
                         {
-                            baseName = baseName + ((char)('a' + (v - 1)));
+                            baseName += ((char)('a' + (v - 1)));
                         }
 
                         string fileName = baseName + Theater.FileExtension;
@@ -570,12 +547,12 @@ namespace TSMapEditor.Rendering
                         {
                             tmpImages.Add(new MGTMPImage(graphicsDevice, tmpFile.GetImage(img), TheaterPalette, tsId));
                         }
-                        tileGraphics.Add(new TileImage(tmpFile.CellsX, tmpFile.CellsY, tsId, i, currentTileIndex, tmpImages.ToArray()));
+                        tileGraphics.Add(new TileImage(tmpFile.CellsX, tmpFile.CellsY, tsId, i, currentTileIndex, [.. tmpImages]));
                     }
 
                     tileSet.LoadedTileCount++;
                     currentTileIndex++;
-                    terrainGraphicsList.Add(tileGraphics.ToArray());
+                    terrainGraphicsList.Add([.. tileGraphics]);
                 }
             }
 
@@ -699,7 +676,7 @@ namespace TSMapEditor.Rendering
                 byte[] shpData = null;
                 if (buildingType.ArtConfig.NewTheater || hardcodedNewTheater)
                 {
-                    string newTheaterShpName = shpFileName.Substring(0, 1) + Theater.NewTheaterBuildingLetter + shpFileName.Substring(2);
+                    string newTheaterShpName = shpFileName[..1] + Theater.NewTheaterBuildingLetter + shpFileName[2..];
 
                     shpData = fileManager.LoadFile(newTheaterShpName);
                     loadedShpName = newTheaterShpName;
@@ -708,7 +685,7 @@ namespace TSMapEditor.Rendering
                 // Support generic building letter
                 if (Constants.NewTheaterGenericBuilding && shpData == null)
                 {
-                    string newTheaterShpName = shpFileName.Substring(0, 1) + Constants.NewTheaterGenericLetter + shpFileName.Substring(2);
+                    string newTheaterShpName = shpFileName[..1] + Constants.NewTheaterGenericLetter + shpFileName[2..];
 
                     shpData = fileManager.LoadFile(newTheaterShpName);
                     loadedShpName = newTheaterShpName;
@@ -753,7 +730,7 @@ namespace TSMapEditor.Rendering
                     shpData = null;
                     if (buildingType.ArtConfig.NewTheater)
                     {
-                        string newTheaterBibShpName = bibShpFileName.Substring(0, 1) + Theater.NewTheaterBuildingLetter + bibShpFileName.Substring(2);
+                        string newTheaterBibShpName = bibShpFileName[..1] + Theater.NewTheaterBuildingLetter + bibShpFileName[2..];
 
                         shpData = fileManager.LoadFile(newTheaterBibShpName);
                         loadedShpName = newTheaterBibShpName;
@@ -761,7 +738,7 @@ namespace TSMapEditor.Rendering
 
                     if (Constants.NewTheaterGenericBuilding && shpData == null)
                     {
-                        string newTheaterBibShpName = bibShpFileName.Substring(0, 1) + Constants.NewTheaterGenericLetter + bibShpFileName.Substring(2);
+                        string newTheaterBibShpName = bibShpFileName[..1] + Constants.NewTheaterGenericLetter + bibShpFileName[2..];
 
                         shpData = fileManager.LoadFile(newTheaterBibShpName);
                     }
@@ -791,7 +768,7 @@ namespace TSMapEditor.Rendering
         {
             Logger.Log("Loading alpha image textures.");
 
-            List<GameObjectType> gameObjectTypes = new List<GameObjectType>(rules.BuildingTypes);
+            List<GameObjectType> gameObjectTypes = new(rules.BuildingTypes);
             gameObjectTypes.AddRange(rules.TerrainTypes);
 
             for (int i = 0; i < gameObjectTypes.Count; i++)
@@ -952,7 +929,7 @@ namespace TSMapEditor.Rendering
                 byte[] shpData = null;
                 if (animType.ArtConfig.NewTheater)
                 {
-                    string newTheaterShpName = shpFileName.Substring(0, 1) + Theater.NewTheaterBuildingLetter + shpFileName.Substring(2);
+                    string newTheaterShpName = shpFileName[..1] + Theater.NewTheaterBuildingLetter + shpFileName[2..];
 
                     shpData = fileManager.LoadFile(newTheaterShpName);
                     loadedShpName = newTheaterShpName;
@@ -961,7 +938,7 @@ namespace TSMapEditor.Rendering
                 // Support generic theater letter
                 if (Constants.NewTheaterGenericBuilding && shpData == null)
                 {
-                    string newTheaterShpName = shpFileName.Substring(0, 1) + Constants.NewTheaterGenericLetter + shpFileName.Substring(2);
+                    string newTheaterShpName = shpFileName[..1] + Constants.NewTheaterGenericLetter + shpFileName[2..];
 
                     shpData = fileManager.LoadFile(newTheaterShpName);
                     loadedShpName = newTheaterShpName;
@@ -999,7 +976,7 @@ namespace TSMapEditor.Rendering
                 else if (!useBuildingPalette && !string.IsNullOrWhiteSpace(animType.ArtConfig.CustomPalette))
                 {
                     palette = GetPaletteOrDefault(
-                        animType.ArtConfig.CustomPalette.Replace("~~~", Theater.FileExtension.Substring(1)),
+                        animType.ArtConfig.CustomPalette.Replace("~~~", Theater.FileExtension[1..]),
                         palette, true);
                 }
 
@@ -1348,14 +1325,14 @@ namespace TSMapEditor.Rendering
                     if (overlayType.ArtConfig.NewTheater)
                     {
                         string shpFileName = imageName + SHP_FILE_EXTENSION;
-                        string newTheaterImageName = shpFileName.Substring(0, 1) + Theater.NewTheaterBuildingLetter + shpFileName.Substring(2);
+                        string newTheaterImageName = shpFileName[..1] + Theater.NewTheaterBuildingLetter + shpFileName[2..];
                         
                         shpData = fileManager.LoadFile(newTheaterImageName);
                         loadedShpName = newTheaterImageName;
 
                         if (shpData == null)
                         {
-                            newTheaterImageName = shpFileName.Substring(0, 1) + Constants.NewTheaterGenericLetter + shpFileName.Substring(2);
+                            newTheaterImageName = shpFileName[..1] + Constants.NewTheaterGenericLetter + shpFileName[2..];
                             shpData = fileManager.LoadFile(newTheaterImageName);
                             loadedShpName = newTheaterImageName;
                         }
@@ -1507,7 +1484,7 @@ namespace TSMapEditor.Rendering
 
         private void DisposeObjectImagesFromArray(IDisposable[] objImageArray)
         {
-            Array.ForEach(objImageArray, objectImage => { if (objectImage != null) objectImage.Dispose(); });
+            Array.ForEach(objImageArray, objectImage => { objectImage?.Dispose(); });
             Array.Clear(objImageArray);
         }
 
@@ -1517,10 +1494,7 @@ namespace TSMapEditor.Rendering
             if (existing != null)
                 return existing;
 
-            byte[] paletteData = fileManager.LoadFile(paletteFileName);
-            if (paletteData == null)
-                throw new KeyNotFoundException(paletteFileName + " not found from loaded MIX files!");
-
+            byte[] paletteData = fileManager.LoadFile(paletteFileName) ?? throw new KeyNotFoundException(paletteFileName + " not found from loaded MIX files!");
             var newPalette = new XNAPalette(paletteFileName, paletteData, graphicsDevice, hasFullyBrightColors);
             palettes.Add(newPalette);
             return newPalette;
@@ -1543,35 +1517,30 @@ namespace TSMapEditor.Rendering
 
         private VplFile GetVplFile(string filename = "voxels.vpl")
         {
-            byte[] vplData = fileManager.LoadFile(filename);
-            if (vplData == null)
-                throw new KeyNotFoundException(filename + " not found from loaded MIX files!");
-
+            byte[] vplData = fileManager.LoadFile(filename) ?? throw new KeyNotFoundException(filename + " not found from loaded MIX files!");
             return new VplFile(vplData);
         }
 
         private PositionedTexture PositionedTextureFromBytes(byte[] data)
         {
-            using (var memstream = new MemoryStream(data))
+            using var memstream = new MemoryStream(data);
+            var tex2d = Texture2D.FromStream(graphicsDevice, memstream);
+
+            // premultiply alpha
+            Color[] colorData = new Color[tex2d.Width * tex2d.Height];
+            tex2d.GetData(colorData);
+            for (int i = 0; i < colorData.Length; i++)
             {
-                var tex2d = Texture2D.FromStream(graphicsDevice, memstream);
-
-                // premultiply alpha
-                Color[] colorData = new Color[tex2d.Width * tex2d.Height];
-                tex2d.GetData(colorData);
-                for (int i = 0; i < colorData.Length; i++)
-                {
-                    var color = colorData[i];
-                    color.R = (byte)((color.R * color.A) / byte.MaxValue);
-                    color.G = (byte)((color.G * color.A) / byte.MaxValue);
-                    color.B = (byte)((color.B * color.A) / byte.MaxValue);
-                    colorData[i] = color;
-                }
-
-                tex2d.SetData(colorData);
-
-                return new PositionedTexture(tex2d.Width, tex2d.Height, 0, 0, tex2d);
+                var color = colorData[i];
+                color.R = (byte)((color.R * color.A) / byte.MaxValue);
+                color.G = (byte)((color.G * color.A) / byte.MaxValue);
+                color.B = (byte)((color.B * color.A) / byte.MaxValue);
+                colorData[i] = color;
             }
+
+            tex2d.SetData(colorData);
+
+            return new PositionedTexture(tex2d.Width, tex2d.Height, 0, 0, tex2d);
         }
 
         public int GetTileSetId(int uniqueTileIndex)

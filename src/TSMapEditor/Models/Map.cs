@@ -16,14 +16,9 @@ using TSMapEditor.Rendering;
 
 namespace TSMapEditor.Models
 {
-    public class HouseEventArgs : EventArgs
+    public class HouseEventArgs(House house) : EventArgs
     {
-        public HouseEventArgs(House house)
-        {
-            House = house;
-        }
-
-        public House House { get; }
+        public House House { get; } = house;
     }
 
     public class Map : IMap
@@ -110,10 +105,10 @@ namespace TSMapEditor.Models
 
         public MapTile GetTile(Point2D cellCoords) => GetTile(cellCoords.X, cellCoords.Y);
         public MapTile GetTileOrFail(Point2D cellCoords) => GetTile(cellCoords.X, cellCoords.Y) ?? throw new InvalidOperationException("Invalid cell coords: " + cellCoords);
-        public List<Aircraft> Aircraft { get; private set; } = new List<Aircraft>();
-        public List<Infantry> Infantry { get; private set; } = new List<Infantry>();
-        public List<Unit> Units { get; private set; } = new List<Unit>();
-        public List<Structure> Structures { get; private set; } = new List<Structure>();
+        public List<Aircraft> Aircraft { get; private set; } = [];
+        public List<Infantry> Infantry { get; private set; } = [];
+        public List<Unit> Units { get; private set; } = [];
+        public List<Structure> Structures { get; private set; } = [];
 
         /// <summary>
         /// The list of standard house types loaded from EditorRules.ini, or Rules.ini as a fallback.
@@ -140,15 +135,15 @@ namespace TSMapEditor.Models
         /// In Yuri's Revenge this is not the case, but instead, multiple Houses can use one
         /// HouseType, and there can also be completely unused HouseTypes.
         /// </summary>
-        public List<HouseType> HouseTypes { get; protected set; } = new List<HouseType>();
+        public List<HouseType> HouseTypes { get; protected set; } = [];
         public List<HouseType> GetHouseTypes()
         {
             if (Constants.IsRA2YR)
             {
                 if (HouseTypes.Count > 0)
-                    return Rules.RulesHouseTypes.Concat(HouseTypes).ToList();
+                    return [.. Rules.RulesHouseTypes, .. HouseTypes];
                 else
-                    return Rules.RulesHouseTypes.Concat(StandardHouseTypes).ToList();
+                    return [.. Rules.RulesHouseTypes, .. StandardHouseTypes];
             }
             else
             {
@@ -156,25 +151,25 @@ namespace TSMapEditor.Models
             }
         }
 
-        public List<House> Houses { get; protected set; } = new List<House>();
+        public List<House> Houses { get; protected set; } = [];
         public List<House> GetHouses() => Houses.Count > 0 ? Houses : StandardHouses;
 
-        public List<TerrainObject> TerrainObjects { get; private set; } = new List<TerrainObject>();
-        public List<Waypoint> Waypoints { get; private set; } = new List<Waypoint>();
+        public List<TerrainObject> TerrainObjects { get; private set; } = [];
+        public List<Waypoint> Waypoints { get; private set; } = [];
 
-        public List<TaskForce> TaskForces { get; protected set; } = new List<TaskForce>();
-        public List<Trigger> Triggers { get; protected set; } = new List<Trigger>();
-        public List<Tag> Tags { get; protected set; } = new List<Tag>();
-        public List<CellTag> CellTags { get; private set; } = new List<CellTag>();
-        public List<Script> Scripts { get; protected set; } = new List<Script>();
-        public List<TeamType> TeamTypes { get; protected set; } = new List<TeamType>();
-        public List<AITriggerType> AITriggerTypes { get; protected set; } = new List<AITriggerType>();
-        public List<LocalVariable> LocalVariables { get; protected set; } = new List<LocalVariable>();
-        public List<Tube> Tubes { get; private set; } = new List<Tube>();
+        public List<TaskForce> TaskForces { get; protected set; } = [];
+        public List<Trigger> Triggers { get; protected set; } = [];
+        public List<Tag> Tags { get; protected set; } = [];
+        public List<CellTag> CellTags { get; private set; } = [];
+        public List<Script> Scripts { get; protected set; } = [];
+        public List<TeamType> TeamTypes { get; protected set; } = [];
+        public List<AITriggerType> AITriggerTypes { get; protected set; } = [];
+        public List<LocalVariable> LocalVariables { get; protected set; } = [];
+        public List<Tube> Tubes { get; private set; } = [];
 
         public Lighting Lighting { get; } = new Lighting();
 
-        public List<GraphicalBaseNode> GraphicalBaseNodes { get; protected set; } = new List<GraphicalBaseNode>();
+        public List<GraphicalBaseNode> GraphicalBaseNodes { get; protected set; } = [];
 
         public Point2D Size { get; set; }
 
@@ -459,10 +454,7 @@ namespace TSMapEditor.Models
 
             // Try to find a matching standard house type for this house.
             // If we can't find one, create one.
-            HouseType houseType = Rules.RulesHouseTypes.Find(ht => houseName.StartsWith(ht.ININame));
-            if (houseType == null)
-                houseType = Rules.RulesHouseTypes.Find(ht => ht.ININame == "Neutral");
-
+            HouseType houseType = Rules.RulesHouseTypes.Find(ht => houseName.StartsWith(ht.ININame)) ?? Rules.RulesHouseTypes.Find(ht => ht.ININame == "Neutral");
             if (houseType == null)
             {
                 houseType = new HouseType(houseName);
@@ -605,7 +597,7 @@ namespace TSMapEditor.Models
             List<MapTile> allCellsInList = cells.Aggregate(new List<MapTile>(), (totalCellList, rowCellList) =>
             {
                 var nonNullValues = rowCellList.Where(mapcell => mapcell != null);
-                return totalCellList.Concat(nonNullValues).ToList();
+                return [.. totalCellList, .. nonNullValues];
             });
 
             // Shift all cells
@@ -644,14 +636,14 @@ namespace TSMapEditor.Models
 
             // Objects we have to check manually
             // Luckily functional programming and our design makes this relatively painless!
-            Aircraft = Aircraft.Where(a => IsCoordWithinMap(a.Position)).ToList();
-            Infantry = Infantry.Where(i => IsCoordWithinMap(i.Position)).ToList();
-            Units = Units.Where(u => IsCoordWithinMap(u.Position)).ToList();
-            Structures = Structures.Where(s => IsCoordWithinMap(s.Position)).ToList();
-            TerrainObjects = TerrainObjects.Where(t => IsCoordWithinMap(t.Position)).ToList();
-            Waypoints = Waypoints.Where(wp => IsCoordWithinMap(wp.Position)).ToList();
-            CellTags = CellTags.Where(ct => IsCoordWithinMap(ct.Position)).ToList();
-            Tubes = Tubes.Where(tube => IsCoordWithinMap(tube.EntryPoint) && IsCoordWithinMap(tube.ExitPoint)).ToList();
+            Aircraft = [.. Aircraft.Where(a => IsCoordWithinMap(a.Position))];
+            Infantry = [.. Infantry.Where(i => IsCoordWithinMap(i.Position))];
+            Units = [.. Units.Where(u => IsCoordWithinMap(u.Position))];
+            Structures = [.. Structures.Where(s => IsCoordWithinMap(s.Position))];
+            TerrainObjects = [.. TerrainObjects.Where(t => IsCoordWithinMap(t.Position))];
+            Waypoints = [.. Waypoints.Where(wp => IsCoordWithinMap(wp.Position))];
+            CellTags = [.. CellTags.Where(ct => IsCoordWithinMap(ct.Position))];
+            Tubes = [.. Tubes.Where(tube => IsCoordWithinMap(tube.EntryPoint) && IsCoordWithinMap(tube.ExitPoint))];
 
             // Refresh base nodes
             GraphicalBaseNodes.Clear();
@@ -978,7 +970,7 @@ namespace TSMapEditor.Models
             Structures.Remove(structure);
             if (structure.ObjectType.LightVisibility > 0)
             {
-                List<MapTile> affectedTiles = new List<MapTile>(structure.LitTiles);
+                List<MapTile> affectedTiles = new(structure.LitTiles);
                 structure.ClearLitTiles();
                 CellLightingModified?.Invoke(this, new CellLightingEventArgs() { AffectedTiles = affectedTiles });
             }
@@ -1263,11 +1255,13 @@ namespace TSMapEditor.Models
 
         public List<TechnoType> GetAllTechnoTypes()
         {
-            List<TechnoType> technoTypes = new List<TechnoType>();
-            technoTypes.AddRange(Rules.BuildingTypes);
-            technoTypes.AddRange(Rules.UnitTypes);
-            technoTypes.AddRange(Rules.InfantryTypes);
-            technoTypes.AddRange(Rules.AircraftTypes);
+            List<TechnoType> technoTypes =
+            [
+                .. Rules.BuildingTypes,
+                .. Rules.UnitTypes,
+                .. Rules.InfantryTypes,
+                .. Rules.AircraftTypes,
+            ];
 
             return technoTypes;
         }
@@ -1283,7 +1277,7 @@ namespace TSMapEditor.Models
 
             // Smooth out tiberium
 
-            int[] frameIndexesForEachAdjacentTiberiumCell = { 0, 1, 3, 4, 6, 7, 8, 10, 11 };
+            int[] frameIndexesForEachAdjacentTiberiumCell = [0, 1, 3, 4, 6, 7, 8, 10, 11];
             int adjTiberiumCount = 0;
 
             for (int y = -1; y <= 1; y++)
@@ -1384,7 +1378,7 @@ namespace TSMapEditor.Models
             terrainObjectsCopy.ForEach(t => action(t));
         }
 
-        public void SortWaypoints() => Waypoints = Waypoints.OrderBy(wp => wp.Identifier).ToList();
+        public void SortWaypoints() => Waypoints = [.. Waypoints.OrderBy(wp => wp.Identifier)];
 
         public int GetAutoLATIndex(MapTile mapTile, int baseLATTileSetIndex, int transitionLATTileSetIndex, bool usePreview, Func<TileSet, bool> miscChecker)
         {
@@ -1426,18 +1420,11 @@ namespace TSMapEditor.Models
         /// <summary>
         /// Convenience structure for <see cref="TransitionArrayDataMatches(int[], MapTile, int, int)"/>.
         /// </summary>
-        struct NearbyTileData
+        struct NearbyTileData(int xOffset, int yOffset, int directionIndex)
         {
-            public int XOffset;
-            public int YOffset;
-            public int DirectionIndex;
-
-            public NearbyTileData(int xOffset, int yOffset, int directionIndex)
-            {
-                XOffset = xOffset;
-                YOffset = yOffset;
-                DirectionIndex = directionIndex;
-            }
+            public int XOffset = xOffset;
+            public int YOffset = yOffset;
+            public int DirectionIndex = directionIndex;
         }
 
         /// <summary>
@@ -1448,11 +1435,11 @@ namespace TSMapEditor.Models
         {
             var nearbyTiles = new NearbyTileData[]
             {
-                new NearbyTileData(0, -1, AutoLATType.NE_INDEX),
-                new NearbyTileData(-1, 0, AutoLATType.NW_INDEX),
-                new NearbyTileData(0, 0, AutoLATType.CENTER_INDEX),
-                new NearbyTileData(1, 0, AutoLATType.SE_INDEX),
-                new NearbyTileData(0, 1, AutoLATType.SW_INDEX)
+                new(0, -1, AutoLATType.NE_INDEX),
+                new(-1, 0, AutoLATType.NW_INDEX),
+                new(0, 0, AutoLATType.CENTER_INDEX),
+                new(1, 0, AutoLATType.SE_INDEX),
+                new(0, 1, AutoLATType.SW_INDEX)
             };
 
             foreach (var nearbyTile in nearbyTiles)
@@ -1542,7 +1529,7 @@ namespace TSMapEditor.Models
             scriptElements.AddRange(tags);
             scriptElements.AddRange(triggers);
             scriptElements.AddRange(aiTriggers);
-            scriptElements = scriptElements.OrderBy(se => se.GetInternalID()).ToList();
+            scriptElements = [.. scriptElements.OrderBy(se => se.GetInternalID())];
 
             tfs.ForEach(tf => LoadedINI.RemoveSection(tf.ININame));
             scripts.ForEach(s => LoadedINI.RemoveSection(s.ININame));
@@ -1627,12 +1614,11 @@ namespace TSMapEditor.Models
                 if (string.IsNullOrWhiteSpace(value))
                     return;
 
-                string[] cellInfos = value.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] cellInfos = value.Split(['|'], StringSplitOptions.RemoveEmptyEntries);
                 foreach (var cellInfo in cellInfos)
                 {
                     Point2D point = Point2D.FromString(cellInfo);
-                    if (tt.ImpassableCells == null)
-                        tt.ImpassableCells = new List<Point2D>(2);
+                    tt.ImpassableCells ??= new List<Point2D>(2);
 
                     tt.ImpassableCells.Add(point);
                 }
@@ -1649,18 +1635,20 @@ namespace TSMapEditor.Models
 
             if (Constants.IsRA2YR)
             {
-                StandardHouses = Rules.RulesHouseTypes.Concat(StandardHouseTypes).Select(ht => HouseFromHouseType(ht)).ToList();
+                StandardHouses = [.. Rules.RulesHouseTypes.Concat(StandardHouseTypes).Select(ht => HouseFromHouseType(ht))];
             }
             else
             {
-                StandardHouses = StandardHouseTypes.Select(ht => HouseFromHouseType(ht)).ToList();
+                StandardHouses = [.. StandardHouseTypes.Select(ht => HouseFromHouseType(ht))];
             }
         }
 
         public House HouseFromHouseType(HouseType houseType)
         {
-            var house = new House(houseType.ININame, houseType);
-            house.XNAColor = houseType.XNAColor;
+            var house = new House(houseType.ININame, houseType)
+            {
+                XNAColor = houseType.XNAColor
+            };
 
             if (!Constants.IsRA2YR)
                 house.ActsLike = houseType.Index;
@@ -1805,7 +1793,7 @@ namespace TSMapEditor.Models
             }
 
             // Check for vehicles sharing the same follows index and for vehicles following themselves
-            List<Unit> followedUnits = new List<Unit>();
+            List<Unit> followedUnits = [];
             for (int i = 0; i < Units.Count; i++)
             {
                 var unit = Units[i];

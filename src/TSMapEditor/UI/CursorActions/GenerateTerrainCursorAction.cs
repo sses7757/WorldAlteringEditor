@@ -11,12 +11,8 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows the user to select an area for terrain generation.
     /// </summary>
-    class GenerateTerrainCursorAction : CursorAction
+    class GenerateTerrainCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public GenerateTerrainCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Generate Terrain";
 
         public TerrainGeneratorConfiguration TerrainGeneratorConfiguration { get; set; }

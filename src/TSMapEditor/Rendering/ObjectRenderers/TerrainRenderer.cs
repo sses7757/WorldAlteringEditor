@@ -4,12 +4,8 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering.ObjectRenderers
 {
-    public sealed class TerrainRenderer : ObjectRenderer<TerrainObject>
+    public sealed class TerrainRenderer(RenderDependencies renderDependencies) : ObjectRenderer<TerrainObject>(renderDependencies)
     {
-        public TerrainRenderer(RenderDependencies renderDependencies) : base(renderDependencies)
-        {
-        }
-
         protected override Color ReplacementColor => Color.Green;
 
         protected override CommonDrawParams GetDrawParams(TerrainObject gameObject)

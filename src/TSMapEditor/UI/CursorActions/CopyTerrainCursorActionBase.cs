@@ -8,12 +8,8 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows copying terrain tiles.
     /// </summary>
-    public abstract class CopyTerrainCursorActionBase : CursorAction
+    public abstract class CopyTerrainCursorActionBase(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public CopyTerrainCursorActionBase(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public CopiedEntryType EntryTypes { get; set; }
 
         protected void CopyFromCells(List<Point2D> cellsToCopy)

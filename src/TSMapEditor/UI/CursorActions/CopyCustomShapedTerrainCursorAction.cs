@@ -12,21 +12,17 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows copying terrain tiles.
     /// </summary>
-    public class CopyCustomShapedTerrainCursorAction : CopyTerrainCursorActionBase
+    public class CopyCustomShapedTerrainCursorAction(ICursorActionTarget cursorActionTarget) : CopyTerrainCursorActionBase(cursorActionTarget)
     {
-        public CopyCustomShapedTerrainCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Copy Terrain (Custom Shape)";
 
 
         public override bool HandlesKeyboardInput => true;
 
-        private HashSet<Point2D> cellsToCopy { get; set; } = new HashSet<Point2D>();
-        private List<Point2D> cellsToCopyList { get; set; } = new List<Point2D>();
+        private HashSet<Point2D> cellsToCopy { get; set; } = [];
+        private List<Point2D> cellsToCopyList { get; set; } = [];
 
-        private Point2D[][] edges { get; set; } = new Point2D[][] { Array.Empty<Point2D>() };
+        private Point2D[][] edges { get; set; } = [Array.Empty<Point2D>()];
 
         private bool modified;
         private Point2D startPoint;

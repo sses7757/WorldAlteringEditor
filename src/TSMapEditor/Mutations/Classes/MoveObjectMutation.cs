@@ -7,18 +7,11 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that moves a game object on the map.
     /// </summary>
-    public class MoveObjectMutation : Mutation
+    public class MoveObjectMutation(IMutationTarget mutationTarget, IMovable movable, Point2D newPosition) : Mutation(mutationTarget)
     {
-        public MoveObjectMutation(IMutationTarget mutationTarget, IMovable movable, Point2D newPosition) : base(mutationTarget)
-        {
-            this.movable = movable;
-            oldPosition = movable.Position;
-            this.newPosition = newPosition;
-        }
-
-        private IMovable movable;
-        private Point2D oldPosition;
-        private Point2D newPosition;
+        private readonly IMovable movable = movable;
+        private Point2D oldPosition = movable.Position;
+        private Point2D newPosition = newPosition;
 
         private void MoveObject(Point2D position)
         {

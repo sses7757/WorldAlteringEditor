@@ -40,7 +40,7 @@ namespace TSMapEditor
                 return null;
             }
 
-            string xCoordPart = coordsString.Substring(coordsString.Length - 3);
+            string xCoordPart = coordsString[^3..];
             int x = Conversions.IntFromString(xCoordPart, -1);
             if (x < 0)
             {
@@ -48,7 +48,7 @@ namespace TSMapEditor
                 return null;
             }
 
-            string yCoordPart = coordsString.Substring(0, coordsString.Length - 3);
+            string yCoordPart = coordsString[..^3];
             int y = Conversions.IntFromString(yCoordPart, -1);
             if (y < 0)
             {
@@ -72,37 +72,20 @@ namespace TSMapEditor
 
         private static string GetLandTypeName(int landType)
         {
-            switch (landType)
+            return landType switch
             {
-                case 0x0:
-                case 0xD:
-                    return "Clear";
-                case 0x1:
-                case 0x2:
-                case 0x3:
-                case 0x4:
-                    return "Ice";
-                case 0x5:
-                    return "Tunnel";
-                case 0x6:
-                    return "Railroad";
-                case 0x7:
-                case 0x8:
-                    return "Rock";
-                case 0x9:
-                    return "Water";
-                case 0xA:
-                    return "Beach";
-                case 0xB:
-                case 0xC:
-                    return "Road";
-                case 0xE:
-                    return "Rough";
-                case 0xF:
-                    return "Rock";
-                default:
-                    return "Unknown";
-            }
+                0x0 or 0xD => "Clear",
+                0x1 or 0x2 or 0x3 or 0x4 => "Ice",
+                0x5 => "Tunnel",
+                0x6 => "Railroad",
+                0x7 or 0x8 => "Rock",
+                0x9 => "Water",
+                0xA => "Beach",
+                0xB or 0xC => "Road",
+                0xE => "Rough",
+                0xF => "Rock",
+                _ => "Unknown",
+            };
         }
 
         public static int LandTypeToInt(LandType landType)
@@ -128,40 +111,23 @@ namespace TSMapEditor
         {
             // TODO make this dependent on SpeedType and Rules.ini values
 
-            switch (landType)
+            return landType switch
             {
-                case 0x1:
-                case 0x2:
-                case 0x3:
-                case 0x4:
-                case 0x9:
-                case 0xA:
-                    return considerLandUnitsOnly;
-                case 0x7:
-                case 0x8:
-                case 0xF:
-                    return true;
-                default:
-                    return false;
-            }
+                0x1 or 0x2 or 0x3 or 0x4 or 0x9 or 0xA => considerLandUnitsOnly,
+                0x7 or 0x8 or 0xF => true,
+                _ => false,
+            };
         }
 
         public static bool IsLandTypeImpassableForNavalUnits(int landType)
         {
             // TODO make this dependent on SpeedType and Rules.ini values
 
-            switch (landType)
+            return landType switch
             {
-                case 0x1:
-                case 0x2:
-                case 0x3:
-                case 0x4:
-                case 0x9:
-                case 0xA:
-                    return false;
-                default:
-                    return true;
-            }
+                0x1 or 0x2 or 0x3 or 0x4 or 0x9 or 0xA => false,
+                _ => true,
+            };
         }
 
         public static bool IsLandTypeImpassable(LandType landType, bool considerLandUnitsOnly)
@@ -216,21 +182,21 @@ namespace TSMapEditor
                 waypointNumber = (waypointNumber - m) / charCount;
             }
 
-            return buffer.Slice(pos).ToString();
+            return buffer[pos..].ToString();
         }
 
-        private static Point2D[] visualDirectionToPointTable = new Point2D[]
-        {
-            new Point2D(0, -1), new Point2D(1, -1), new Point2D(1, 0),
-            new Point2D(1, 1), new Point2D(0, 1), new Point2D(-1, 1),
-            new Point2D(-1, 0), new Point2D(-1, -1)
-        };
+        private static readonly Point2D[] visualDirectionToPointTable =
+        [
+            new(0, -1), new(1, -1), new(1, 0),
+            new(1, 1), new(0, 1), new(-1, 1),
+            new(-1, 0), new(-1, -1)
+        ];
 
         public static Point2D VisualDirectionToPoint(Direction direction) => visualDirectionToPointTable[(int)direction];
 
         public static List<Direction> GetDirectionsInMask(byte mask)
         {
-            List<Direction> directions = new List<Direction>();
+            List<Direction> directions = [];
 
             for (int direction = 0; direction < (int)Direction.Count; direction++)
             {
@@ -253,7 +219,7 @@ namespace TSMapEditor
         /// <returns></returns>
         public static Texture2D CreateUITexture(GraphicsDevice gd, int width, int height, Color mainColor, Color secondaryColor, Color tertiaryColor)
         {
-            Texture2D Texture = new Texture2D(gd, width, height, false, SurfaceFormat.Color);
+            Texture2D Texture = new(gd, width, height, false, SurfaceFormat.Color);
 
             Color[] color = new Color[width * height];
 
@@ -275,17 +241,17 @@ namespace TSMapEditor
                 color[i] = secondaryColor;
 
             // right
-            for (int i = 1; i < color.Length - width - 2; i = i + width)
+            for (int i = 1; i < color.Length - width - 2; i += width)
                 color[i] = secondaryColor;
 
-            for (int i = 2; i < color.Length - width - 2; i = i + width)
+            for (int i = 2; i < color.Length - width - 2; i += width)
                 color[i] = secondaryColor;
 
             // left
-            for (int i = width - 3; i < color.Length; i = i + width)
+            for (int i = width - 3; i < color.Length; i += width)
                 color[i] = secondaryColor;
 
-            for (int i = width - 2; i < color.Length; i = i + width)
+            for (int i = width - 2; i < color.Length; i += width)
                 color[i] = secondaryColor;
 
             // outer border
@@ -300,11 +266,11 @@ namespace TSMapEditor
                 color[i] = tertiaryColor;
 
             // right
-            for (int i = 0; i < color.Length - width; i = i + width)
+            for (int i = 0; i < color.Length - width; i += width)
                 color[i] = tertiaryColor;
 
             // left
-            for (int i = width - 1; i < color.Length; i = i + width)
+            for (int i = width - 1; i < color.Length; i += width)
                 color[i] = tertiaryColor;
 
             Texture.SetData(color);
@@ -429,12 +395,12 @@ namespace TSMapEditor
             Renderer.PushRenderTarget(renderTarget);
             graphicsDevice.Clear(Color.Transparent);
 
-            Point maxNewTextureSize = new Point(Math.Min(renderTarget.Width, existingTexture.Width), Math.Min(renderTarget.Height, existingTexture.Height));
+            Point maxNewTextureSize = new(Math.Min(renderTarget.Width, existingTexture.Width), Math.Min(renderTarget.Height, existingTexture.Height));
 
             double ratioX = (double)existingTexture.Width / maxNewTextureSize.X;
             double ratioY = (double)existingTexture.Height / maxNewTextureSize.Y;
             double ratio = Math.Max(ratioX, ratioY);
-            Point newSize = new Point((int)(existingTexture.Width / ratio), (int)(existingTexture.Height / ratio));
+            Point newSize = new((int)(existingTexture.Width / ratio), (int)(existingTexture.Height / ratio));
 
             // Workaround to avoid crashing for too small textures, hopefully it's also better for visibility
             if (newSize.X < 1 && existingTexture.Width > 0)
@@ -443,7 +409,7 @@ namespace TSMapEditor
             if (newSize.Y < 1 && existingTexture.Height > 0)
                 newSize.Y = 1;
 
-            Rectangle destinationRectangle = new Rectangle(0, 0, newSize.X, newSize.Y);
+            Rectangle destinationRectangle = new(0, 0, newSize.X, newSize.Y);
 
             Renderer.DrawTexture(existingTexture, new Rectangle(0, 0, existingTexture.Width, existingTexture.Height),
                 destinationRectangle, Color.White);
@@ -520,8 +486,8 @@ namespace TSMapEditor
             renderTarget.Dispose();
 
             // Calculate offset
-            Point2D oldcenter = new Point2D(existingTexture.Width / 2, existingTexture.Height / 2);
-            Point2D newcenter = new Point2D(firstNonTransparentX + width / 2, firstNonTransparentY + height / 2);
+            Point2D oldcenter = new(existingTexture.Width / 2, existingTexture.Height / 2);
+            Point2D newcenter = new(firstNonTransparentX + width / 2, firstNonTransparentY + height / 2);
 
             return (texture, new Point2D(newcenter.X - oldcenter.X, newcenter.Y - oldcenter.Y));
         }
@@ -688,7 +654,7 @@ namespace TSMapEditor
                     // ...otherwise end and save the current edge if there's one.
                     else if (startX != -1)
                     {
-                        edges.Add(new Point2D[] { new Point2D(startX, y), new Point2D(endX, y) });
+                        edges.Add([new(startX, y), new(endX, y)]);
                         startX = -1;
                     }
                 }
@@ -719,13 +685,13 @@ namespace TSMapEditor
                     // ...otherwise end and save the current edge if there's one.
                     else if (startY != -1)
                     {
-                        edges.Add(new Point2D[] { new Point2D(x, startY), new Point2D(x, endY) });
+                        edges.Add([new(x, startY), new(x, endY)]);
                         startY = -1;
                     }
                 }
             }
 
-            return edges.ToArray();
+            return [.. edges];
         }
 
         public static bool IsCloningSupported(IMovable objectToClone)

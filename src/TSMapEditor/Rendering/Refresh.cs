@@ -5,28 +5,21 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.Rendering
 {
-    class Refresh
+    class Refresh(Map map, int refreshSizeSetting)
     {
-        public Refresh(Map map, int refreshSizeSetting)
-        {
-            this.map = map;
-            this.refreshSizeSetting = refreshSizeSetting;
-        }
+        private readonly Map map = map;
+        private readonly int refreshSizeSetting = refreshSizeSetting;
 
-        
-        private readonly Map map;
-        private int refreshSizeSetting;
-
-        public Dictionary<int, MapTile> tilesToRedraw = new Dictionary<int, MapTile>();
-        public Dictionary<int, GameObject> objectsToRedraw = new Dictionary<int, GameObject>();
+        public Dictionary<int, MapTile> tilesToRedraw = [];
+        public Dictionary<int, GameObject> objectsToRedraw = [];
 
         public bool IsInitiated { get; private set; } = false;
         public bool IsComplete { get; private set; } = false;
         public Point2D InitPoint { get; private set; }
 
 
-        private LinkedList<MapTile> tilesToProcess = new LinkedList<MapTile>();
-        private HashSet<int> processedTiles = new HashSet<int>();
+        private readonly LinkedList<MapTile> tilesToProcess = new();
+        private readonly HashSet<int> processedTiles = [];
 
         public void RedrawFromObject(GameObject gameObject)
         {

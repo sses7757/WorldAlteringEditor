@@ -10,19 +10,14 @@ namespace TSMapEditor.Models
     /// Houses can use one HouseType, even if it results in limited trigger functionality
     /// as most triggers refer to HouseTypes rather than Houses.
     /// </summary>
-    public class HouseType : AbstractObject, INIDefined
+    public class HouseType(string iniName) : AbstractObject, INIDefined
     {
         public const double MultiplierDefaultValue = 1.0;
-
-        public HouseType(string iniName)
-        {
-            ININame = iniName;
-        }
 
         public override RTTIType WhatAmI() => RTTIType.HouseType;
 
         [INI(false)]
-        public string ININame { get; set; }
+        public string ININame { get; set; } = iniName;
 
         public string ParentCountry { get; set; }
         public string Suffix { get; set; }

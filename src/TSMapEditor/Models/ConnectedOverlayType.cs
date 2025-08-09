@@ -61,8 +61,8 @@ namespace TSMapEditor.Models
         public string UIName { get; protected set; }
         public int FrameCount { get; protected set; }
         public byte ConnectionMask { get; protected set; }
-        public List<ConnectedOverlayFrame> Frames { get; protected set; } = new();
-        public List<ConnectedOverlayType> RelatedOverlays { get; protected set; } = new();
+        public List<ConnectedOverlayFrame> Frames { get; protected set; } = [];
+        public List<ConnectedOverlayType> RelatedOverlays { get; protected set; } = [];
         private readonly Random random = new ();
 
         public void InitializeRelatedOverlays(IniSection iniSection, List<ConnectedOverlayType> connectedOverlays)
@@ -72,10 +72,7 @@ namespace TSMapEditor.Models
 
             foreach (var relatedOverlayName in relatedOverlayNames)
             {
-                var relatedOverlay = connectedOverlays.Find(co => co.Name == relatedOverlayName);
-                if (relatedOverlay == null)
-                    throw new INIConfigException($"Connected overlay type {Name} has an invalid related overlay {relatedOverlayName}!");
-
+                var relatedOverlay = connectedOverlays.Find(co => co.Name == relatedOverlayName) ?? throw new INIConfigException($"Connected overlay type {Name} has an invalid related overlay {relatedOverlayName}!");
                 RelatedOverlays.Add(relatedOverlay);
             }
         }

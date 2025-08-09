@@ -7,16 +7,10 @@ namespace TSMapEditor.Mutations.Classes
     /// <summary>
     /// A mutation that allows placing a vehicle on the map.
     /// </summary>
-    public class PlaceVehicleMutation : Mutation
+    public class PlaceVehicleMutation(IMutationTarget mutationTarget, UnitType unitType, Point2D cellCoords) : Mutation(mutationTarget)
     {
-        public PlaceVehicleMutation(IMutationTarget mutationTarget, UnitType unitType, Point2D cellCoords) : base(mutationTarget)
-        {
-            this.unitType = unitType;
-            this.cellCoords = cellCoords;
-        }
-
-        private readonly UnitType unitType;
-        private readonly Point2D cellCoords;
+        private readonly UnitType unitType = unitType;
+        private readonly Point2D cellCoords = cellCoords;
         private Unit unit;
 
         public override string GetDisplayString()
@@ -28,9 +22,11 @@ namespace TSMapEditor.Mutations.Classes
         {
             var cell = MutationTarget.Map.GetTileOrFail(cellCoords);
 
-            unit = new Unit(unitType);
-            unit.Owner = MutationTarget.ObjectOwner;
-            unit.Position = cellCoords;
+            unit = new Unit(unitType)
+            {
+                Owner = MutationTarget.ObjectOwner,
+                Position = cellCoords
+            };
             MutationTarget.Map.PlaceUnit(unit);
             MutationTarget.AddRefreshPoint(cellCoords);
         }

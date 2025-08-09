@@ -25,7 +25,7 @@ namespace TSMapEditor.CCEngine
         public TileSet GroundTileSet { get; }
         public TileSet TransitionTileSet { get; }
         public TileSet BaseTileSet { get; }
-        public List<int> ConnectToTileSetIndices = new List<int>();
+        public List<int> ConnectToTileSetIndices = [];
     }
 
     public class TheaterIceTileSets
@@ -49,14 +49,9 @@ namespace TSMapEditor.CCEngine
         public TileSet IceShoreSet { get; private set; }
     }
 
-    public class Theater : INIDefineable
+    public class Theater(string name) : INIDefineable
     {
-        public Theater(string name)
-        {
-            UIName = name;
-        }
-
-        public string UIName { get; }
+        public string UIName { get; } = name;
         public string ConfigINIPath { get; set; }
         public List<string> ContentMIXName { get; set; }
         public List<string> OptionalContentMIXName { get; set; }
@@ -74,8 +69,8 @@ namespace TSMapEditor.CCEngine
 
         public TheaterIceTileSets IceTileSetInfo { get; private set; }
 
-        public List<TileSet> TileSets = new List<TileSet>();
-        public List<LATGround> LATGrounds = new List<LATGround>();
+        public List<TileSet> TileSets = [];
+        public List<LATGround> LATGrounds = [];
         public TileSet RampTileSet { get; set; }
         public TileSet BridgeTileSet { get; set; }
         public TileSet TrainBridgeTileSet { get; set; }
@@ -105,7 +100,7 @@ namespace TSMapEditor.CCEngine
                 if (tileSetSection == null)
                     break;
 
-                TileSet tileSet = new TileSet(i);
+                TileSet tileSet = new(i);
                 tileSet.Read(tileSetSection);
                 TileSets.Add(tileSet);
             }
@@ -134,7 +129,7 @@ namespace TSMapEditor.CCEngine
 
             RampTileSet = GetTileSetFromKey(theaterIni, "RampBase", false);
             BridgeTileSet = GetTileSetFromKey(theaterIni, "BridgeSet", false);
-            TrainBridgeTileSet = GetTileSetFromKey(theaterIni, "TrainBridgeSet", false);
+            TrainBridgeTileSet = GetTileSetFromKey(theaterIni, "TrainBridgeSet", true);
             WoodBridgeTileSet = GetTileSetFromKey(theaterIni, "WoodBridgeSet", true); // Wood bridges are optional as they do not exist in TS
         }
 
@@ -183,10 +178,10 @@ namespace TSMapEditor.CCEngine
             if (displayName == null)
             {
                 string groundTileSetName = TileSets[groundTileSetIndex].SetName;
-                displayName = groundTileSetName.Substring(0, Math.Min(groundTileSetName.Length, 4));
+                displayName = groundTileSetName[..Math.Min(groundTileSetName.Length, 4)];
             }
 
-            List<int> indices = new List<int>();
+            List<int> indices = [];
 
             if ((connectedTileSetIndices == null || !connectedTileSetIndices.Any()) && !string.IsNullOrEmpty(connectToKey))
                 connectedTileSetIndices = theaterIni.GetStringValue("General", connectToKey, string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries);

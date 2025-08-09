@@ -6,20 +6,15 @@ using TSMapEditor.Mutations.Classes;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class AircraftPlacementAction : CursorAction
+    public class AircraftPlacementAction(ICursorActionTarget cursorActionTarget, RKeyboard keyboard) : CursorAction(cursorActionTarget)
     {
-        public AircraftPlacementAction(ICursorActionTarget cursorActionTarget, RKeyboard keyboard) : base(cursorActionTarget)
-        {
-            this.keyboard = keyboard;
-        }
-
         public override string GetName() => "Place Aircraft";
 
         private Aircraft aircraft;
 
         private AircraftType _aircraftType;
 
-        private readonly RKeyboard keyboard;
+        private readonly RKeyboard keyboard = keyboard;
 
         public AircraftType AircraftType
         {
@@ -44,8 +39,7 @@ namespace TSMapEditor.UI.CursorActions
 
         public override void OnActionEnter()
         {
-            if (aircraft != null)
-                aircraft.Owner = CursorActionTarget.MutationTarget.ObjectOwner;
+            aircraft?.Owner = CursorActionTarget.MutationTarget.ObjectOwner;
         }
 
         public override void PreMapDraw(Point2D cellCoords)

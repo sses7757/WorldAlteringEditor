@@ -8,18 +8,12 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class InfantryOptionsWindow : INItializableWindow
+    public class InfantryOptionsWindow(WindowManager windowManager, Map map, IMapView mapView) : INItializableWindow(windowManager)
     {
-        public InfantryOptionsWindow(WindowManager windowManager, Map map, IMapView mapView) : base(windowManager)
-        {
-            this.map = map;
-            this.mapView = mapView;
-        }
-
         public event EventHandler<TagEventArgs> TagOpened;
 
-        private readonly Map map;
-        private readonly IMapView mapView;
+        private readonly Map map = map;
+        private readonly IMapView mapView = mapView;
 
         private XNALabel lblSelectedInfantryValue;
         private XNATrackbar trbStrength;
@@ -70,7 +64,7 @@ namespace TSMapEditor.UI.Windows
 
             try
             {
-                ddVeterancy.Items.ForEach(ddItem => ddItem.Tag = int.Parse(ddItem.Text.Substring(0, ddItem.Text.IndexOf(' ')), CultureInfo.InvariantCulture));
+                ddVeterancy.Items.ForEach(ddItem => ddItem.Tag = int.Parse(ddItem.Text[..ddItem.Text.IndexOf(' ')], CultureInfo.InvariantCulture));
             }
             catch (FormatException)
             {
@@ -133,10 +127,7 @@ namespace TSMapEditor.UI.Windows
             if (ddSubCell.SelectedIndex != (int)infantry.SubCell && ddSubCell.SelectedIndex >= 0 && ddSubCell.SelectedIndex < (int)SubCell.Count)
             {
                 var infantryCell = map.GetTile(infantry.Position);
-                if (infantryCell != null)
-                {
-                    infantryCell.MoveInfantryToSubCell(infantry, (SubCell)ddSubCell.SelectedIndex);
-                }
+                infantryCell?.MoveInfantryToSubCell(infantry, (SubCell)ddSubCell.SelectedIndex);
 
                 refresh = true;
             }

@@ -18,7 +18,7 @@ namespace TSMapEditor.Models.ArtConfig
         /// <summary>
         /// Generated list of edges defining foundation outline.
         /// </summary>
-        public Point2D[][] Edges { get; set; } = new Point2D[][] { Array.Empty<Point2D>() };
+        public Point2D[][] Edges { get; set; } = [Array.Empty<Point2D>()];
 
         public int Width { get; set; }
         public int Height { get; set; }
@@ -72,7 +72,7 @@ namespace TSMapEditor.Models.ArtConfig
                 }
             }
 
-            FoundationCells = foundationCells.ToArray();
+            FoundationCells = [.. foundationCells];
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace TSMapEditor.Models.ArtConfig
                 if (string.IsNullOrEmpty(value))
                     break;
 
-                string[] parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = value.Split([','], StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length != 2)
                     throw new INIConfigException($"Building type \"{iniSection.SectionName}\" has invalid custom \"{"Foundation." + i}\"");
 
@@ -98,7 +98,7 @@ namespace TSMapEditor.Models.ArtConfig
                 i++;
             }
 
-            FoundationCells = foundationCells.ToArray();
+            FoundationCells = [.. foundationCells];
         }
 
         /// <summary>
@@ -106,12 +106,12 @@ namespace TSMapEditor.Models.ArtConfig
         /// </summary>
         public void CreateRectangleEdges(int width, int height)
         {
-            Edges = new Point2D[][] {
-                new Point2D[] { new Point2D(0, 0), new Point2D(width, 0) },
-                new Point2D[] { new Point2D(0, 0), new Point2D(0, height) },
-                new Point2D[] { new Point2D(width, 0), new Point2D(width, height) },
-                new Point2D[] { new Point2D(0, height), new Point2D(width, height) }
-            };
+            Edges = [
+                [new(0, 0), new(width, 0)],
+                [new(0, 0), new(0, height)],
+                [new(width, 0), new(width, height)],
+                [new(0, height), new(width, height)]
+            ];
         }
     }
 
@@ -163,8 +163,8 @@ namespace TSMapEditor.Models.ArtConfig
         public bool Theater { get; set; }
         public string Image { get; set; }
         public string BibShape { get; set; }
-        public List<BuildingAnimArtConfig> BuildingAnimConfigs { get; set; } = new();
-        public List<PowerUpAnimArtConfig> PowerUpAnimConfigs { get; set; } = new();
+        public List<BuildingAnimArtConfig> BuildingAnimConfigs { get; set; } = [];
+        public List<PowerUpAnimArtConfig> PowerUpAnimConfigs { get; set; } = [];
         public AnimType[] Anims { get; set; } = Array.Empty<AnimType>();
         public AnimType[] PowerUpAnims { get; set; } = Array.Empty<AnimType>();
         public AnimType TurretAnim { get; set; }
@@ -174,12 +174,12 @@ namespace TSMapEditor.Models.ArtConfig
         /// </summary>
         public string Palette { get; set; }
 
-        private static readonly List<(string Name, string[] Suffixes)> BuildingAnimClasses = new()
-        {
+        private static readonly List<(string Name, string[] Suffixes)> BuildingAnimClasses =
+        [
             ("ActiveAnim", new [] { "", "Two", "Three", "Four" }),
             ("IdleAnim", new [] { "", "Two" }),
             ("SuperAnim", new [] { "" })
-        };
+        ];
 
         public void ReadFromIniSection(IniSection iniSection)
         {

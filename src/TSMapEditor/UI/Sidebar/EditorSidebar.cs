@@ -10,33 +10,24 @@ using TSMapEditor.UI.CursorActions;
 
 namespace TSMapEditor.UI.Sidebar
 {
-    public class EditorSidebar : EditorPanel
+    public class EditorSidebar(WindowManager windowManager, EditorState editorState, Map map,
+        TheaterGraphics theaterGraphics, ICursorActionTarget cursorActionTarget,
+        OverlayPlacementAction overlayPlacementAction) : EditorPanel(windowManager)
     {
-        public EditorSidebar(WindowManager windowManager, EditorState editorState, Map map,
-            TheaterGraphics theaterGraphics, ICursorActionTarget cursorActionTarget,
-            OverlayPlacementAction overlayPlacementAction) : base(windowManager)
-        {
-            this.editorState = editorState;
-            this.map = map;
-            this.theaterGraphics = theaterGraphics;
-            this.cursorActionTarget = cursorActionTarget;
-            this.overlayPlacementAction = overlayPlacementAction;
-        }
-
-        private EditorState editorState;
-        private Map map;
-        private TheaterGraphics theaterGraphics;
-        private OverlayPlacementAction overlayPlacementAction;
+        private EditorState editorState = editorState;
+        private Map map = map;
+        private TheaterGraphics theaterGraphics = theaterGraphics;
+        private OverlayPlacementAction overlayPlacementAction = overlayPlacementAction;
 
         private XNAListBox lbSelection;
 
         private XNAPanel[] modePanels;
         private XNAPanel activePanel;
 
-        private ICursorActionTarget cursorActionTarget;
+        private ICursorActionTarget cursorActionTarget = cursorActionTarget;
 
-        static List<string> sidebarModeNames = new List<string>
-        {
+        static readonly List<string> sidebarModeNames =
+        [
             "Buildings",
             "Infantry",
             "Vehicles",
@@ -45,7 +36,7 @@ namespace TSMapEditor.UI.Sidebar
             "Terrain Objects",
             "Overlays",
             "Smudges"
-        };
+        ];
 
         public override void Initialize()
         {
@@ -102,8 +93,8 @@ namespace TSMapEditor.UI.Sidebar
             smudgeListPanel.Name = nameof(smudgeListPanel);
             InitPanel(smudgeListPanel);
 
-            modePanels = new XNAPanel[]
-            {
+            modePanels =
+            [
                 buildingListPanel,
                 infantryListPanel,
                 unitListPanel,
@@ -112,7 +103,7 @@ namespace TSMapEditor.UI.Sidebar
                 terrainObjectListPanel,
                 overlayListPanel,
                 smudgeListPanel
-            };
+            ];
             lbSelection.SelectedIndexChanged += LbSelection_SelectedIndexChanged;
             lbSelection.SelectedIndex = 0;
 
@@ -159,8 +150,7 @@ namespace TSMapEditor.UI.Sidebar
         {
             foreach (var panel in modePanels)
             {
-                if (panel != null)
-                    panel.Disable();
+                panel?.Disable();
             }
 
             activePanel = null;
@@ -168,8 +158,7 @@ namespace TSMapEditor.UI.Sidebar
 
             if (selectedIndex > -1)
             {
-                if (modePanels[selectedIndex] != null)
-                    modePanels[selectedIndex].Enable();
+                modePanels[selectedIndex]?.Enable();
 
                 activePanel = modePanels[selectedIndex];
             }

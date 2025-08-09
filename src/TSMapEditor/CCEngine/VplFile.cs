@@ -35,7 +35,7 @@ namespace TSMapEditor.CCEngine
         private uint numSections;
         private uint unknown;
         // private Palette _palette; // unused
-        private List<byte[]> lookupSections = new();
+        private readonly List<byte[]> lookupSections = [];
 
         private void Parse()
         {

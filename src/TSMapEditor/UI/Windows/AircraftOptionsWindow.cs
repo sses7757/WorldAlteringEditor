@@ -7,16 +7,11 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class AircraftOptionsWindow : INItializableWindow
+    public class AircraftOptionsWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public AircraftOptionsWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
         public event EventHandler<TagEventArgs> TagOpened;
 
-        private readonly Map map;
+        private readonly Map map = map;
 
         private XNATrackbar trbStrength;
         private XNALabel lblStrengthValue;
@@ -61,7 +56,7 @@ namespace TSMapEditor.UI.Windows
 
             try
             {
-                ddVeterancy.Items.ForEach(ddItem => ddItem.Tag = int.Parse(ddItem.Text.Substring(0, ddItem.Text.IndexOf(' ')), CultureInfo.InvariantCulture));
+                ddVeterancy.Items.ForEach(ddItem => ddItem.Tag = int.Parse(ddItem.Text[..ddItem.Text.IndexOf(' ')], CultureInfo.InvariantCulture));
             }
             catch (FormatException)
             {

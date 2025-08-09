@@ -8,20 +8,14 @@ using TSMapEditor.Settings;
 
 namespace TSMapEditor.Misc
 {
-    public class AutosaveTimer
+    public class AutosaveTimer(Map map)
     {
-        public AutosaveTimer(Map map) 
-        {
-            this.map = map;
-            AutoSaveTime = TimeSpan.FromSeconds(UserSettings.Instance.AutoSaveInterval);
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private const string AutoSavesDirectory = "AutoSaves";
         private const string MapFileExtension = ".map";
 
-        public TimeSpan AutoSaveTime { get; set; }
+        public TimeSpan AutoSaveTime { get; set; } = TimeSpan.FromSeconds(UserSettings.Instance.AutoSaveInterval);
 
         private void DoSave()
         {
@@ -76,20 +70,20 @@ namespace TSMapEditor.Misc
             }
 
             string[] filePaths = Directory.GetFiles(path);
-            List<FileInfo> mapFileInfos = new List<FileInfo>();
+            List<FileInfo> mapFileInfos = [];
             foreach (string filePath in filePaths)
             {
                 if (!filePath.EndsWith(MapFileExtension))
                     continue;
 
-                FileInfo fileInfo = new FileInfo(filePath);
+                FileInfo fileInfo = new(filePath);
 
                 if (fileInfo.CreationTime < DateTime.Now.AddDays(-1))
                     mapFileInfos.Add(fileInfo);
             }
 
             // Leave the latest 5 files. Purge everything else.
-            mapFileInfos = mapFileInfos.OrderBy(fileInfo => fileInfo.CreationTime).Reverse().ToList();
+            mapFileInfos = [.. mapFileInfos.OrderBy(fileInfo => fileInfo.CreationTime).Reverse()];
             const int leaveCount = 5;
             int purgeCount = mapFileInfos.Count - leaveCount;
 

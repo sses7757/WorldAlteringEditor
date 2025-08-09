@@ -7,24 +7,14 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class TeamTypeEventArgs : EventArgs
+    public class TeamTypeEventArgs(TeamType teamType) : EventArgs
     {
-        public TeamTypeEventArgs(TeamType teamType)
-        {
-            TeamType = teamType;
-        }
-
-        public TeamType TeamType { get; }
+        public TeamType TeamType { get; } = teamType;
     }
 
-    public class AITriggersWindow : INItializableWindow
+    public class AITriggersWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public AITriggersWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         public event EventHandler<TeamTypeEventArgs> TeamTypeOpened;
 
@@ -81,13 +71,17 @@ namespace TSMapEditor.UI.Windows
             FindChild<EditorButton>("btnOpenPrimaryTeam").LeftClick += BtnOpenPrimaryTeam_LeftClick;
             FindChild<EditorButton>("btnOpenSecondaryTeam").LeftClick += BtnOpenSecondaryTeam_LeftClick;
 
-            selectTeamTypeWindow = new SelectTeamTypeWindow(WindowManager, map);
-            selectTeamTypeWindow.IncludeNone = true;
+            selectTeamTypeWindow = new SelectTeamTypeWindow(WindowManager, map)
+            {
+                IncludeNone = true
+            };
             var teamTypeWindowDarkeningPanel = DarkeningPanel.InitializeAndAddToParentControlWithChild(WindowManager, Parent, selectTeamTypeWindow);
             teamTypeWindowDarkeningPanel.Hidden += TeamTypeWindowDarkeningPanel_Hidden;
 
-            selectTechnoTypeWindow = new SelectTechnoTypeWindow(WindowManager, map);
-            selectTechnoTypeWindow.IncludeNone = true;
+            selectTechnoTypeWindow = new SelectTechnoTypeWindow(WindowManager, map)
+            {
+                IncludeNone = true
+            };
             var technoTypeDarkeningPanel = DarkeningPanel.InitializeAndAddToParentControlWithChild(WindowManager, Parent, selectTechnoTypeWindow);
             technoTypeDarkeningPanel.Hidden += TechnoTypeDarkeningPanel_Hidden;
 
@@ -240,9 +234,11 @@ namespace TSMapEditor.UI.Windows
 
         private void BtnNew_LeftClick(object sender, EventArgs e)
         {
-            var aiTrigger = new AITriggerType(map.GetNewUniqueInternalId());
-            aiTrigger.Name = "New AITrigger";
-            aiTrigger.OwnerName = "<all>";            
+            var aiTrigger = new AITriggerType(map.GetNewUniqueInternalId())
+            {
+                Name = "New AITrigger",
+                OwnerName = "<all>"
+            };
             map.AITriggerTypes.Add(aiTrigger);
             ListAITriggers();
             SelectAITrigger(aiTrigger);

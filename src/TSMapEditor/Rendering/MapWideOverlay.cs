@@ -32,8 +32,7 @@ namespace TSMapEditor.Rendering
 
         public void Clear()
         {
-            if (texture != null)
-                texture.Dispose();
+            texture?.Dispose();
 
             texture = null;
         }
@@ -43,21 +42,17 @@ namespace TSMapEditor.Rendering
 #if WINDOWS
             string initialPath = string.IsNullOrWhiteSpace(UserSettings.Instance.LastScenarioPath.GetValue()) ? UserSettings.Instance.GameDirectory : UserSettings.Instance.LastScenarioPath.GetValue();
 
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.InitialDirectory = Path.GetDirectoryName(initialPath);
-                openFileDialog.FileName = string.Empty;
-                openFileDialog.Filter = "PNG images|*.png";
-                openFileDialog.RestoreDirectory = true;
+            using OpenFileDialog openFileDialog = new();
+            openFileDialog.InitialDirectory = Path.GetDirectoryName(initialPath);
+            openFileDialog.FileName = string.Empty;
+            openFileDialog.Filter = "PNG images|*.png";
+            openFileDialog.RestoreDirectory = true;
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string texturePath = openFileDialog.FileName;
-                    using (var stream = File.OpenRead(texturePath))
-                    {
-                        texture = Texture2D.FromStream(graphicsDevice, stream);
-                    }
-                }
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string texturePath = openFileDialog.FileName;
+                using var stream = File.OpenRead(texturePath);
+                texture = Texture2D.FromStream(graphicsDevice, stream);
             }
 #else
             // TODO implement

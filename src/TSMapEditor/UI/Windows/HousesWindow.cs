@@ -13,14 +13,9 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A window that allows the user to configure houses of the map.
     /// </summary>
-    public class HousesWindow : INItializableWindow
+    public class HousesWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public HousesWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private XNADropDown ddHouseOfHumanPlayer;
         private EditorListBox lbHouseList;
@@ -138,8 +133,10 @@ namespace TSMapEditor.UI.Windows
                 return;
             }
 
-            HouseType houseType = new HouseType("NewHouse");
-            houseType.Index = map.HouseTypes.Count;
+            HouseType houseType = new("NewHouse")
+            {
+                Index = map.HouseTypes.Count
+            };
             Helpers.FindDefaultSideForNewHouseType(houseType, map.Rules);
             map.HouseTypes.Add(houseType);
 
@@ -225,7 +222,11 @@ namespace TSMapEditor.UI.Windows
                 "Are you sure?",
                 "This enables the \"AI Repairs\" flag on all buildings of the house, which makes the AI repair them." + Environment.NewLine + Environment.NewLine +
                 "No un-do is available. Do you wish to continue?", MessageBoxButtons.YesNo);
-            dialog.YesClickedAction = _ => map.Structures.FindAll(s => s.Owner == editedHouse).ForEach(b => b.AIRepairable = true);
+            dialog.YesClickedAction = _ =>
+            {
+                map.Structures.FindAll(s => s.Owner == editedHouse).ForEach(b => b.AIRepairable = true);
+                RefreshHouseInfo();
+            };
         }
 
         private void BtnMakeHouseNotRepairBuildings_LeftClick(object sender, EventArgs e)
@@ -240,7 +241,11 @@ namespace TSMapEditor.UI.Windows
                 "Are you sure?",
                 "This disables the \"AI Repairs\" flag on all buildings of the house, which makes the AI NOT repair them." + Environment.NewLine + Environment.NewLine +
                 "No un-do is available. Do you wish to continue?", MessageBoxButtons.YesNo);
-            dialog.YesClickedAction = _ => map.Structures.FindAll(s => s.Owner == editedHouse).ForEach(b => b.AIRepairable = false);
+            dialog.YesClickedAction = _ =>
+            {
+                map.Structures.FindAll(s => s.Owner == editedHouse).ForEach(b => b.AIRepairable = false);
+                RefreshHouseInfo();
+            };
         }
 
         private void LbHouseList_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -340,7 +345,7 @@ namespace TSMapEditor.UI.Windows
             {
                 editedHouse.Allies = string.Join(',',
                     new string[] { editedHouse.ININame }
-                    .Concat(editedHouse.Allies.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)[1..]));
+                    .Concat(editedHouse.Allies.Split([','], StringSplitOptions.RemoveEmptyEntries)[1..]));
 
                 selAllies.Text = editedHouse.Allies;
             }

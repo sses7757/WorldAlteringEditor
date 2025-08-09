@@ -121,8 +121,8 @@ namespace TSMapEditor.UI.Controls
             if (IsDragged)
             {
                 Point newCursorPoint = GetCursorPoint();
-                X = X + (newCursorPoint.X - lastCursorPoint.X) * Scaling;
-                Y = Y + (newCursorPoint.Y - lastCursorPoint.Y) * Scaling;
+                X += (newCursorPoint.X - lastCursorPoint.X) * Scaling;
+                Y += (newCursorPoint.Y - lastCursorPoint.Y) * Scaling;
 
                 ConstrainPosition();
                 lastCursorPoint = GetCursorPoint();

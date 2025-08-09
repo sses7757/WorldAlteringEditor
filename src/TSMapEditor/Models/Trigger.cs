@@ -11,17 +11,14 @@ namespace TSMapEditor.Models
     /// <summary>
     /// A map trigger.
     /// </summary>
-    public class Trigger : IIDContainer
+    public class Trigger(string id) : IIDContainer
     {
         public static NamedColor[] SupportedColors => NamedColors.GenericSupportedNamedColors;
-
-        public Trigger(string id) { ID = id; }
 
         public string GetInternalID() => ID;
         public void SetInternalID(string id) => ID = id;
 
-        public string ID { get; private set; }
-        public string HouseType { get; set; }
+        public string ID { get; private set; } = id; public string HouseType { get; set; }
 
         /// <summary>
         /// The linked trigger ID loaded from the map.
@@ -35,8 +32,8 @@ namespace TSMapEditor.Models
         public bool Normal { get; set; } = true;
         public bool Hard { get; set; } = true;
 
-        public List<TriggerCondition> Conditions { get; private set; } = new List<TriggerCondition>();
-        public List<TriggerAction> Actions { get; private set; } = new List<TriggerAction>();
+        public List<TriggerCondition> Conditions { get; private set; } = [];
+        public List<TriggerAction> Actions { get; private set; } = [];
 
 
         private string _editorColor;
@@ -115,8 +112,11 @@ namespace TSMapEditor.Models
                 for (int i = 0; i < TriggerCondition.DEF_PARAM_COUNT; i++)
                     conditionDataString.Append(condition.ParamToString(i));
 
-                if (editorConfig.TriggerEventTypes[condition.ConditionIndex].UsesP3)
-                    conditionDataString.Append(condition.ParamToString(TriggerCondition.MAX_PARAM_COUNT - 1));
+                var triggerEventType = editorConfig.TriggerEventTypes[condition.ConditionIndex];
+                for (int i = 0; i < triggerEventType.AdditionalParams; i++)
+                {
+                    conditionDataString.Append(condition.ParamToString(TriggerCondition.DEF_PARAM_COUNT + i));
+                }
             }
 
             iniFile.SetStringValue("Events", ID, conditionDataString.ToString());
@@ -185,14 +185,15 @@ namespace TSMapEditor.Models
                     throw new INIConfigException("The map contains a trigger event that is not defined in the editor's config. To prevent data loss, the map cannot be loaded. Event index: " + conditionIndex);
                 }
 
-                bool usesP3 = triggerEventType.UsesP3;
+                int additionalParams = triggerEventType.AdditionalParams;
 
-                var triggerEvent = TriggerCondition.ParseFromArray(dataArray, startIndex, usesP3);
+                var triggerEvent = TriggerCondition.ParseFromArray(dataArray, startIndex, additionalParams);
+
                 if (triggerEvent == null)
                     return;
 
-                if (usesP3)
-                    startIndex += TriggerCondition.MAX_PARAM_COUNT + 1;
+                if (additionalParams > 0)
+                    startIndex += TriggerCondition.DEF_PARAM_COUNT + additionalParams + 1;
                 else
                     startIndex += TriggerCondition.DEF_PARAM_COUNT + 1;
 

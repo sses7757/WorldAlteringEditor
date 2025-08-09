@@ -1,14 +1,8 @@
 ﻿namespace TSMapEditor.Models
 {
-    public class CsfString
+    public class CsfString(string id, string value)
     {
-        public string ID { get; }
-        public string Value { get; }
-
-        public CsfString(string id, string value)
-        {
-            ID = id;
-            Value = value;
-        }
+        public string ID { get; } = id;
+        public string Value { get; } = value;
     }
 }

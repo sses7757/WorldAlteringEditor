@@ -14,18 +14,11 @@ namespace TSMapEditor.UI.Windows
         YesNo
     }
 
-    public class EditorMessageBox : EditorWindow
+    public class EditorMessageBox(WindowManager windowManager, string caption, string description, MessageBoxButtons messageBoxButtons) : EditorWindow(windowManager)
     {
-        public EditorMessageBox(WindowManager windowManager, string caption, string description, MessageBoxButtons messageBoxButtons) : base(windowManager)
-        {
-            this.caption = caption;
-            this.description = description;
-            this.messageBoxButtons = messageBoxButtons;
-        }
-
-        private readonly string caption;
-        private readonly string description;
-        private readonly MessageBoxButtons messageBoxButtons;
+        private readonly string caption = caption;
+        private readonly string description = description;
+        private readonly MessageBoxButtons messageBoxButtons = messageBoxButtons;
 
         /// <summary>
         /// The method that is called when the user clicks OK on the message box.
@@ -42,7 +35,7 @@ namespace TSMapEditor.UI.Windows
         /// </summary>
         public Action<EditorMessageBox> NoClickedAction { get; set; }
 
-        private List<XNAButton> buttons = new List<XNAButton>();
+        private readonly List<XNAButton> buttons = [];
 
         private XNALabel lblDescription;
 
@@ -50,22 +43,28 @@ namespace TSMapEditor.UI.Windows
         {
             Name = "MessageBox";
 
-            XNALabel lblCaption = new XNALabel(WindowManager);
-            lblCaption.X = Constants.UIEmptySideSpace;
-            lblCaption.Y = Constants.UIEmptyTopSpace;
-            lblCaption.FontIndex = Constants.UIBoldFont;
-            lblCaption.Text = caption;
+            XNALabel lblCaption = new(WindowManager)
+            {
+                X = Constants.UIEmptySideSpace,
+                Y = Constants.UIEmptyTopSpace,
+                FontIndex = Constants.UIBoldFont,
+                Text = caption
+            };
             AddChild(lblCaption);
 
-            XNAPanel line = new XNAPanel(WindowManager);
-            line.ClientRectangle = new Rectangle(Constants.UIEmptySideSpace,
-                lblCaption.Bottom + Constants.UIVerticalSpacing, 0, 1);
+            XNAPanel line = new(WindowManager)
+            {
+                ClientRectangle = new Rectangle(Constants.UIEmptySideSpace,
+                    lblCaption.Bottom + Constants.UIVerticalSpacing, 0, 1)
+            };
             AddChild(line);
 
-            lblDescription = new XNALabel(WindowManager);
-            lblDescription.Text = description;
-            lblDescription.X = Constants.UIEmptySideSpace;
-            lblDescription.Y = line.Bottom + Constants.UIEmptyTopSpace;
+            lblDescription = new XNALabel(WindowManager)
+            {
+                Text = description,
+                X = Constants.UIEmptySideSpace,
+                Y = line.Bottom + Constants.UIEmptyTopSpace
+            };
             AddChild(lblDescription);
 
             Vector2 textDimensions = Renderer.GetTextDimensions(lblDescription.Text, lblDescription.FontIndex);
@@ -102,11 +101,13 @@ namespace TSMapEditor.UI.Windows
 
         private void AddOKButton()
         {
-            var btnOK = new EditorButton(WindowManager);
-            btnOK.Width = 75;
-            btnOK.Name = "btnOK";
-            btnOK.Text = "OK";
-            btnOK.HotKey = Microsoft.Xna.Framework.Input.Keys.Enter;
+            var btnOK = new EditorButton(WindowManager)
+            {
+                Width = 75,
+                Name = "btnOK",
+                Text = "OK",
+                HotKey = Microsoft.Xna.Framework.Input.Keys.Enter
+            };
             btnOK.LeftClick += BtnOK_LeftClick;
             buttons.Add(btnOK);
 

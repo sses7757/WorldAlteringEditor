@@ -20,18 +20,18 @@ namespace TSMapEditor.Models
         private const string IniSystemSectionName = "INISystem";
 
         public IniFile EditorRulesIni { get; }
-        public List<OverlayCollection> OverlayCollections { get; } = new List<OverlayCollection>();
-        public List<TerrainObjectCollection> TerrainObjectCollections { get; } = new List<TerrainObjectCollection>();
-        public List<SmudgeCollection> SmudgeCollections { get; } = new List<SmudgeCollection>();
-        public List<BrushSize> BrushSizes { get; } = new List<BrushSize>() { new BrushSize(1, 1) };
-        public Dictionary<int, ScriptAction> ScriptActions { get; } = new Dictionary<int, ScriptAction>();
-        public Dictionary<int, TriggerEventType> TriggerEventTypes { get; } = new Dictionary<int, TriggerEventType>();
-        public Dictionary<int, TriggerActionType> TriggerActionTypes { get; } = new Dictionary<int, TriggerActionType>();
-        public List<Theater> Theaters { get; } = new List<Theater>();
-        public List<BridgeType> Bridges { get; } = new List<BridgeType>();
-        public List<ConnectedOverlayType> ConnectedOverlays { get; } = new List<ConnectedOverlayType>();
-        public List<CliffType> Cliffs { get; } = new List<CliffType>();
-        public List<TeamTypeFlag> TeamTypeFlags { get; } = new List<TeamTypeFlag>();
+        public List<OverlayCollection> OverlayCollections { get; } = [];
+        public List<TerrainObjectCollection> TerrainObjectCollections { get; } = [];
+        public List<SmudgeCollection> SmudgeCollections { get; } = [];
+        public List<BrushSize> BrushSizes { get; } = [new(1, 1)];
+        public Dictionary<int, ScriptAction> ScriptActions { get; } = [];
+        public Dictionary<int, TriggerEventType> TriggerEventTypes { get; } = [];
+        public Dictionary<int, TriggerActionType> TriggerActionTypes { get; } = [];
+        public List<Theater> Theaters { get; } = [];
+        public List<BridgeType> Bridges { get; } = [];
+        public List<ConnectedOverlayType> ConnectedOverlays { get; } = [];
+        public List<CliffType> Cliffs { get; } = [];
+        public List<TeamTypeFlag> TeamTypeFlags { get; } = [];
         public EvaSpeeches Speeches { get; private set; }
 
         private static readonly Dictionary<int, (int StartIndex, int Count)> TiberiumImageToOverlays = new()
@@ -78,7 +78,7 @@ namespace TSMapEditor.Models
                 if (theaterSection == null)
                     continue;
 
-                Theater theater = new Theater(theaterName);
+                Theater theater = new(theaterName);
                 theater.ReadPropertiesFromIniSection(theaterSection);
                 Theaters.Add(theater);
             }
@@ -263,7 +263,7 @@ namespace TSMapEditor.Models
                 if (bridgeSection == null)
                     continue;
 
-                BridgeType bridgeType = new BridgeType(bridgeSection, rules);
+                BridgeType bridgeType = new(bridgeSection, rules);
                 Bridges.Add(bridgeType);
             }
         }
@@ -284,7 +284,7 @@ namespace TSMapEditor.Models
                 if (overlaySection == null)
                     continue;
 
-                ConnectedOverlayType overlayType = new ConnectedOverlayType(overlaySection, rules);
+                ConnectedOverlayType overlayType = new(overlaySection, rules);
                 ConnectedOverlays.Add(overlayType);
             }
 
@@ -302,7 +302,7 @@ namespace TSMapEditor.Models
 
             foreach (var tiberiumType in rules.TiberiumTypes)
             {
-                tiberiumType.Overlays = new List<OverlayType>();
+                tiberiumType.Overlays = [];
 
                 string overlaysString = iniFile.GetStringValue(sectionName, tiberiumType.ININame, null);
 
@@ -394,7 +394,7 @@ namespace TSMapEditor.Models
                 speeches.Add(new EvaSpeech(speeches.Count, kvp.Value, string.Empty));
             }
 
-            Speeches = new EvaSpeeches(speeches.ToArray());
+            Speeches = new EvaSpeeches([.. speeches]);
         }
 
         private void ReadCliffs()

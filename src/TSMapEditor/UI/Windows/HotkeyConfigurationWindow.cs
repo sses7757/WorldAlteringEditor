@@ -11,12 +11,8 @@ namespace TSMapEditor.UI.Windows
     /// <summary>
     /// A dialog that allows the user to configure their hotkeys.
     /// </summary>
-    public class HotkeyConfigurationWindow : INItializableWindow
+    public class HotkeyConfigurationWindow(WindowManager windowManager) : INItializableWindow(windowManager)
     {
-        public HotkeyConfigurationWindow(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         private XNAMultiColumnListBox lbKeyboardCommands;
         private XNALabel lblCommandCaption;
         private XNALabel lblDescription;
@@ -26,7 +22,7 @@ namespace TSMapEditor.UI.Windows
         private XNALabel lblDefaultHotkeyValue;
 
         private IList<KeyboardCommand> keyboardCommands;
-        private KeyboardCommandInput newHotkeyInput = new KeyboardCommandInput(Keys.None, KeyboardModifiers.None);
+        private readonly KeyboardCommandInput newHotkeyInput = new(Keys.None, KeyboardModifiers.None);
 
         public override void Initialize()
         {

@@ -8,18 +8,13 @@ using TSMapEditor.Mutations.Classes;
 
 namespace TSMapEditor.Settings
 {
-    public class TerrainGeneratorUserPresets
+    public class TerrainGeneratorUserPresets(Map map)
     {
-        public TerrainGeneratorUserPresets(Map map)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private const string ConfigFileName = "TerrainGeneratorUserPresets.ini";
 
-        private List<TerrainGeneratorConfiguration> configurations = new List<TerrainGeneratorConfiguration>();
+        private readonly List<TerrainGeneratorConfiguration> configurations = [];
 
         public List<TerrainGeneratorConfiguration> GetConfigurationsForCurrentTheater() 
             => configurations.FindAll(c => c.Theater.Equals(map.LoadedTheaterName, StringComparison.OrdinalIgnoreCase));
@@ -74,7 +69,7 @@ namespace TSMapEditor.Settings
                 return false;
             }
 
-            IniFile iniFile = new IniFile();
+            IniFile iniFile = new();
 
             int i = 0;
             configurations.ForEach(c =>

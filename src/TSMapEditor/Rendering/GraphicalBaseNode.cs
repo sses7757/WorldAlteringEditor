@@ -2,18 +2,11 @@
 
 namespace TSMapEditor.Rendering
 {
-    public class GraphicalBaseNode
+    public class GraphicalBaseNode(BaseNode baseNode, BuildingType buildingType, House owner)
     {
-        public GraphicalBaseNode(BaseNode baseNode, BuildingType buildingType, House owner)
-        {
-            BaseNode = baseNode;
-            BuildingType = buildingType;
-            Owner = owner;
-        }
-
-        public BaseNode BaseNode { get; }
-        public BuildingType BuildingType { get; set; }
+        public BaseNode BaseNode { get; } = baseNode;
+        public BuildingType BuildingType { get; set; } = buildingType;
         // public Structure Structure { get; set; }
-        public House Owner { get; set; }
+        public House Owner { get; set; } = owner;
     }
 }

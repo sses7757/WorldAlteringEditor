@@ -6,16 +6,10 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows.TerrainGenerator
 {
-    public class InputTerrainGeneratorPresetNameWindow : INItializableWindow
+    public class InputTerrainGeneratorPresetNameWindow(WindowManager windowManager, TerrainGeneratorUserPresets userPresets, Map map) : INItializableWindow(windowManager)
     {
-        public InputTerrainGeneratorPresetNameWindow(WindowManager windowManager, TerrainGeneratorUserPresets userPresets, Map map) : base(windowManager)
-        {
-            this.userPresets = userPresets;
-            this.map = map;
-        }
-
-        private readonly TerrainGeneratorUserPresets userPresets;
-        private readonly Map map;
+        private readonly TerrainGeneratorUserPresets userPresets = userPresets;
+        private readonly Map map = map;
 
         public event EventHandler<string> SaveAccepted;
 

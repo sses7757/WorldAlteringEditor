@@ -8,7 +8,7 @@ namespace TSMapEditor.Models
         /// <summary>
         /// Map of all CSF label/string pairs that have been parsed.
         /// </summary>
-        private Dictionary<string, CsfString> map = new();
+        private readonly Dictionary<string, CsfString> map = [];
 
         public StringTable(List<CsfFile> csfFiles)
         {

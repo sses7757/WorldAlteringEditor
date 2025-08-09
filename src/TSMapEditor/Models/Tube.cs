@@ -41,7 +41,7 @@ namespace TSMapEditor.Models
         public Point2D EntryPoint { get; set; }
         public Point2D ExitPoint { get; set; }
         public TubeDirection UnitInitialFacing { get; set; }
-        public List<TubeDirection> Directions { get; set; } = new List<TubeDirection>();
+        public List<TubeDirection> Directions { get; set; } = [];
         public bool Pending { get; set; }
 
 
@@ -54,36 +54,28 @@ namespace TSMapEditor.Models
 
         private TubeDirection GetOpposingDirection(TubeDirection direction)
         {
-            switch (direction)
+            return direction switch
             {
-                case TubeDirection.NorthEast:
-                    return TubeDirection.SouthWest;
-                case TubeDirection.East:
-                    return TubeDirection.West;
-                case TubeDirection.SouthEast:
-                    return TubeDirection.NorthWest;
-                case TubeDirection.South:
-                    return TubeDirection.North;
-                case TubeDirection.SouthWest:
-                    return TubeDirection.NorthEast;
-                case TubeDirection.West:
-                    return TubeDirection.East;
-                case TubeDirection.NorthWest:
-                    return TubeDirection.SouthEast;
-                case TubeDirection.North:
-                    return TubeDirection.South;
-                case TubeDirection.None:
-                    return TubeDirection.None;
-                default:
-                    throw new ArgumentException("Unknown tube direction: " + direction);
-            }
+                TubeDirection.NorthEast => TubeDirection.SouthWest,
+                TubeDirection.East => TubeDirection.West,
+                TubeDirection.SouthEast => TubeDirection.NorthWest,
+                TubeDirection.South => TubeDirection.North,
+                TubeDirection.SouthWest => TubeDirection.NorthEast,
+                TubeDirection.West => TubeDirection.East,
+                TubeDirection.NorthWest => TubeDirection.SouthEast,
+                TubeDirection.North => TubeDirection.South,
+                TubeDirection.None => TubeDirection.None,
+                _ => throw new ArgumentException("Unknown tube direction: " + direction),
+            };
         } 
 
         public Tube GetReversedTube()
         {
-            var reversedTube = new Tube();
-            reversedTube.EntryPoint = ExitPoint;
-            reversedTube.ExitPoint = EntryPoint;
+            var reversedTube = new Tube
+            {
+                EntryPoint = ExitPoint,
+                ExitPoint = EntryPoint
+            };
 
             for (int i = Directions.Count - 1; i > -1; i--)
             {

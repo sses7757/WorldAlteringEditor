@@ -3,14 +3,11 @@
     /// <summary>
     /// A base class for mobile objects.
     /// </summary>
-    public abstract class Foot<T> : Techno<T> where T : TechnoType
+    public abstract class Foot<T>(T objectType) : Techno<T>(objectType) where T : TechnoType
     {
         public const int VeterancyNone = 0;
         public const int VeterancyVeteran = 100;
         public const int VeterancyElite = 200;
-
-        public Foot(T objectType) : base(objectType) { }
-
 
         public string Mission { get; set; } = "Guard";
         public bool High { get; set; }

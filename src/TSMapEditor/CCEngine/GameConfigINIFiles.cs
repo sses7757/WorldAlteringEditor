@@ -15,11 +15,9 @@ namespace TSMapEditor.CCEngine
             if (RulesIni == null && FirestormIni == null)
                 throw new FileNotFoundException("No Rules.ini found! (including derivates like Firestorm.ini / Rulesmd.ini)");
 
-            if (RulesIni == null)
-                RulesIni = new IniFileEx();
+            RulesIni ??= new IniFileEx();
 
-            if (FirestormIni == null)
-                FirestormIni = new IniFileEx();
+            FirestormIni ??= new IniFileEx();
 
             ArtIni = IniFileEx.FromPathOrMix(Constants.ArtIniPath, gameDirectory, fileManager);
             ArtFSIni = IniFileEx.FromPathOrMix(Constants.FirestormArtIniPath, gameDirectory, fileManager);

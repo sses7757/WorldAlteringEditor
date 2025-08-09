@@ -63,7 +63,7 @@ namespace TSMapEditor.Rendering
 
         private Texture2D TextureFromTmpImage_Paletted(GraphicsDevice graphicsDevice, TmpImage image)
         {
-            Texture2D texture = new Texture2D(graphicsDevice, Constants.CellSizeX, Constants.CellSizeY, false, SurfaceFormat.Alpha8);
+            Texture2D texture = new(graphicsDevice, Constants.CellSizeX, Constants.CellSizeY, false, SurfaceFormat.Alpha8);
             byte[] colorData = new byte[Constants.CellSizeX * Constants.CellSizeY];
 
             int tmpPixelIndex = 0;
@@ -120,7 +120,7 @@ namespace TSMapEditor.Rendering
         
         public Texture2D TextureFromTmpImage_RGBA(GraphicsDevice graphicsDevice)
         {
-            Texture2D texture = new Texture2D(graphicsDevice, Constants.CellSizeX, Constants.CellSizeY, false, SurfaceFormat.Color);
+            Texture2D texture = new(graphicsDevice, Constants.CellSizeX, Constants.CellSizeY, false, SurfaceFormat.Color);
             Color[] colorData = new Color[Constants.CellSizeX * Constants.CellSizeY];
             for (int i = 0; i < colorData.Length; i++)
             {

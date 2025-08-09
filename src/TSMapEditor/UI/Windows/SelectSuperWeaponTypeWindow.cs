@@ -5,14 +5,9 @@ using TSMapEditor.Models;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectSuperWeaponTypeWindow : SelectObjectWindow<SuperWeaponType>
+    public class SelectSuperWeaponTypeWindow(WindowManager windowManager, Map map) : SelectObjectWindow<SuperWeaponType>(windowManager)
     {
-        public SelectSuperWeaponTypeWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
         public bool UseININameAsValue { get; set; }
 
         public override void Initialize()

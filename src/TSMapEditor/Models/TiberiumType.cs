@@ -3,14 +3,9 @@ using Microsoft.Xna.Framework;
 
 namespace TSMapEditor.Models
 {
-    public class TiberiumType : INIDefineable, INIDefined
+    public class TiberiumType(string iniName) : INIDefineable, INIDefined
     {
-        public TiberiumType(string iniName)
-        {
-            ININame = iniName;
-        }
-
-        public string ININame { get; }
+        public string ININame { get; } = iniName;
         public int Index { get; set; }
         public string Name { get; set; }
         public int Value { get; set; }
@@ -26,6 +21,6 @@ namespace TSMapEditor.Models
         public Color XNAColor { get; set; }
 
         [INI(false)]
-        public List<OverlayType> Overlays { get; set; } = new List<OverlayType>();
+        public List<OverlayType> Overlays { get; set; } = [];
     }
 }

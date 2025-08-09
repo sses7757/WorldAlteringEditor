@@ -7,17 +7,11 @@ using TSMapEditor.UI;
 
 namespace TSMapEditor.Mutations.Classes
 {
-    public class PlaceVeinholeMonsterMutation : FSLowerGroundMutation
+    public class PlaceVeinholeMonsterMutation(IMutationTarget mutationTarget, Point2D cellCoords) : FSLowerGroundMutation(mutationTarget, cellCoords, mutationTarget.Map.EditorConfig.BrushSizes.Find(bs => bs.Width == 3 && bs.Height == 3))
     {
-        public PlaceVeinholeMonsterMutation(IMutationTarget mutationTarget, Point2D cellCoords) : 
-            base(mutationTarget, cellCoords, mutationTarget.Map.EditorConfig.BrushSizes.Find(bs => bs.Width == 3 && bs.Height == 3))
-        {
-            this.cellCoords = cellCoords;
-        }
+        private readonly Point2D cellCoords = cellCoords;
 
-        private readonly Point2D cellCoords;
-
-        private List<OriginalOverlayInfo> originalOverlayInfos = new();
+        private readonly List<OriginalOverlayInfo> originalOverlayInfos = [];
 
         private void AddUndoDataFromCell(MapTile cell)
         {

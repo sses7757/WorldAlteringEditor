@@ -53,7 +53,7 @@ namespace TSMapEditor.UI.CursorActions
         public override bool HandlesKeyboardInput => true;
 
         private Point2D? source;
-        private List<Point2D> pathCellCoords = new List<Point2D>();
+        private List<Point2D> pathCellCoords = [];
 
         private Point2D targetCellCoords;
 
@@ -78,19 +78,12 @@ namespace TSMapEditor.UI.CursorActions
             }
             else if (e.PressedKey == Microsoft.Xna.Framework.Input.Keys.C)
             {
-                switch (movementZone)
+                movementZone = movementZone switch
                 {
-                    case MovementZone.Land:
-                        movementZone = MovementZone.Water;
-                        break;
-                    case MovementZone.Water:
-                        movementZone = MovementZone.LandAndWater;
-                        break;
-                    default:
-                        movementZone = MovementZone.Land;
-                        break;
-                }
-
+                    MovementZone.Land => MovementZone.Water,
+                    MovementZone.Water => MovementZone.LandAndWater,
+                    _ => MovementZone.Land,
+                };
                 targetCellCoords = Point2D.NegativeOne;
 
                 e.Handled = true;
@@ -228,33 +221,28 @@ namespace TSMapEditor.UI.CursorActions
             if (mapTile.Overlay != null)
                 terrainType = Helpers.LandTypeToInt(mapTile.Overlay.OverlayType.Land);
 
-            switch (movementZone)
+            return movementZone switch
             {
-                case MovementZone.Air:
-                    return 1;
-                case MovementZone.Land:
-                    return Helpers.IsLandTypeImpassable(terrainType, true) ? byte.MaxValue : (byte)1;
-                case MovementZone.Water:
-                    return Helpers.IsLandTypeImpassableForNavalUnits(terrainType) ? byte.MaxValue : (byte)1;
-                case MovementZone.LandAndWater:
-                    return Helpers.IsLandTypeImpassable(terrainType, false) ? byte.MaxValue : (byte)1;
-                default:
-                    return byte.MaxValue;
-            }
+                MovementZone.Air => 1,
+                MovementZone.Land => Helpers.IsLandTypeImpassable(terrainType, true) ? byte.MaxValue : (byte)1,
+                MovementZone.Water => Helpers.IsLandTypeImpassableForNavalUnits(terrainType) ? byte.MaxValue : (byte)1,
+                MovementZone.LandAndWater => Helpers.IsLandTypeImpassable(terrainType, false) ? byte.MaxValue : (byte)1,
+                _ => byte.MaxValue,
+            };
         }
 
         // Defines the priority of surrounding tiles as the pathfinder checks for them
-        private static readonly Point2D[] pfLocationOffsets = new Point2D[]
-        {
-            new Point2D(0, -1),
-            new Point2D(0, 1),
-            new Point2D(-1, 0),
-            new Point2D(1, 0),
-            new Point2D(-1, -1),
-            new Point2D(1, 1),
-            new Point2D(-1, 1),
-            new Point2D(1, -1)
-        };
+        private static readonly Point2D[] pfLocationOffsets =
+        [
+            new(0, -1),
+            new(0, 1),
+            new(-1, 0),
+            new(1, 0),
+            new(-1, -1),
+            new(1, 1),
+            new(-1, 1),
+            new(1, -1)
+        ];
 
         private bool AllowVehicle(Point2D source, Point2D target)
         {
@@ -296,7 +284,7 @@ namespace TSMapEditor.UI.CursorActions
         {
             byte[][] accessibleCache = InitPathfinding(start, end, movementZone);
             if (accessibleCache == null)
-                return new List<Point2D>(0);
+                return [];
 
             while (openSet.Count > 0)
             {
@@ -365,7 +353,7 @@ namespace TSMapEditor.UI.CursorActions
             }
 
             // Failure
-            return new List<Point2D>(0);
+            return [];
         }
 
         private byte[][] InitPathfinding(Point2D start, Point2D end, MovementZone movementZone)
@@ -396,26 +384,20 @@ namespace TSMapEditor.UI.CursorActions
             pathfindingGoalScore[start.Y][start.X] = start.DistanceTo(end);
             pathfindingOpenedNodes[start.Y][start.X] = true;
 
-            switch (movementZone)
+            return movementZone switch
             {
-                case MovementZone.Land:
-                    return landPathfindingCache;
-                case MovementZone.Water:
-                    return navalPathfindingCache;
-                case MovementZone.LandAndWater:
-                    return landAndWaterPathfindingCache;
-                case MovementZone.Air:
-                    return airPathfindingCache;
-                default:
-                    return null;
-            }
+                MovementZone.Land => landPathfindingCache,
+                MovementZone.Water => navalPathfindingCache,
+                MovementZone.LandAndWater => landAndWaterPathfindingCache,
+                MovementZone.Air => airPathfindingCache,
+                _ => null,
+            };
         }
 
         private List<Point2D> AStar_ReconstructPath(Point2D location)
         {
             Point2D current = location;
-            List<Point2D> returnValue = new List<Point2D>();
-            returnValue.Add(current);
+            List<Point2D> returnValue = [current];
             while (true)
             {
                 current = pathfindingMostEfficient[current.Y][current.X];

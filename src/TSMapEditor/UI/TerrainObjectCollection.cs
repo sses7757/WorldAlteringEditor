@@ -9,23 +9,20 @@ namespace TSMapEditor.UI
     /// </summary>
     public class TerrainObjectCollection : ObjectTypeCollection
     {
-        public struct TerrainObjectCollectionEntry
+        public struct TerrainObjectCollectionEntry(TerrainType terrainType)
         {
-            public TerrainType TerrainType;
-
-            public TerrainObjectCollectionEntry(TerrainType terrainType)
-            {
-                TerrainType = terrainType;
-            }
+            public TerrainType TerrainType = terrainType;
         }
 
         public TerrainObjectCollectionEntry[] Entries;
 
         public static TerrainObjectCollection InitFromIniSection(IniSection iniSection, List<TerrainType> terrainTypes)
         {
-            var terrainObjectCollection = new TerrainObjectCollection();
-            terrainObjectCollection.Name = iniSection.GetStringValue("Name", "Unnamed Collection");
-            terrainObjectCollection.AllowedTheaters = iniSection.GetListValue("AllowedTheaters", ',', s => s);
+            var terrainObjectCollection = new TerrainObjectCollection
+            {
+                Name = iniSection.GetStringValue("Name", "Unnamed Collection"),
+                AllowedTheaters = iniSection.GetListValue("AllowedTheaters", ',', s => s)
+            };
 
             var entryList = new List<TerrainObjectCollectionEntry>();
 
@@ -36,18 +33,13 @@ namespace TSMapEditor.UI
                 if (string.IsNullOrWhiteSpace(terrainTypeName))
                     break;
 
-                var terrainType = terrainTypes.Find(o => o.ININame == terrainTypeName);
-                if (terrainType == null)
-                {
-                    throw new INIConfigException($"Terrain object type \"{terrainTypeName}\" not found while initializing terrain object collection \"{terrainObjectCollection.Name}\"!");
-                }
-
+                var terrainType = terrainTypes.Find(o => o.ININame == terrainTypeName) ?? throw new INIConfigException($"Terrain object type \"{terrainTypeName}\" not found while initializing terrain object collection \"{terrainObjectCollection.Name}\"!");
                 entryList.Add(new TerrainObjectCollectionEntry(terrainType));
 
                 i++;
             }
 
-            terrainObjectCollection.Entries = entryList.ToArray();
+            terrainObjectCollection.Entries = [.. entryList];
             return terrainObjectCollection;
         }
     }

@@ -18,12 +18,14 @@ namespace TSMapEditor.UI.Notifications
             Height = WindowManager.WindowHeight;
         }
 
-        private List<Notification> notifications = new List<Notification>();
+        private readonly List<Notification> notifications = [];
 
         public void AddNotification(string text)
         {
-            Notification notification = new Notification(WindowManager);
-            notification.Text = text;
+            Notification notification = new(WindowManager)
+            {
+                Text = text
+            };
             notifications.Add(notification);
             AddChild(notification);
         }

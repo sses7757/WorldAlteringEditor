@@ -3,12 +3,8 @@ using System.Globalization;
 
 namespace TSMapEditor.Settings
 {
-    public class IntSetting : SettingBase<int>
+    public class IntSetting(string section, string key, int defaultValue) : SettingBase<int>(section, key, defaultValue)
     {
-        public IntSetting(string section, string key, int defaultValue) : base(section, key, defaultValue)
-        {
-        }
-
         protected override int GetValueFromString(string iniValue)
         {
             return Conversions.IntFromString(iniValue, DefaultValue);

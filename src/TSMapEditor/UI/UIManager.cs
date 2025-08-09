@@ -107,8 +107,10 @@ namespace TSMapEditor.UI
             InitKeyboard();
 
             windowController = new WindowController();
-            editorState = new EditorState();
-            editorState.BrushSize = map.EditorConfig.BrushSizes[0];
+            editorState = new EditorState
+            {
+                BrushSize = map.EditorConfig.BrushSizes[0]
+            };
             mutationManager = new MutationManager();
 
             InitMapUI();
@@ -120,14 +122,18 @@ namespace TSMapEditor.UI
 
             overlayPlacementAction = new OverlayPlacementAction(mapUI);
 
-            editorSidebar = new EditorSidebar(WindowManager, editorState, map, theaterGraphics, mapUI, overlayPlacementAction);
-            editorSidebar.Width = UserSettings.Instance.SidebarWidth.GetValue();
-            editorSidebar.Y = Constants.UITopBarMenuHeight;
+            editorSidebar = new EditorSidebar(WindowManager, editorState, map, theaterGraphics, mapUI, overlayPlacementAction)
+            {
+                Width = UserSettings.Instance.SidebarWidth.GetValue(),
+                Y = Constants.UITopBarMenuHeight
+            };
             editorSidebar.Height = WindowManager.RenderResolutionY - editorSidebar.Y;
             AddChild(editorSidebar);
 
-            tileSelector = new TileSelector(WindowManager, map, theaterGraphics, placeTerrainCursorAction, editorState);
-            tileSelector.X = editorSidebar.Right;
+            tileSelector = new TileSelector(WindowManager, map, theaterGraphics, placeTerrainCursorAction, editorState)
+            {
+                X = editorSidebar.Right
+            };
             tileSelector.Width = WindowManager.RenderResolutionX - tileSelector.X;
             tileSelector.Height = 300;
             tileSelector.Y = WindowManager.RenderResolutionY - tileSelector.Height;
@@ -135,11 +141,13 @@ namespace TSMapEditor.UI
             tileSelector.TileDisplay.SelectedTileChanged += TileDisplay_SelectedTileChanged;
             tileSelector.ClientRectangleUpdated += UpdateTileAndOverlaySelectorArea;
 
-            overlayFrameSelector = new OverlayFrameSelector(WindowManager, theaterGraphics, editorState);
-            overlayFrameSelector.X = editorSidebar.Right;
-            overlayFrameSelector.Width = tileSelector.Width;
-            overlayFrameSelector.Height = tileSelector.Height;
-            overlayFrameSelector.Y = tileSelector.Y;
+            overlayFrameSelector = new OverlayFrameSelector(WindowManager, theaterGraphics, editorState)
+            {
+                X = editorSidebar.Right,
+                Width = tileSelector.Width,
+                Height = tileSelector.Height,
+                Y = tileSelector.Y
+            };
             AddChild(overlayFrameSelector);
             overlayFrameSelector.SelectedFrameChanged += OverlayFrameSelector_SelectedFrameChanged;
             overlayFrameSelector.ClientRectangleUpdated += UpdateTileAndOverlaySelectorArea;
@@ -153,15 +161,19 @@ namespace TSMapEditor.UI
             InitNotificationManager();
             windowController.Initialize(this, map, editorState, mapUI);
 
-            topBarMenu = new TopBarMenu(WindowManager, mutationManager, mapUI, map, windowController);
-            topBarMenu.Width = editorSidebar.Width;
+            topBarMenu = new TopBarMenu(WindowManager, mutationManager, mapUI, map, windowController)
+            {
+                Width = editorSidebar.Width
+            };
             topBarMenu.OnFileSelected += OpenMapWindow_OnFileSelected;
             topBarMenu.MapWideOverlayLoadRequested += TopBarMenu_MapWideOverlayLoadRequested;
             AddChild(topBarMenu);
 
             var editorControlsPanel = new EditorControlsPanel(WindowManager, map, theaterGraphics,
-                map.EditorConfig, editorState, windowController, placeTerrainCursorAction, placeWaypointCursorAction, mapUI);
-            editorControlsPanel.X = topBarMenu.Right;
+                map.EditorConfig, editorState, windowController, placeTerrainCursorAction, placeWaypointCursorAction, mapUI)
+            {
+                X = topBarMenu.Right
+            };
             AddChild(editorControlsPanel);
 
             AddChild(notificationManager);
@@ -375,7 +387,7 @@ namespace TSMapEditor.UI
             if (issues.Count > 0)
             {
                 if (issues.Count > 10)
-                    issues = issues.Take(10).ToList();
+                    issues = [.. issues.Take(10)];
 
                 var newline = Environment.NewLine;
 
@@ -420,9 +432,11 @@ namespace TSMapEditor.UI
         private void StartLoadingMap()
         {
             var messageBox = new EditorMessageBox(WindowManager, "Loading", "Please wait, loading map...", MessageBoxButtons.None);
-            mapLoadDarkeningPanel = new DarkeningPanel(WindowManager);
-            mapLoadDarkeningPanel.DrawOrder = int.MaxValue;
-            mapLoadDarkeningPanel.UpdateOrder = int.MaxValue;
+            mapLoadDarkeningPanel = new DarkeningPanel(WindowManager)
+            {
+                DrawOrder = int.MaxValue,
+                UpdateOrder = int.MaxValue
+            };
             AddChild(mapLoadDarkeningPanel);
             mapLoadDarkeningPanel.AddChild(messageBox);
 

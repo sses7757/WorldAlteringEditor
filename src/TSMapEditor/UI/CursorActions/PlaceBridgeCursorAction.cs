@@ -11,20 +11,15 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// Cursor action for placing bridges.
     /// </summary>
-    public class PlaceBridgeCursorAction : CursorAction
+    public class PlaceBridgeCursorAction(ICursorActionTarget cursorActionTarget, BridgeType bridgeType) : CursorAction(cursorActionTarget)
     {
-        public PlaceBridgeCursorAction(ICursorActionTarget cursorActionTarget, BridgeType bridgeType) : base(cursorActionTarget)
-        {
-            this.bridgeType = bridgeType;
-        }
-
         public override string GetName() => "Draw Bridge";
 
         public override bool HandlesKeyboardInput => true;
 
         public override bool DrawCellCursor => true;
 
-        private readonly BridgeType bridgeType;
+        private readonly BridgeType bridgeType = bridgeType;
 
         private Point2D startPoint;
         private Point2D endPoint;
@@ -47,9 +42,9 @@ namespace TSMapEditor.UI.CursorActions
             var textDimensions = Renderer.GetTextDimensions(text, Constants.UIBoldFont);
             int x = cellTopLeftPoint.X - (int)(textDimensions.X - Constants.CellSizeX) / 2;
 
-            Vector2 textPosition = new Vector2(x + 60, cellTopLeftPoint.Y - 150);
+            Vector2 textPosition = new(x + 60, cellTopLeftPoint.Y - 150);
 
-            Rectangle textBackgroundRectangle = new Rectangle((int)textPosition.X - Constants.UIEmptySideSpace,
+            Rectangle textBackgroundRectangle = new((int)textPosition.X - Constants.UIEmptySideSpace,
                 (int)textPosition.Y - Constants.UIEmptyTopSpace,
                 (int)textDimensions.X + Constants.UIEmptySideSpace * 2,
                 (int)textDimensions.Y + Constants.UIEmptyBottomSpace + Constants.UIEmptyTopSpace);
@@ -77,7 +72,7 @@ namespace TSMapEditor.UI.CursorActions
                 if (bridgeDirection == BridgeDirection.EastWest)
                 {
                     Point2D actualStartPoint = startPoint;
-                    Point2D actualEndPoint = new Point2D(endPoint.X, startPoint.Y);
+                    Point2D actualEndPoint = new(endPoint.X, startPoint.Y);
 
                     if (startPoint.X > endPoint.X)
                     {
@@ -106,7 +101,7 @@ namespace TSMapEditor.UI.CursorActions
                 else
                 {
                     Point2D actualStartPoint = startPoint;
-                    Point2D actualEndPoint = new Point2D(startPoint.X, endPoint.Y);
+                    Point2D actualEndPoint = new(startPoint.X, endPoint.Y);
 
                     if (startPoint.Y > endPoint.Y)
                     {

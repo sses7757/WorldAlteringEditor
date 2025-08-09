@@ -8,24 +8,14 @@ using TSMapEditor.UI.Controls;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class RandomTriggerSetTriggersCreatedEventArgs : EventArgs
+    public class RandomTriggerSetTriggersCreatedEventArgs(Trigger baseTrigger) : EventArgs
     {
-        public RandomTriggerSetTriggersCreatedEventArgs(Trigger baseTrigger)
-        {
-            BaseTrigger = baseTrigger;
-        }
-
-        public Trigger BaseTrigger { get; }
+        public Trigger BaseTrigger { get; } = baseTrigger;
     }
 
-    public class CreateRandomTriggerSetWindow : INItializableWindow
+    public class CreateRandomTriggerSetWindow(WindowManager windowManager, Map map) : INItializableWindow(windowManager)
     {
-        public CreateRandomTriggerSetWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private readonly Map map;
+        private readonly Map map = map;
 
         private EditorTextBox tbName;
         private XNADropDown ddColor;
@@ -144,9 +134,11 @@ namespace TSMapEditor.UI.Windows
         {
             string triggerName = $"{name} base";
 
-            var baseTrigger = new Trigger(map.GetNewUniqueInternalId());
-            baseTrigger.Name = triggerName;
-            baseTrigger.HouseType = "Neutral";
+            var baseTrigger = new Trigger(map.GetNewUniqueInternalId())
+            {
+                Name = triggerName,
+                HouseType = "Neutral"
+            };
 
             if (!string.IsNullOrWhiteSpace(color))
             {
@@ -167,16 +159,20 @@ namespace TSMapEditor.UI.Windows
                 } 
                 else
                 {
-                    var globalSetCondition = new TriggerCondition();
-                    globalSetCondition.ConditionIndex = 27; // Global Is Set
+                    var globalSetCondition = new TriggerCondition
+                    {
+                        ConditionIndex = 27 // Global Is Set
+                    };
                     globalSetCondition.Parameters[1] = diffGlobalVariableIndex.ToString();
 
                     baseTrigger.Conditions.Add(globalSetCondition);
                 }
-            }            
+            }
 
-            var elapsedTimeCondition = new TriggerCondition();
-            elapsedTimeCondition.ConditionIndex = 13; // Elapsed Time
+            var elapsedTimeCondition = new TriggerCondition
+            {
+                ConditionIndex = 13 // Elapsed Time
+            };
             elapsedTimeCondition.Parameters[1] = elapsedTime.ToString();
 
             baseTrigger.Conditions.Add(elapsedTimeCondition);
@@ -193,18 +189,22 @@ namespace TSMapEditor.UI.Windows
 
             for (int i = 0; i < count; i++)
             {
-                var childTrigger = new Trigger(map.GetNewUniqueInternalId());
-                childTrigger.Name = $"{name} {i + 1}";
-                childTrigger.HouseType = "Neutral";
-                childTrigger.Disabled = true;
-                
+                var childTrigger = new Trigger(map.GetNewUniqueInternalId())
+                {
+                    Name = $"{name} {i + 1}",
+                    HouseType = "Neutral",
+                    Disabled = true
+                };
+
                 if (!string.IsNullOrWhiteSpace(color))
                 {
                     childTrigger.EditorColor = color;
                 }
 
-                var randomDelayCondition = new TriggerCondition();
-                randomDelayCondition.ConditionIndex = 51; // Random Delay
+                var randomDelayCondition = new TriggerCondition
+                {
+                    ConditionIndex = 51 // Random Delay
+                };
                 randomDelayCondition.Parameters[1] = delay.ToString();
 
                 childTrigger.Conditions.Add(randomDelayCondition);
@@ -223,8 +223,10 @@ namespace TSMapEditor.UI.Windows
             foreach (var childTrigger in childTriggers)
             {
                 // base trigger needs to enable each of the child triggers
-                var enableTriggerAction = new TriggerAction();
-                enableTriggerAction.ActionIndex = 53; // Enable Trigger
+                var enableTriggerAction = new TriggerAction
+                {
+                    ActionIndex = 53 // Enable Trigger
+                };
                 enableTriggerAction.Parameters[0] = "2";
                 enableTriggerAction.Parameters[1] = childTrigger.ID;
 
@@ -233,8 +235,10 @@ namespace TSMapEditor.UI.Windows
                 // each child trigger needs to disable itself and each other child trigger
                 foreach (var siblingTrigger in childTriggers)
                 {
-                    var disableTriggerAction = new TriggerAction();
-                    disableTriggerAction.ActionIndex = 54; // Disable Trigger
+                    var disableTriggerAction = new TriggerAction
+                    {
+                        ActionIndex = 54 // Disable Trigger
+                    };
                     disableTriggerAction.Parameters[0] = "2";
                     disableTriggerAction.Parameters[1] = siblingTrigger.ID;
 

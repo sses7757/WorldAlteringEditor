@@ -9,12 +9,8 @@ namespace TSMapEditor.UI
     /// <summary>
     /// A XNAPanel derivative that sets its background.
     /// </summary>
-    public class EditorPanel : XNAPanel
+    public class EditorPanel(WindowManager windowManager) : XNAPanel(windowManager)
     {
-        public EditorPanel(WindowManager windowManager) : base(windowManager)
-        {
-        }
-
         private bool isStockBackgroundTexture;
 
         public override void Initialize()
@@ -42,11 +38,7 @@ namespace TSMapEditor.UI
                 if (box.NextControl != null)
                     continue;
 
-                var next = FindStartingFromIndex(textBoxes, i + 1, tb => tb.PreviousControl == null && tb.Y == box.Y);
-
-                if (next == null)
-                    next = FindStartingFromIndex(textBoxes, i + 1, tb => tb.Y > box.Y);
-
+                var next = FindStartingFromIndex(textBoxes, i + 1, tb => tb.PreviousControl == null && tb.Y == box.Y) ?? FindStartingFromIndex(textBoxes, i + 1, tb => tb.Y > box.Y);
                 if (next != null)
                 {
                     box.NextControl = next;

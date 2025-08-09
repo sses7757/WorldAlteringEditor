@@ -9,15 +9,10 @@ using TSMapEditor.Models.Enums;
 
 namespace TSMapEditor.UI.Windows
 {
-    public class SelectScriptActionPresetOptionWindow : SelectObjectWindow<ScriptActionPresetOption>
+    public class SelectScriptActionPresetOptionWindow(WindowManager windowManager, Map map) : SelectObjectWindow<ScriptActionPresetOption>(windowManager)
     {
-        public SelectScriptActionPresetOptionWindow(WindowManager windowManager, Map map) : base(windowManager)
-        {
-            this.map = map;
-        }
-
-        private Map map;
-        public List<ScriptActionPresetOption> presetOptions { get; } = new List<ScriptActionPresetOption>(0);
+        private readonly Map map = map;
+        public List<ScriptActionPresetOption> presetOptions { get; } = [];
 
         public override void Initialize()
         {

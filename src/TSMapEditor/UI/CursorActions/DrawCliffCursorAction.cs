@@ -37,7 +37,7 @@ namespace TSMapEditor.UI.CursorActions
 
         public override void OnActionEnter()
         {
-            cliffPath = new List<Point2D>();
+            cliffPath = [];
 
             base.OnActionEnter();
         }

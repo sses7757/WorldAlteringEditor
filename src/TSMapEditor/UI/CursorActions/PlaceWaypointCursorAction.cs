@@ -7,12 +7,8 @@ using TSMapEditor.UI.Windows;
 
 namespace TSMapEditor.UI.CursorActions
 {
-    public class PlaceWaypointCursorAction : CursorAction
+    public class PlaceWaypointCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public PlaceWaypointCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Place Waypoint";
 
         public PlaceWaypointWindow PlaceWaypointWindow { get; set; }

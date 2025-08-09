@@ -124,7 +124,7 @@ namespace TSMapEditor.GameMath
             if (Constants.IsFlatWorld)
                 return coords2D;
 
-            Point2D nearestCenterCoords = new Point2D(-1, -1);
+            Point2D nearestCenterCoords = new(-1, -1);
             float nearestDistance = float.MaxValue;
 
             const int threshold = 1;
@@ -206,23 +206,14 @@ namespace TSMapEditor.GameMath
 
         public static Point2D GetSubCellOffset(SubCell subcell)
         {
-            switch (subcell)
+            return subcell switch
             {
-                case SubCell.Top:
-                    return new Point2D(0, Constants.CellSizeY / -4);
-
-                case SubCell.Bottom:
-                    return new Point2D(0, Constants.CellSizeY / 4);
-
-                case SubCell.Left:
-                    return new Point2D(Constants.CellSizeX / -4, 0);
-
-                case SubCell.Right:
-                    return new Point2D(Constants.CellSizeX / 4, 0);
-
-                default:
-                    return Point2D.Zero;
-            }
+                SubCell.Top => new Point2D(0, Constants.CellSizeY / -4),
+                SubCell.Bottom => new Point2D(0, Constants.CellSizeY / 4),
+                SubCell.Left => new Point2D(Constants.CellSizeX / -4, 0),
+                SubCell.Right => new Point2D(Constants.CellSizeX / 4, 0),
+                _ => Point2D.Zero,
+            };
         }
 
         public static float GetDepthForCell(Point2D cellCoords, Map map)

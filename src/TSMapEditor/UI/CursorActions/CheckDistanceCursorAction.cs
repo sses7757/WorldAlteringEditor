@@ -11,16 +11,12 @@ namespace TSMapEditor.UI.CursorActions
     /// <summary>
     /// A cursor action that allows the user to check the distance between two cells.
     /// </summary>
-    public class CheckDistanceCursorAction : CursorAction
+    public class CheckDistanceCursorAction(ICursorActionTarget cursorActionTarget) : CursorAction(cursorActionTarget)
     {
-        public CheckDistanceCursorAction(ICursorActionTarget cursorActionTarget) : base(cursorActionTarget)
-        {
-        }
-
         public override string GetName() => "Check Distance";
 
         private Point2D? source;
-        private List<Point2D> pathCellCoords = new List<Point2D>();
+        private readonly List<Point2D> pathCellCoords = [];
         private int pathLength = 0;
 
         public override bool DrawCellCursor => true;
@@ -123,7 +119,7 @@ namespace TSMapEditor.UI.CursorActions
                 else if (currentPoint.Y < destination.Y)
                     yDiff++;
 
-                currentPoint = currentPoint + new Point2D(xDiff, yDiff);
+                currentPoint += new Point2D(xDiff, yDiff);
 
                 pathCellCoords.Add(currentPoint);
 

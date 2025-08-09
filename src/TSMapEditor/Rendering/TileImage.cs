@@ -43,42 +43,33 @@ namespace TSMapEditor.Rendering
     /// <summary>
     /// Contains graphics for a single full TMP (all sub-tiles / all cells).
     /// </summary>
-    public class TileImage : ITileImage
+    public class TileImage(int width, int height, int tileSetId, int tileIndex, int tileId, MGTMPImage[] tmpImages) : ITileImage
     {
-        public TileImage(int width, int height, int tileSetId, int tileIndex, int tileId, MGTMPImage[] tmpImages)
-        {
-            Width = width;
-            Height = height;
-            TileSetId = tileSetId;
-            TileIndexInTileSet = tileIndex;
-            TileID = tileId;
-            TMPImages = tmpImages;
-        }
 
         /// <summary>
         /// Width of the tile in cells.
         /// </summary>
-        public int Width { get; }
+        public int Width { get; } = width;
 
         /// <summary>
         /// Height of the tile in cells.
         /// </summary>
-        public int Height { get; }
+        public int Height { get; } = height;
 
         /// <summary>
         /// The index of the tile set.
         /// </summary>
-        public int TileSetId { get; set; }
+        public int TileSetId { get; set; } = tileSetId;
 
         /// <summary>
         /// The index of the tile within its tileset.
         /// </summary>
-        public int TileIndexInTileSet { get; set; }
+        public int TileIndexInTileSet { get; set; } = tileIndex;
 
         /// <summary>
         /// The unique ID of this tile within all tiles in the game.
         /// </summary>
-        public int TileID { get; set; }
+        public int TileID { get; set; } = tileId;
 
         public ISubTileImage GetSubTile(int index) => TMPImages[index];
 
@@ -94,7 +85,7 @@ namespace TSMapEditor.Rendering
 
         public int SubTileCount => TMPImages.Length;
 
-        public MGTMPImage[] TMPImages { get; set; }
+        public MGTMPImage[] TMPImages { get; set; } = tmpImages;
 
         /// <summary>
         /// Calculates and returns the width of this full tile image.
@@ -251,8 +242,7 @@ namespace TSMapEditor.Rendering
         {
             Array.ForEach(TMPImages, tmp =>
             {
-                if (tmp != null)
-                    tmp.Dispose();
+                tmp?.Dispose();
             });
         }
     }

@@ -6,17 +6,11 @@ using TSMapEditor.CCEngine;
 
 namespace TSMapEditor.UI.Controls
 {
-    public class TileSetListBox : XNAListBox
+    public class TileSetListBox(WindowManager windowManager, int tileSetCount) : XNAListBox(windowManager)
     {
-        public TileSetListBox(WindowManager windowManager, int tileSetCount) : base(windowManager)
-        {
-            tileSetIsFavourite = new bool[tileSetCount];
-            favouriteTileSetTexture = AssetLoader.LoadTexture("star.png");
-        }
+        private readonly bool[] tileSetIsFavourite = new bool[tileSetCount];
 
-        private readonly bool[] tileSetIsFavourite;
-
-        private Texture2D favouriteTileSetTexture;
+        private readonly Texture2D favouriteTileSetTexture = AssetLoader.LoadTexture("star.png");
 
         public bool IsTileSetFavourite(int tileSetIndex) => tileSetIsFavourite[tileSetIndex];
 
