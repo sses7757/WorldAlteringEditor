@@ -93,8 +93,8 @@ namespace TSMapEditor.UI.Windows.MainMenuWindows
         /// <param name="windowManager">The window manager.</param>
         /// <param name="gameDirectory">The path to the game directory.</param>
         public static void LoadTheaterGraphics(WindowManager windowManager, string gameDirectory)
-        {
-            Theater theater = LoadedMap.EditorConfig.Theaters.Find(t => t.UIName.Equals(LoadedMap.TheaterName, StringComparison.InvariantCultureIgnoreCase)) ?? throw new InvalidOperationException("Theater of map not found: " + LoadedMap.TheaterName);
+		{
+			Theater theater = LoadedMap.EditorConfig.Theaters.Find(t => t.UIName.Equals(LoadedMap.TheaterName, StringComparison.InvariantCultureIgnoreCase)) ?? throw new InvalidOperationException("Theater of map not found: " + LoadedMap.TheaterName);
             theater.ReadConfigINI(gameDirectory, ccFileManager);
 
             foreach (string theaterMIXName in theater.ContentMIXName)
@@ -149,7 +149,7 @@ namespace TSMapEditor.UI.Windows.MainMenuWindows
                 {
                     var tileSet = theaterGraphics.Theater.TileSets.Find(ts => ts.SetName == cliffTypeTile.TileSetName && ts.AllowToPlace);
 
-                    if (tileSet == null)
+					if (tileSet == null)
                     {
                         string errorMessage = $"Unable to find TileSet \"{cliffTypeTile.TileSetName}\" " +
                             $"for connected terrain type \"{cliffType.IniName}\", tile index {cliffTypeTile.Index}";
